@@ -1,9 +1,32 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from './modules/user/user.module';
+import { ActivityModule } from './modules/activity/activity.module';
+import { AchievementModule } from './modules/achievement/achievement.module';
+import { ConditionModule } from './modules/condition/condition.module';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Module({
-  imports: [],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      synchronize: true,
+      autoLoadEntities: true,
+    }),
+    UserModule,
+    ActivityModule,
+    AchievementModule,
+    ConditionModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
