@@ -1,4 +1,4 @@
-import { Repository, FindOptionsWhere, FindManyOptions } from 'typeorm';
+import { Repository, FindOptionsWhere, FindManyOptions, DeepPartial } from 'typeorm';
 import {
   Injectable,
   NotFoundException,
@@ -7,12 +7,13 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class CrudService<T, CreateDto, UpdateDto> {
+export class CrudService<T extends { id: number }, CreateDto extends DeepPartial<T>, UpdateDto extends DeepPartial<T>> {
   constructor(private readonly repository: Repository<T>) {}
 
   async create(createDto: CreateDto): Promise<T> {
     try {
-      return await this.repository.save(createDto as any);
+      const entity = this.repository.create(createDto); 
+      return await this.repository.save(entity); 
     } catch (error) {
       throw new HttpException(
         `Failed to create entity: ${error.message}`,
@@ -23,8 +24,9 @@ export class CrudService<T, CreateDto, UpdateDto> {
 
   async update(id: number, updateDto: UpdateDto): Promise<T> {
     try {
-      await this.repository.update(id, updateDto as any);
-      return await this.findOneById(id);
+      const entity = await this.findOneById(id); 
+      const updatedEntity = this.repository.merge(entity, updateDto); 
+      return await this.repository.save(updatedEntity); 
     } catch (error) {
       throw new HttpException(
         `Failed to update entity with ID ${id}: ${error.message}`,
@@ -36,7 +38,7 @@ export class CrudService<T, CreateDto, UpdateDto> {
   async findOneById(id: number): Promise<T> {
     const entity = await this.repository.findOneBy({
       id,
-    } as unknown as FindOptionsWhere<T>);
+    } as FindOptionsWhere<T>); 
     if (!entity) {
       throw new NotFoundException(`Entity with ID ${id} not found`);
     }
@@ -48,10 +50,23 @@ export class CrudService<T, CreateDto, UpdateDto> {
   }
 
   async remove(id: number): Promise<void> {
-    const entity = await this.findOneById(id);
-    if (!entity) {
+    const result = await this.repository.delete(id); 
+     if (result.affected === 0) {
       throw new NotFoundException(`Entity with ID ${id} not found`);
     }
-    await this.repository.delete(id);
   }
+
+  async softRemove(id: number): Promise<void> {
+    const result = await this.repository.softDelete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Entity with ID ${id} not found`);
+    }
+  }
+  async restore(id: number): Promise<void> {
+    const result = await this.repository.restore(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Entity with ID ${id} not found`);
+    }
+  }
+
 }

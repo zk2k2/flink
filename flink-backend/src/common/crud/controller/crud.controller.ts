@@ -10,9 +10,14 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { CrudService } from '../service/crud.service';
+import { DeepPartial } from 'typeorm';
 
 @Controller(':entity')
-export class CrudController<T, CreateDto, UpdateDto> {
+export class CrudController<
+  T extends { id: number },
+  CreateDto extends DeepPartial<T>,
+  UpdateDto extends DeepPartial<T>,
+> {
   constructor(
     private readonly crudService: CrudService<T, CreateDto, UpdateDto>,
   ) {}
@@ -63,6 +68,24 @@ export class CrudController<T, CreateDto, UpdateDto> {
   async remove(@Param('id') id: number): Promise<void> {
     try {
       await this.crudService.remove(id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Delete(':id/soft') 
+  async softRemove(@Param('id') id: number): Promise<void> {
+    try {
+      await this.crudService.softRemove(id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post(':id/restore') 
+  async restore(@Param('id') id: number): Promise<void> {
+    try {
+      await this.crudService.restore(id);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
