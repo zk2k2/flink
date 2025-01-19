@@ -1,4 +1,4 @@
-import { TimedEntity } from 'src/common/entities/timed-entity/timed-entity';
+import { TimedEntity } from 'src/common/entity/timed-entity';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('Condition')

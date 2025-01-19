@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Activity } from '../activity/activity.entity';
 import { Achievement } from '../achievement/achievement.entity';
-import { TimedEntity } from 'src/common/entities/timed-entity/timed-entity';
+import { TimedEntity } from 'src/common/entity/timed-entity';
 
 @Entity('User')
 export class User extends TimedEntity {

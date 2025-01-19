@@ -7,11 +7,12 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class CrudService<T extends { id: number }, CreateDto extends DeepPartial<T>, UpdateDto extends DeepPartial<T>> {
+export class CommonService<T extends { id: number }, CreateDto extends DeepPartial<T>, UpdateDto extends DeepPartial<T>> {
   constructor(private readonly repository: Repository<T>) {}
 
   async create(createDto: CreateDto): Promise<T> {
     try {
+      
       const entity = this.repository.create(createDto); 
       return await this.repository.save(entity); 
     } catch (error) {
