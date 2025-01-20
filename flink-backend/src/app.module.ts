@@ -5,8 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { ActivityModule } from './modules/activity/activity.module';
 import { AchievementModule } from './modules/achievement/achievement.module';
-import { ConditionModule } from './modules/condition/condition.module';
+
 import * as dotenv from 'dotenv';
+import { HobbyModule } from './modules/hobby/hobby.module';
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ dotenv.config();
     UserModule,
     ActivityModule,
     AchievementModule,
-    ConditionModule,
+    HobbyModule
   ],
   controllers: [AppController],
   providers: [AppService],
