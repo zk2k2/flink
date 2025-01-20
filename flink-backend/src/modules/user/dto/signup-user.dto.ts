@@ -11,6 +11,7 @@ import {
     MinLength,
     MaxLength,
     ValidateNested,
+    IsJWT,
   } from 'class-validator';
   import { Type } from 'class-transformer';
   import { UserHobby } from '../../hobby/entities/user-hobby.entity';

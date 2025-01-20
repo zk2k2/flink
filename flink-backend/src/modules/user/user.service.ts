@@ -20,28 +20,22 @@ export class UserService extends CommonService<
     super(userRepository);
   }
 
-  async findByEmail(email: string): Promise<User> {
-    return this.userRepository.findOne({ where: { email } });
+  async findByField(field: string, value: string): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { [field]: value } });
   }
 
-  async findByUsername(username: string): Promise<User> {
-    return this.userRepository.findOne({ where: { username } });
-  }
-
-  async findByPhone(phone: string): Promise<User> {
-    return this.userRepository.findOne({ where: { phone } });
-  }
-
-  /**
-   * Validates the provided password against the hashed password stored in the database.
-   * @param plainPassword - The plain text password provided by the user.
-   * @param hashedPassword - The hashed password stored in the database.
-   * @returns A boolean indicating whether the passwords match.
-   */
   async validatePassword(
     plainPassword: string,
     hashedPassword: string,
   ): Promise<boolean> {
     return bcrypt.compare(plainPassword, hashedPassword);
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string): Promise<void> {
+    await this.userRepository.update(userId, { refreshToken });
+  }
+
+  async clearRefreshToken(userId: string): Promise<void> {
+    await this.userRepository.update(userId, { refreshToken: null });
   }
 }

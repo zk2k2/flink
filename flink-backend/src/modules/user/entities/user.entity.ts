@@ -57,4 +57,7 @@ export class User extends CommonEntity {
 
   @ManyToMany(() => User, (user) => user.followers)
   following: User[];
+
+  @Column({ nullable: true })
+  refreshToken: string; 
 }
