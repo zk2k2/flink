@@ -1,19 +1,16 @@
-import { TimedEntity } from 'src/common/entity/timed-entity';
+import { CommonEntity } from 'src/common/entities/common.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { User } from '../user/user.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Entity('Achievement')
-export class Achievement extends TimedEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Achievement extends CommonEntity {
   @Column()
   title: string;
 
   @Column()
   description: string;
 
-  @Column({ nullable: true })
+  @Column()
   photo: string;
 
   @ManyToOne(() => User, (user) => user.achievements)

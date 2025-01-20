@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { ActivityController } from './activity.controller';
-import { Activity } from 'src/entities/activity/activity.entity';
+import { Activity } from 'src/modules/activity/entities/activity.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({

@@ -1,9 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CommonController } from 'src/common/controller/common.controller';
-import { User } from 'src/entities/user/user.entity';
-import { CreateUserDto } from 'src/entities/user/dtos/create-user.dto';
-import { UpdateUserDto } from 'src/entities/user/dtos/update-user.dto';
+import { User } from 'src/modules/user/entities/user.entity';
+import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
+import { UpdateUserDto } from 'src/modules/user/dto/update-user.dto';
 
 @Controller('users')
 export class UserController extends CommonController<

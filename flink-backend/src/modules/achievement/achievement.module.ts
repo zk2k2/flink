@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AchievementService } from './achievement.service';
 import { AchievementController } from './achievement.controller';
-import { Achievement } from 'src/entities/achievement/achievement.entity';
+import { Achievement } from 'src/modules/achievement/entities/achievement.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({

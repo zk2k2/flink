@@ -14,7 +14,7 @@ import { DeepPartial } from 'typeorm';
 
 @Controller(':entity')
 export class CommonController<
-  T extends { id: number },
+  T extends { id: string },
   CreateDto extends DeepPartial<T>,
   UpdateDto extends DeepPartial<T>,
 > {
@@ -33,7 +33,7 @@ export class CommonController<
 
   @Put(':id')
   async update(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() updateDto: UpdateDto,
   ): Promise<T> {
     try {
@@ -44,7 +44,7 @@ export class CommonController<
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<T> {
+  async findOne(@Param('id') id: string): Promise<T> {
     try {
       return await this.commonService.findOneById(id);
     } catch (error) {
@@ -65,7 +65,7 @@ export class CommonController<
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: number): Promise<void> {
+  async remove(@Param('id') id: string): Promise<void> {
     try {
       await this.commonService.remove(id);
     } catch (error) {
@@ -73,8 +73,8 @@ export class CommonController<
     }
   }
 
-  @Delete(':id/soft') 
-  async softRemove(@Param('id') id: number): Promise<void> {
+  @Delete(':id/soft')
+  async softRemove(@Param('id') id: string): Promise<void> {
     try {
       await this.commonService.softRemove(id);
     } catch (error) {
@@ -82,8 +82,8 @@ export class CommonController<
     }
   }
 
-  @Post(':id/restore') 
-  async restore(@Param('id') id: number): Promise<void> {
+  @Post(':id/restore')
+  async restore(@Param('id') id: string): Promise<void> {
     try {
       await this.commonService.restore(id);
     } catch (error) {
