@@ -1,9 +1,5 @@
-export class UpdateUserDto {
-  name?: string;
-  username?: string;
-  age?: number;
-  profilePic?: string;
-  phone?: string;
-  interests?: string[];
-  habits?: string[];
+import { SignupDto } from './signup-user.dto';
+import { PartialType } from '@nestjs/mapped-types';
+
+export class UpdateProfileDto extends PartialType(SignupDto) {
 }

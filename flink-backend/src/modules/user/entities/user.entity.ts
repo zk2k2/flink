@@ -1,6 +1,5 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   OneToMany,
   ManyToMany,
@@ -25,8 +24,8 @@ export class User extends CommonEntity {
   @Column()
   password: string;
 
-  @Column()
-  age: number;
+  @Column({ type: 'date' }) 
+  birthDate: Date;  
 
   @Column({ nullable: true })
   profilePic: string;
@@ -34,10 +33,10 @@ export class User extends CommonEntity {
   @Column({ unique: true })
   phone: string;
 
-  @Column({ default: 0 })
-  score: number;
+ /*  @Column({ default: 0 })
+  score: number; */
 
-  @ManyToMany(() => Activity, (activity) => activity.users)
+  @OneToMany(() => Activity, (activity) => activity.creator)
   createdActivities: Activity[];
 
   @ManyToMany(() => Activity, (activity) => activity.users)
