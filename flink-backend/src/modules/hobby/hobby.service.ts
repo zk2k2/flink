@@ -21,6 +21,26 @@ export class HobbyService extends CommonService<Hobby, CreateHobbyDto, UpdateHob
     super(hobbyRepository);
   }
 
+  async getAllUserHobbies(): Promise<UserHobby[]> {
+    return this.userHobbyRepository.find({
+      relations: ['user', 'hobby'],
+    });
+  }
+
+  async getUserHobbiesByUserId(userId: string): Promise<UserHobby[]> {
+    return this.userHobbyRepository.find({
+      where: { user: { id: userId } },
+      relations: ['user', 'hobby'], 
+    
+      select: {
+        id: true,
+        interestLevel: true,
+        user: { id: true, name: true },
+        hobby: { id: true, title: true, photo: true },
+      },
+    });
+  }
+
   async addHobbyToUser(userId: string, hobbyId: string, interestLevel: number): Promise<UserHobby> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const hobby = await this.hobbyRepository.findOne({ where: { id: hobbyId } });
