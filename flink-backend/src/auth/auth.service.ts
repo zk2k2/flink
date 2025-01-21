@@ -45,7 +45,7 @@ export class AuthService {
       }
 
     private async generateTokens(user: User): Promise<{ accessToken: string; refreshToken: string }> {
-    const payload = { id: user.id, email: user.email };
+    const payload = { id: user.id};
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = this.jwtService.sign(payload, {
         expiresIn: '7d',
@@ -56,9 +56,9 @@ export class AuthService {
     }
     
 
-    async refreshToken(refreshToken: string): Promise<any> {
+    async refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
         try {
-          const payload = this.jwtService.verify(refreshToken, { secret: process.env.JWT_SECRET });
+          const payload = this.jwtService.verify(refreshToken, { secret: process.env.REFRESH_TOKEN_SECRET });
           const user = await this.userService.findOneById(payload.id);
     
           if (!user || user.refreshToken !== refreshToken) {

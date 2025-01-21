@@ -1,0 +1,3 @@
+interface PayloadInterface {
+    sub: string;
+}

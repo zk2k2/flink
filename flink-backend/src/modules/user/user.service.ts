@@ -6,7 +6,7 @@ import { CommonService } from 'src/common/service/common.service';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { SignupDto } from './dto/signup-user.dto';
-import { UpdateProfileDto } from '../../auth/update-user.dto';
+import { UpdateProfileDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService extends CommonService<
@@ -20,7 +20,7 @@ export class UserService extends CommonService<
     super(userRepository);
   }
 
-  async findByField(field: string, value: string): Promise<User | undefined> {
+  async findByField(field: string, value: string): Promise<User> {
     return this.userRepository.findOne({ where: { [field]: value } });
   }
 

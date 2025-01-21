@@ -33,8 +33,8 @@ export class User extends CommonEntity {
   @Column({ unique: true })
   phone: string;
 
- /*  @Column({ default: 0 })
-  score: number; */
+  @Column({ default: 0 })
+  xp: number; 
 
   @OneToMany(() => Activity, (activity) => activity.creator)
   createdActivities: Activity[];
