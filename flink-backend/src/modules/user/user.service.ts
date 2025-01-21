@@ -32,10 +32,27 @@ export class UserService extends CommonService<
   }
 
   async updateRefreshToken(userId: string, refreshToken: string): Promise<void> {
-    await this.userRepository.update(userId, { refreshToken });
+    if (!userId) {
+      throw new Error('Invalid userId provided');
+    }
+
+    await this.userRepository.update(
+      { id: userId },
+      { refreshToken }
+    );
   }
 
+
   async clearRefreshToken(userId: string): Promise<void> {
-    await this.userRepository.update(userId, { refreshToken: null });
+    console.log('userId', userId);
+    if (!userId) {
+      throw new Error('Invalid userId provided');
+    }
+
+    await this.userRepository.update(
+      { id: userId },
+      { refreshToken: null }
+    );
   }
+
 }

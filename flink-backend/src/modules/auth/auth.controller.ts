@@ -6,32 +6,33 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) { }
 
-    @Post('signup')
-    async signup(@Body() signupDto: SignupDto) {
-        return this.authService.signup(signupDto);
-    }
+  @Post('signup')
+  async signup(@Body() signupDto: SignupDto) {
+    return this.authService.signup(signupDto);
+  }
 
-    @Post('login')
-    async login(@Body() loginDto: LoginDto) {
-        return await this.authService.login(
-            loginDto.identifier,
-            loginDto.password,
-        );
-          
-    }
+  @Post('login')
+  async login(@Body() loginDto: LoginDto) {
+    return await this.authService.login(
+      loginDto.identifier,
+      loginDto.password,
+    );
 
-    @Post('logout')
-    @UseGuards(JwtAuthGuard) 
-    async logout(@Req() req:any) {
-    const userId = req.user.id; 
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Req() req: any) {
+    console.log('request from auth controller', req.user);
+    const userId = req.user.id;
     await this.authService.logout(userId);
     return { message: 'Logged out successfully' };
-    }
+  }
 
 
-  @Post('refresh-token')
+  @Post('refreshtoken')
   async refreshToken(@Body('refreshToken') refreshToken: string) {
     return this.authService.refreshToken(refreshToken);
   }

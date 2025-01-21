@@ -1,3 +1,3 @@
 interface PayloadInterface {
-    sub: string;
+    id: string;
 }
