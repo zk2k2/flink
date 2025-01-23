@@ -8,6 +8,7 @@ import { AchievementModule } from './modules/achievement/achievement.module';
 
 import * as dotenv from 'dotenv';
 import { HobbyModule } from './modules/hobby/hobby.module';
+import { AuthModule } from './auth/auth.module';
 
 dotenv.config();
 
@@ -26,9 +27,10 @@ dotenv.config();
     UserModule,
     ActivityModule,
     AchievementModule,
-    HobbyModule
+    HobbyModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
