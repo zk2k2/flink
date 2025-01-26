@@ -10,8 +10,9 @@ import {
   Matches,
   MinLength,
   MaxLength,
-  ValidateNested,
   IsObject,
+  IsJwt,
+  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { UserHobby } from '../../hobby/entities/user-hobby.entity';
@@ -34,7 +35,8 @@ export class SignupDto {
   @IsNotEmpty({ message: validationMessages.required('Email') })
   email: string;
 
-  @IsPhoneNumber('TN', { message: validationMessages.isPhoneNumber() })
+  /* @IsPhoneNumber('TN', { message: validationMessages.isPhoneNumber() }) */
+
   @IsNotEmpty({ message: validationMessages.required('Phone number') })
   phone: string;
 
@@ -51,6 +53,7 @@ export class SignupDto {
   @Type(() => Date)
   birthDate: Date;
 
+  
   @IsOptional()
   @IsString({ message: validationMessages.invalidFormat('Profile picture') })
   profilePic: string;

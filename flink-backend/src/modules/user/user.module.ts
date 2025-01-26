@@ -9,5 +9,6 @@ import { Location } from '../../common/entities/location.entity';
   imports: [TypeOrmModule.forFeature([User, Location])],
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
 })
-export class UserModule {}
+export class UserModule { }
