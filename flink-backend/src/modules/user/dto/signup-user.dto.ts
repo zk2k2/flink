@@ -11,7 +11,7 @@ import {
   MinLength,
   MaxLength,
   IsObject,
-  IsJwt,
+  IsJWT,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -53,7 +53,6 @@ export class SignupDto {
   @Type(() => Date)
   birthDate: Date;
 
-  
   @IsOptional()
   @IsString({ message: validationMessages.invalidFormat('Profile picture') })
   profilePic: string;
