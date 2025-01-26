@@ -1,11 +1,13 @@
-import { Injectable, Post } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CommonService } from 'src/common/service/common.service';
-import { CreateAchievementDto } from 'src/modules/achievement/dto/create-achievement.dto';
-import { Activity } from 'src/modules/activity/entities/activity.entity';
-import { CreateActivityDto } from 'src/modules/activity/dto/create-activity.dto';
-import { UpdateActivityDto } from 'src/modules/activity/dto/update-activity.dto';
 import { Repository } from 'typeorm';
+import { Activity } from './entities/activity.entity';
+import { Location } from '../../common/entities/location.entity';
+import { User } from '../user/entities/user.entity';
+import { ActivitySortCriteria } from 'src/common/enums/activity-sort-criteria.enum';
+import { CommonService } from '../../common/service/common.service';
+import { CreateActivityDto } from './dto/create-activity.dto';
+import { UpdateActivityDto } from './dto/update-activity.dto';
 
 @Injectable()
 export class ActivityService extends CommonService<
@@ -16,7 +18,77 @@ export class ActivityService extends CommonService<
   constructor(
     @InjectRepository(Activity)
     private readonly activityRepository: Repository<Activity>,
+    @InjectRepository(Location)
+    private readonly locationRepository: Repository<Location>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {
     super(activityRepository);
+  }
+
+  async getActivities(
+    userId?: string,
+    sortCriteria: ActivitySortCriteria = ActivitySortCriteria.NEWEST,
+  ): Promise<Activity[]> {
+    let query = this.activityRepository
+      .createQueryBuilder('activity')
+      .where('activity.isFinished = false');
+
+    if (sortCriteria === ActivitySortCriteria.NEWEST) {
+      query = query.orderBy('activity.date', 'ASC');
+    } else if (sortCriteria === ActivitySortCriteria.NEAREST) {
+      if (!userId) {
+        throw new HttpException(
+          'User ID is required for nearest sorting',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+        relations: ['location'],
+      });
+      if (!user || !user.location) {
+        throw new HttpException(
+          'User or user location not found',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const userCoordinates = user.location.coordinates;
+
+      query = query
+        .addSelect(
+          `ST_Distance(location.coordinates::geography, ST_SetSRID(ST_MakePoint(${userCoordinates}), 4326)::geography)`,
+          'distance',
+        )
+        .leftJoin('activity.location', 'location')
+        .orderBy('distance', 'ASC');
+    } else if (sortCriteria === ActivitySortCriteria.CUSTOM) {
+    }
+
+    return query.getMany();
+  }
+
+  async create(createDto: CreateActivityDto): Promise<Activity> {
+    const { location, creatorId, ...activityData } = createDto;
+
+    const creator = await this.userRepository.findOne({
+      where: { id: creatorId },
+    });
+    if (!creator) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const newLocation = this.locationRepository.create(location);
+    const savedLocation = await this.locationRepository.save(newLocation);
+
+    const activity = this.activityRepository.create({
+      ...activityData,
+      location: savedLocation,
+      creator,
+    });
+
+    return await this.activityRepository.save(activity);
   }
 }

@@ -26,7 +26,7 @@ dotenv.config();
     UserModule,
     ActivityModule,
     AchievementModule,
-    HobbyModule
+    HobbyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

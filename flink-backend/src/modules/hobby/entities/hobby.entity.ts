@@ -3,7 +3,7 @@ import { UserHobby } from './user-hobby.entity';
 import { Entity, Column, OneToMany, ManyToOne } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 
-@Entity('Hobby')
+@Entity()
 export class Hobby extends CommonEntity {
   @Column()
   title: string;

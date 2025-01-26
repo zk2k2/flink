@@ -8,10 +8,13 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { CommonEntity } from 'src/common/entities/common.entity';
-import { ActivityConditionsEnum } from 'src/common/enums/activity.conditions.enum';
+import { CommonEntity } from '../../../common/entities/common.entity';
+import { ActivityConditions } from '../../../common/enums/activity-conditions.enum';
+import { Location } from '../../../common/entities/location.entity';
+import { JoinColumn } from 'typeorm';
+import { ActivityTypes } from '../../../common/enums/activity-types.enum';
 
-@Entity('Activity')
+@Entity()
 export class Activity extends CommonEntity {
   @Column()
   title: string;
@@ -22,17 +25,18 @@ export class Activity extends CommonEntity {
   @Column('text')
   description: string;
 
-  @Column()
-  type: string;
+  @Column('enum', { enum: ActivityTypes })
+  type: ActivityTypes;
 
   @Column('simple-array')
   activityPhotos: string[];
 
-  @Column()
-  location: string;
+  @ManyToOne(() => Location, { eager: true, nullable: false })
+  @JoinColumn()
+  location: Location;
 
-  @Column('enum', { enum: ActivityConditionsEnum })
-  conditions: ActivityConditionsEnum;
+  @Column('enum', { enum: ActivityConditions, nullable: true })
+  conditions: ActivityConditions;
 
   @Column()
   nbOfParticipants: number;
@@ -41,7 +45,10 @@ export class Activity extends CommonEntity {
   @JoinTable()
   users: User[];
 
-  @ManyToOne(() => User, (user) => user.createdActivities, { eager: true })
+  @ManyToOne(() => User, (user) => user.createdActivities, {
+    eager: true,
+    nullable: false,
+  })
   creator: User;
 
   @Column({ default: false })
