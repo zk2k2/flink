@@ -10,13 +10,14 @@ import {
   Matches,
   MinLength,
   MaxLength,
+  IsObject,
+  IsJwt,
   ValidateNested,
-  IsJWT,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { UserHobby } from '../../hobby/entities/user-hobby.entity';
 import { validationMessages } from 'src/common/error_messages/validation-messages';
-
+import { LocationDto } from 'src/common/dto/location-dto';
 
 export class SignupDto {
   @IsString({ message: validationMessages.invalidFormat('Name') })
@@ -35,6 +36,7 @@ export class SignupDto {
   email: string;
 
   /* @IsPhoneNumber('TN', { message: validationMessages.isPhoneNumber() }) */
+
   @IsNotEmpty({ message: validationMessages.required('Phone number') })
   phone: string;
 
@@ -51,6 +53,7 @@ export class SignupDto {
   @Type(() => Date)
   birthDate: Date;
 
+  
   @IsOptional()
   @IsString({ message: validationMessages.invalidFormat('Profile picture') })
   profilePic: string;
@@ -61,7 +64,9 @@ export class SignupDto {
   @IsNotEmpty({ message: validationMessages.required('User hobbies') })
   userHobbies: UserHobby[];
 
-  @IsString({ message: validationMessages.invalidFormat('Location') })
-  @IsNotEmpty({ message: validationMessages.required('Location') })
-  location: string;
+  @IsNotEmpty()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => LocationDto)
+  location: LocationDto;
 }

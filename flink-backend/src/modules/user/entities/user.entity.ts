@@ -4,11 +4,14 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Activity } from '../../activity/entities/activity.entity';
 import { Achievement } from '../../achievement/entities/achievement.entity';
 import { UserHobby } from '../../hobby/entities/user-hobby.entity';
 import { CommonEntity } from '../../../common/entities/common.entity';
+import { Location } from '../../../common/entities/location.entity';
 
 @Entity()
 export class User extends CommonEntity {
@@ -24,14 +27,15 @@ export class User extends CommonEntity {
   @Column()
   password: string;
 
-  @Column({ type: 'date' }) 
-  birthDate: Date;  
+  @Column({ type: 'date' })
+  birthDate: Date;
 
   @Column({ nullable: true })
   profilePic: string;
 
   @Column({ unique: true })
   phone: string;
+
 
   @Column({ default: 0 })
   xp: number; 
@@ -48,8 +52,9 @@ export class User extends CommonEntity {
   @OneToMany(() => UserHobby, (userHobby) => userHobby.user)
   userHobbies: UserHobby[];
 
-  @Column('text')
-  location: string;
+  @ManyToOne(() => Location, { eager: true, nullable: false })
+  @JoinColumn()
+  location: Location;
 
   @ManyToMany(() => User, (user) => user.following)
   @JoinTable()
@@ -61,3 +66,4 @@ export class User extends CommonEntity {
   @Column({ nullable: true })
   refreshToken: string; 
 }
+

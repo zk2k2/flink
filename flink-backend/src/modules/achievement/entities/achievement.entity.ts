@@ -2,7 +2,7 @@ import { CommonEntity } from 'src/common/entities/common.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 
-@Entity('Achievement')
+@Entity()
 export class Achievement extends CommonEntity {
   @Column()
   title: string;
