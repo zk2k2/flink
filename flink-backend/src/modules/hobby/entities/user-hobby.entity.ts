@@ -11,6 +11,6 @@ export class UserHobby extends CommonEntity {
   @ManyToOne(() => Hobby, (hobby) => hobby.userHobbies, { onDelete: 'CASCADE' })
   hobby: Hobby;
 
-  @Column({ type: 'float', default: 1 })
+  @Column({ type: 'int', default: 1 })
   interestLevel: number;
 }

@@ -20,7 +20,7 @@ export class AuthService {
             ...signupDto,
             password: hashedPassword,
         });
-
+        
         const { accessToken, refreshToken } = await this.generateTokens(user);
 
         return {
@@ -76,7 +76,6 @@ export class AuthService {
     }
 
     async logout(userId: string): Promise<void> {
-        console.log('userId in auth', userId);
         await this.userService.clearRefreshToken(userId);
     }
 

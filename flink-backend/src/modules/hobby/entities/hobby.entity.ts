@@ -5,7 +5,7 @@ import { User } from '../../user/entities/user.entity';
 
 @Entity()
 export class Hobby extends CommonEntity {
-  @Column()
+  @Column({unique: true})
   title: string;
 
   @Column()

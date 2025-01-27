@@ -20,6 +20,9 @@ export class HobbyService extends CommonService<Hobby, CreateHobbyDto, UpdateHob
   ) {
     super(hobbyRepository);
   }
+  async findByField(field: string, value: string): Promise<Hobby> {
+    return this.hobbyRepository.findOne({ where: { [field]: value } });
+  }
 
   async getAllUserHobbies(): Promise<UserHobby[]> {
     return this.userHobbyRepository.find({
@@ -35,7 +38,7 @@ export class HobbyService extends CommonService<Hobby, CreateHobbyDto, UpdateHob
       select: {
         id: true,
         interestLevel: true,
-        user: { id: true, name: true },
+        user: { id: true, username: true },
         hobby: { id: true, title: true, photo: true },
       },
     });

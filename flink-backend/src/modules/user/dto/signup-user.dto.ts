@@ -15,15 +15,22 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { UserHobby } from '../../hobby/entities/user-hobby.entity';
 import { validationMessages } from 'src/common/error_messages/validation-messages';
 import { LocationDto } from 'src/common/dto/location-dto';
+import { CreateUserHobbiesDto } from 'src/modules/hobby/dto/create-user-hobbies.dto';
 
 export class SignupDto {
-  @IsString({ message: validationMessages.invalidFormat('Name') })
-  @IsNotEmpty({ message: validationMessages.required('Name') })
-  @IsAlpha(undefined, { message: validationMessages.isAlpha('Name') })
-  name: string;
+  @IsString({ message: validationMessages.invalidFormat('First Name') })
+  @IsNotEmpty({ message: validationMessages.required('First Name') })
+  @IsAlpha(undefined, { message: validationMessages.isAlpha('First Name') })
+  firstName: string;
+
+
+  @IsString({ message: validationMessages.invalidFormat('Last Name') })
+  @IsNotEmpty({ message: validationMessages.required('Last Name') })
+  @IsAlpha(undefined, { message: validationMessages.isAlpha('Last Name') })
+  lastName: string;
+
 
   @IsString({ message: validationMessages.invalidFormat('Username') })
   @IsNotEmpty({ message: validationMessages.required('Username') })
@@ -35,8 +42,7 @@ export class SignupDto {
   @IsNotEmpty({ message: validationMessages.required('Email') })
   email: string;
 
-  /* @IsPhoneNumber('TN', { message: validationMessages.isPhoneNumber() }) */
-
+  @IsPhoneNumber('TN', { message: validationMessages.isPhoneNumber() })
   @IsNotEmpty({ message: validationMessages.required('Phone number') })
   phone: string;
 
@@ -59,9 +65,9 @@ export class SignupDto {
 
   @IsArray({ message: validationMessages.invalidFormat('User hobbies') })
   @ValidateNested({ each: true })
-  @Type(() => UserHobby)
+  @Type(() => CreateUserHobbiesDto)
   @IsNotEmpty({ message: validationMessages.required('User hobbies') })
-  userHobbies: UserHobby[];
+  hobbies: CreateUserHobbiesDto[];
 
   @IsNotEmpty()
   @IsObject()

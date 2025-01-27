@@ -1,4 +1,4 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, Point } from 'typeorm';
 import { CommonEntity } from './common.entity';
 
 @Entity()
@@ -11,5 +11,5 @@ export class Location extends CommonEntity {
     spatialFeatureType: 'Point',
     srid: 4326,
   })
-  coordinates: string;
+  coordinates: Point;
 }
