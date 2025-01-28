@@ -13,3 +13,4 @@ import { ActivityCardComponent } from './components/activity-card/activity-card.
   ]
 })
 export class SharedModule { }
+
