@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Activity } from './entities/activity.entity';
 import { Location } from '../../common/entities/location.entity';
+import { Category } from '../../common/entities/category.entity';
 import { User } from '../user/entities/user.entity';
 import { ActivitySortCriteria } from 'src/common/enums/activity-sort-criteria.enum';
 import { CommonService } from '../../common/service/common.service';
@@ -22,6 +23,8 @@ export class ActivityService extends CommonService<
     private readonly locationRepository: Repository<Location>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
   ) {
     super(activityRepository);
   }
@@ -71,13 +74,20 @@ export class ActivityService extends CommonService<
   }
 
   async create(createDto: CreateActivityDto): Promise<Activity> {
-    const { location, creatorId, ...activityData } = createDto;
+    const { location, creatorId, category, ...activityData } = createDto;
 
     const creator = await this.userRepository.findOne({
       where: { id: creatorId },
     });
     if (!creator) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const categoryEntity = await this.categoryRepository.findOne({
+      where: { id: category.id },
+    });
+    if (!categoryEntity) {
+      throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
     }
 
     const newLocation = this.locationRepository.create(location);
@@ -87,6 +97,7 @@ export class ActivityService extends CommonService<
       ...activityData,
       location: savedLocation,
       creator,
+      category: categoryEntity,
     });
 
     return await this.activityRepository.save(activity);
