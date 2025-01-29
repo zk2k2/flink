@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt'; 
+import * as bcrypt from 'bcrypt';
 import { CommonService } from 'src/common/service/common.service';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -16,6 +16,7 @@ export class UserService extends CommonService<
   SignupDto,
   UpdateProfileDto
 > {
+
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Location) private readonly locationRepository: Repository<Location>,
@@ -25,7 +26,7 @@ export class UserService extends CommonService<
     super(userRepository);
   }
   async create(signupDto: SignupDto): Promise<User> {
-  
+
     const userExists = await this.userRepository.findOne({
       where: [
         { email: signupDto.email },
@@ -33,7 +34,7 @@ export class UserService extends CommonService<
         { phone: signupDto.phone },
       ],
     });
-  
+
     if (userExists) {
       throw new Error('User already exists');
     }
@@ -42,11 +43,11 @@ export class UserService extends CommonService<
       coordinates: {
         type: 'Point',
         coordinates: [signupDto.location.longitude, signupDto.location.latitude],
-      }, 
+      },
     });
     const savedLocation = await this.locationRepository.save(newLocation);
 
-  
+
     const newUser = this.userRepository.create({
       ...signupDto,
       location: savedLocation,
@@ -55,7 +56,7 @@ export class UserService extends CommonService<
 
     if (signupDto.hobbies && signupDto.hobbies.length > 0) {
       for (const hobbyDto of signupDto.hobbies) {
-        const hobby = await this.hobbyService.findByField('title',hobbyDto.title);
+        const hobby = await this.hobbyService.findByField('title', hobbyDto.title);
         if (!hobby) {
           throw new Error(`Hobby "${hobbyDto.title}" does not exist.`);
         }
@@ -63,15 +64,15 @@ export class UserService extends CommonService<
         newUserHobby.user = savedUser;
         newUserHobby.hobby = hobby;
         newUserHobby.interestLevel = hobbyDto.interestLevel;
-        const savedUserHobby  = await this.UserHobbiesService.create(
+        const savedUserHobby = await this.UserHobbiesService.create(
           newUserHobby
         );
       }
 
-    return savedUser;
+      return savedUser;
+    }
   }
-}
-  
+
   async findByField(field: string, value: string): Promise<User> {
     return this.userRepository.findOne({ where: { [field]: value } });
   }
@@ -96,7 +97,6 @@ export class UserService extends CommonService<
 
 
   async clearRefreshToken(userId: string): Promise<void> {
-    console.log('userId', userId);
     if (!userId) {
       throw new Error('Invalid userId provided');
     }
@@ -105,6 +105,10 @@ export class UserService extends CommonService<
       { id: userId },
       { refreshToken: null }
     );
+  }
+
+  async updatePassword(id: string, hashedPassword: string): Promise<User> {
+    return this.update(id, { password: hashedPassword });
   }
 
 

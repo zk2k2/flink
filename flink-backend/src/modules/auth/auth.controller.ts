@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from 'src/modules/user/dto/login-user.dto';
 import { SignupDto } from 'src/modules/user/dto/signup-user.dto';
@@ -22,10 +22,19 @@ export class AuthController {
 
   }
 
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string) {
+    return this.authService.forgotPassword(email);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Query('token') token: string, @Body('password') password: string) {
+    return this.authService.resetPassword(token, password);
+  }
+
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   async logout(@Req() req: any) {
-    console.log('request from auth controller', req.user);
     const userId = req.user.id;
     await this.authService.logout(userId);
     return { message: 'Logged out successfully' };

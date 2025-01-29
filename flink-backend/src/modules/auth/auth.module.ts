@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserModule } from 'src/modules/user/user.module';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { MailModule } from '../mail/mail.module';
 
 
 @Module({
@@ -16,6 +17,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
       signOptions: { expiresIn: '24h' },
     }),
     UserModule,
+    MailModule
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, JwtAuthGuard],
