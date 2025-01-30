@@ -4,15 +4,13 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
-  CreateDateColumn,
-  UpdateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { CommonEntity } from '../../../common/entities/common.entity';
 import { ActivityConditions } from '../../../common/enums/activity-conditions.enum';
 import { Location } from '../../../common/entities/location.entity';
-import { JoinColumn } from 'typeorm';
-import { ActivityTypes } from '../../../common/enums/activity-types.enum';
+import { Category } from '../../../common/entities/category.entity';
 
 @Entity()
 export class Activity extends CommonEntity {
@@ -24,9 +22,6 @@ export class Activity extends CommonEntity {
 
   @Column('text')
   description: string;
-
-  @Column('enum', { enum: ActivityTypes })
-  type: ActivityTypes;
 
   @Column('simple-array')
   activityPhotos: string[];
@@ -51,12 +46,13 @@ export class Activity extends CommonEntity {
   })
   creator: User;
 
-  @Column({ default: false })
-  isFinished: boolean;
+  @ManyToOne(() => Category, (category) => category.activities, {
+    eager: true,
+    nullable: false,
+  })
+  @JoinColumn({ name: 'categoryId' })
+  category: Category;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @Column({ type: 'uuid' })
+  categoryId: string;
 }

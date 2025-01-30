@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Activity } from './entities/activity.entity';
 import { Location } from '../../common/entities/location.entity';
+import { Category } from '../../common/entities/category.entity';
 import { User } from '../user/entities/user.entity';
 import { ActivitySortCriteria } from 'src/common/enums/activity-sort-criteria.enum';
 import { CommonService } from '../../common/service/common.service';
@@ -18,6 +19,8 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
     private readonly locationRepository: Repository<Location>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
   ) {
     super(activityRepository);
     console.log('ActivityService initialized');
@@ -114,8 +117,8 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
   }
 
   async create(createDto: CreateActivityDto): Promise<Activity> {
-    console.log('Creating new activity:', createDto);
-    const { location, creatorId, ...activityData } = createDto;
+    const { location, creatorId, categoryId, ...activityData } = createDto;
+ 
 
     const creator = await this.userRepository.findOne({
       where: { id: creatorId },
@@ -127,6 +130,13 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
+    const categoryEntity = await this.categoryRepository.findOne({
+      where: { id: categoryId },
+    });
+    if (!categoryEntity) {
+      throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+    }
+
     const newLocation = this.locationRepository.create(location);
     const savedLocation = await this.locationRepository.save(newLocation);
     console.log('Saved location:', savedLocation.id);
@@ -135,6 +145,7 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
       ...activityData,
       location: savedLocation,
       creator,
+      category: categoryEntity,
     });
 
     const savedActivity = await this.activityRepository.save(activity);
