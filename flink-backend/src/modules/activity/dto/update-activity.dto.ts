@@ -14,7 +14,6 @@ import {
 
 import { Type } from 'class-transformer';
 import { ActivityConditions } from '../../../common/enums/activity-conditions.enum';
-import { ActivityTypes } from '../../../common/enums/activity-types.enum';
 import { LocationDto } from '../../../common/dto/location-dto';
 import { validationMessages } from '../../../common/error_messages/validation-messages';
 import { MinLength, MaxLength } from 'class-validator';
@@ -37,10 +36,6 @@ export class UpdateActivityDto {
   @MinLength(10, { message: validationMessages.minLength('Description', 10) })
   @MaxLength(500, { message: validationMessages.maxLength('Description', 100) })
   description?: string;
-
-  @IsOptional()
-  @IsEnum(ActivityTypes, { message: validationMessages.invalidFormat('Type') })
-  type?: ActivityTypes;
 
   @IsOptional()
   @IsArray({ message: validationMessages.invalidFormat('Activity Photos') })

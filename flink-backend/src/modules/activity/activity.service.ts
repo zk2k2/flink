@@ -74,7 +74,7 @@ export class ActivityService extends CommonService<
   }
 
   async create(createDto: CreateActivityDto): Promise<Activity> {
-    const { location, creatorId, category, ...activityData } = createDto;
+    const { location, creatorId, categoryId, ...activityData } = createDto;
 
     const creator = await this.userRepository.findOne({
       where: { id: creatorId },
@@ -84,7 +84,7 @@ export class ActivityService extends CommonService<
     }
 
     const categoryEntity = await this.categoryRepository.findOne({
-      where: { id: category.id },
+      where: { id: categoryId },
     });
     if (!categoryEntity) {
       throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
