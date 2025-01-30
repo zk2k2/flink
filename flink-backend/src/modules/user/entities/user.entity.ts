@@ -16,7 +16,9 @@ import { Location } from '../../../common/entities/location.entity';
 @Entity()
 export class User extends CommonEntity {
   @Column()
-  name: string;
+  firstName: string;
+  @Column()
+  lastName: string;
 
   @Column({ unique: true })
   username: string;
