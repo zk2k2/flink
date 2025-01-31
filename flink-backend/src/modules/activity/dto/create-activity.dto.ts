@@ -7,8 +7,7 @@ import {
   IsInt,
   IsUUID,
   ValidateNested,
-  IsObject,
-  IsNumber,
+  IsObject
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ActivityConditions } from '../../../common/enums/activity-conditions.enum';

@@ -3,11 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Hobby } from 'src/modules/hobby/entities/hobby.entity';
 import { CommonService } from 'src/common/service/common.service';
-import { CreateHobbyDto } from './dto/create-hobby.dto';
-import { UpdateHobbyDto } from './dto/update-hobby.dto';
 
 @Injectable()
-export class HobbyService extends CommonService<Hobby, CreateHobbyDto, UpdateHobbyDto> {
+export class HobbyService extends CommonService<Hobby> {
   constructor(
     @InjectRepository(Hobby)
     private readonly hobbyRepository: Repository<Hobby>

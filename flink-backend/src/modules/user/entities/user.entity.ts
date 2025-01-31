@@ -4,8 +4,8 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
-  ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { Activity } from '../../activity/entities/activity.entity';
 import { Achievement } from '../../achievement/entities/achievement.entity';
@@ -40,7 +40,7 @@ export class User extends CommonEntity {
 
 
   @Column({ default: 0 })
-  xp: number; 
+  xp: number;
 
   @OneToMany(() => Activity, (activity) => activity.creator)
   createdActivities: Activity[];
@@ -49,24 +49,34 @@ export class User extends CommonEntity {
   activities: Activity[];
 
   @ManyToMany(() => Achievement, (achievement) => achievement.users)
-  @JoinTable() 
+  @JoinTable()
   achievements: Achievement[];
 
   @OneToMany(() => UserHobby, (userHobby) => userHobby.user)
   userHobbies: UserHobby[];
 
-  @ManyToOne(() => Location, { eager: true, nullable: false })
+  @OneToOne(() => Location, { eager: true, nullable: false, cascade: true })
   @JoinColumn()
   location: Location;
 
   @ManyToMany(() => User, (user) => user.following)
-  @JoinTable()
+  @JoinTable({
+    name: 'user_followers',
+    joinColumn: {
+      name: 'followerId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'followingId',
+      referencedColumnName: 'id',
+    },
+  })
   followers: User[];
 
   @ManyToMany(() => User, (user) => user.followers)
   following: User[];
 
   @Column({ nullable: true })
-  refreshToken: string; 
+  refreshToken: string;
 }
 

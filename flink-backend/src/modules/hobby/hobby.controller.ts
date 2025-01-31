@@ -1,12 +1,5 @@
 import {
   Controller,
-  Post,
-  Body,
-  Delete,
-  Patch,
-  Get,
-  Param,
-  NotFoundException,
   UseGuards,
 } from '@nestjs/common';
 import { CommonController } from 'src/common/controller/common.controller';

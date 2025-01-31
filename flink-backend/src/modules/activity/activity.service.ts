@@ -7,10 +7,10 @@ import { User } from '../user/entities/user.entity';
 import { ActivitySortCriteria } from 'src/common/enums/activity-sort-criteria.enum';
 import { CommonService } from '../../common/service/common.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
-import { UpdateActivityDto } from './dto/update-activity.dto';
+
 
 @Injectable()
-export class ActivityService extends CommonService<Activity, CreateActivityDto, UpdateActivityDto> {
+export class ActivityService extends CommonService<Activity> {
   constructor(
     @InjectRepository(Activity)
     private readonly activityRepository: Repository<Activity>,
@@ -28,7 +28,7 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
     sortCriteria: ActivitySortCriteria = ActivitySortCriteria.NEWEST,
   ): Promise<Activity[]> {
     console.log(`getActivities called with userId: ${userId}, sortCriteria: ${sortCriteria}`);
-    
+
     let query = this.activityRepository
       .createQueryBuilder('activity')
       .where('activity.isFinished = false');
@@ -67,7 +67,7 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
 
       const userCoords = user.location.coordinates as any;
       console.log('User coordinates:', userCoords);
-      
+
       if (!userCoords?.coordinates || userCoords.coordinates.length !== 2) {
         console.error('Invalid coordinates format:', userCoords);
         throw new HttpException(
@@ -91,19 +91,19 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
         )
         .where('activity.isFinished = false')
         .orderBy('distance', 'ASC')
-        .setParameters({ 
+        .setParameters({
           userLng: userLng,
           userLat: userLat
         });
 
       const result = await nearestQuery.getRawAndEntities();
       console.log(`Found ${result.entities.length} activities with distances`);
-      
+
       // Log distances using raw results
       result.raw.forEach((raw, index) => {
         console.log(`Activity ${result.entities[index].id} distance: ${raw.distance}`);
       });
-      
+
       return result.entities;
     }
 
@@ -121,7 +121,7 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
       where: { id: creatorId },
     });
     console.log('Found creator:', creator?.id);
-    
+
     if (!creator) {
       console.error('Creator not found with ID:', creatorId);
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
