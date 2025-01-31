@@ -1,0 +1,36 @@
+<mat-sidenav-container class="h-screen">
+  <mat-sidenav 
+    [mode]="'side'"
+    [opened]="true" 
+    [disableClose]="true"
+    class="!bg-primary !text-secondary transition-all duration-300"
+    [style.width]="isCollapsed ? '4rem' : 'clamp(4rem, 20vw, 20rem)'"
+  >
+
+    <div class="flex items-center justify-center py-2 border-b border-secondary">
+      <button 
+        mat-icon-button 
+        (click)="toggleSidebar()"
+        class="text-secondary"
+      >
+        <mat-icon>{{ isCollapsed ? 'menu_open' : 'menu' }}</mat-icon>
+      </button>
+    </div>
+
+    <mat-nav-list>
+      <a 
+        mat-list-item 
+        *ngFor="let item of menuItems" 
+        [routerLink]="item.route"
+        class="flex items-center py-2"
+      >
+        <mat-icon class="mr-2">{{ item.icon }}</mat-icon>
+        <span *ngIf="!isCollapsed">{{ item.label }}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="p-4">
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>
