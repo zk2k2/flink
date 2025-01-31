@@ -3,6 +3,7 @@ import {
   FindOptionsWhere,
   FindManyOptions,
   DeepPartial,
+  FindOneOptions,
 } from 'typeorm';
 import {
   Injectable,
@@ -56,6 +57,13 @@ export class CommonService<
 
   async findAll(options?: FindManyOptions<T>): Promise<T[]> {
     return await this.repository.find(options);
+  }
+  async findOne(options: FindOneOptions<T>): Promise<T> {
+    const entity = await this.repository.findOne(options);
+    if (!entity) {
+      throw new NotFoundException(`Entity not found`);
+    }
+    return entity;
   }
 
   async remove(id: string): Promise<void> {

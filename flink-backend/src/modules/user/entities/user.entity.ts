@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Activity } from '../../activity/entities/activity.entity';
 import { Achievement } from '../../achievement/entities/achievement.entity';
-import { UserHobby } from '../../hobby/entities/user-hobby.entity';
+import { UserHobby } from '../../user-hobbies/entities/user-hobby.entity';
 import { CommonEntity } from '../../../common/entities/common.entity';
 import { Location } from '../../../common/entities/location.entity';
 
@@ -48,7 +48,8 @@ export class User extends CommonEntity {
   @ManyToMany(() => Activity, (activity) => activity.users)
   activities: Activity[];
 
-  @OneToMany(() => Achievement, (achievement) => achievement.user)
+  @ManyToMany(() => Achievement, (achievement) => achievement.users)
+  @JoinTable() 
   achievements: Achievement[];
 
   @OneToMany(() => UserHobby, (userHobby) => userHobby.user)

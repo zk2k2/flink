@@ -1,5 +1,5 @@
 import { CommonEntity } from '../../../common/entities/common.entity';
-import { UserHobby } from './user-hobby.entity';
+import { UserHobby } from '../../user-hobbies/entities/user-hobby.entity';
 import { Entity, Column, OneToMany, ManyToOne } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 

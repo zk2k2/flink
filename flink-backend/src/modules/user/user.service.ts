@@ -8,8 +8,9 @@ import { SignupDto } from './dto/signup-user.dto';
 import { UpdateProfileDto } from './dto/update-user.dto';
 import { Location } from '../../common/entities/location.entity';
 import { HobbyService } from '../hobby/hobby.service';
-import { UserHobbiesService } from '../hobby/user-hobbies.service';
-import { UserHobby } from '../hobby/entities/user-hobby.entity';
+import { UserHobbiesService } from '../user-hobbies/user-hobbies.service';
+import { UserHobby } from  '../user-hobbies/entities/user-hobby.entity';
+import { forwardRef, Inject } from '@nestjs/common';
 @Injectable()
 export class UserService extends CommonService<
   User,
@@ -21,13 +22,14 @@ export class UserService extends CommonService<
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Location) private readonly locationRepository: Repository<Location>,
     private readonly hobbyService: HobbyService,
+    @Inject(forwardRef(() => UserHobbiesService))
     private readonly UserHobbiesService: UserHobbiesService,
   ) {
     super(userRepository);
   }
   async create(signupDto: SignupDto): Promise<User> {
 
-    const userExists = await this.userRepository.findOne({
+    const userExists = await this.findOne({
       where: [
         { email: signupDto.email },
         { username: signupDto.username },

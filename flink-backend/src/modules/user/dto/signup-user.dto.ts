@@ -17,8 +17,7 @@ import {
 import { Type } from 'class-transformer';
 import { validationMessages } from 'src/common/error_messages/validation-messages';
 import { LocationDto } from 'src/common/dto/location-dto';
-import { CreateUserHobbiesDto } from 'src/modules/hobby/dto/create-user-hobbies.dto';
-
+import { CreateUserHobbiesDto } from 'src/modules/user-hobbies/dto/create-user-hobbies.dto';
 export class SignupDto {
   @IsString({ message: validationMessages.invalidFormat('First Name') })
   @IsNotEmpty({ message: validationMessages.required('First Name') })
