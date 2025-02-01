@@ -4,12 +4,12 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
-  ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { Activity } from '../../activity/entities/activity.entity';
 import { Achievement } from '../../achievement/entities/achievement.entity';
-import { UserHobby } from '../../hobby/entities/user-hobby.entity';
+import { UserHobby } from '../../user-hobbies/entities/user-hobby.entity';
 import { CommonEntity } from '../../../common/entities/common.entity';
 import { Location } from '../../../common/entities/location.entity';
 
@@ -40,7 +40,7 @@ export class User extends CommonEntity {
 
 
   @Column({ default: 0 })
-  xp: number; 
+  xp: number;
 
   @OneToMany(() => Activity, (activity) => activity.creator)
   createdActivities: Activity[];
@@ -48,24 +48,35 @@ export class User extends CommonEntity {
   @ManyToMany(() => Activity, (activity) => activity.users)
   activities: Activity[];
 
-  @OneToMany(() => Achievement, (achievement) => achievement.user)
+  @ManyToMany(() => Achievement, (achievement) => achievement.users)
+  @JoinTable()
   achievements: Achievement[];
 
   @OneToMany(() => UserHobby, (userHobby) => userHobby.user)
   userHobbies: UserHobby[];
 
-  @ManyToOne(() => Location, { eager: true, nullable: false })
+  @OneToOne(() => Location, (location) => location.user, { eager: true, cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   location: Location;
 
   @ManyToMany(() => User, (user) => user.following)
-  @JoinTable()
+  @JoinTable({
+    name: 'user_followers',
+    joinColumn: {
+      name: 'followingId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'followerId',
+      referencedColumnName: 'id',
+    },
+  })
   followers: User[];
 
-  @ManyToMany(() => User, (user) => user.followers)
+  @ManyToMany(() => User, (user) => user.followers, { onDelete: 'CASCADE' })
   following: User[];
 
   @Column({ nullable: true })
-  refreshToken: string; 
+  refreshToken: string;
 }
 

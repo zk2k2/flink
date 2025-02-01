@@ -4,9 +4,10 @@ import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { Category } from '../../../common/entities/category.entity';
 import { User } from '../../user/entities/user.entity';
 
+
 @Entity()
 export class Hobby extends CommonEntity {
-  @Column({unique: true})
+  @Column({ unique: true })
   title: string;
 
   @Column()

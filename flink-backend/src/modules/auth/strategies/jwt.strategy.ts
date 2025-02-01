@@ -13,7 +13,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: PayloadInterface) {
-        console.log('payload from strategy', payload);
         if (!payload || !payload.id) {
             throw new Error('Invalid payload: userId is missing.');
         }

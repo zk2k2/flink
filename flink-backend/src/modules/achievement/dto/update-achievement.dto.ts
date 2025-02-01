@@ -1,5 +1,4 @@
-export class UpdateAchievementDto {
-  title?: string;
-  description?: string;
-  photo?: string;
+import { PartialType } from '@nestjs/mapped-types';
+import { Achievement } from '../entities/achievement.entity';
+export class UpdateAchievementDto extends PartialType(Achievement) {
 }
