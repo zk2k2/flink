@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateProfileDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
+import { LocationDto } from 'src/common/dto/location-dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('profile')
@@ -18,7 +19,7 @@ export class ProfileController {
             throw new BadRequestException('Invalid or missing user ID');
         }
 
-        return this.userService.update(userId, updateProfileDto);
+        return await this.userService.update(userId, updateProfileDto);
     }
 
 
@@ -51,17 +52,17 @@ export class ProfileController {
 
     @Get(':identifier')
     async getProfile(@Param('identifier') identifier: string) {
-        return this.userService.findByField(identifier);
-    }
+        return await this.userService.getProfile(identifier);
+    } 
 
     @Patch('change-password')
     async changePassword(@Req() req, @Body('newPassword') newPassword: string) {
-        return this.userService.updatePassword(req.user.id, newPassword);
+        return await this.userService.updatePassword(req.user.id, newPassword);
     }
 
     @Patch('update-profile-pic')
     async updateProfilePic(@Req() req, @Body('profilePic') profilePic: string) {
-        return this.userService.update(req.user.id, { profilePic });
+        return await this.userService.update(req.user.id, { profilePic });
     }
 
     
@@ -84,18 +85,18 @@ export class ProfileController {
     }
 
     @Patch('update-location')
-    async updateLocation(@Req() req, @Body('location') location: any) {
-        return this.userService.update(req.user.id, { location });
+    async updateLocation(@Req() req, @Body('location') location: LocationDto) {
+        return this.userService.updateLocation(req.user.id,location);
     }
 
     @Delete('deactivate')
     async deactivateAccount(@Req() req) {
-        return this.userService.softRemove(req.user.id);
+        return await this.userService.softRemove(req.user.id);
     }
 
     @Delete('delete')
     async deleteAccount(@Req() req) {
-        return this.userService.remove(req.user.id);
+        return await this.userService.remove(req.user.id);
     }
 
 }

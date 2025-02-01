@@ -3,13 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { CommonService } from 'src/common/service/common.service';
 import { User } from 'src/modules/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { SignupDto } from './dto/signup-user.dto';
 import { Location } from '../../common/entities/location.entity';
 import { HobbyService } from '../hobby/hobby.service';
 import { UserHobbiesService } from '../user-hobbies/user-hobbies.service';
 import { UserHobby } from '../user-hobbies/entities/user-hobby.entity';
 import { forwardRef, Inject } from '@nestjs/common';
+import { LocationDto } from 'src/common/dto/location-dto';
 @Injectable()
 export class UserService extends CommonService<
   User
@@ -38,14 +39,8 @@ export class UserService extends CommonService<
     if (userExists) {
       throw new Error('User already exists');
     }
-    const newLocation = this.locationRepository.create({
-      name: signupDto.location.name,
-      coordinates: {
-        type: 'Point',
-        coordinates: [signupDto.location.longitude, signupDto.location.latitude],
-      },
-    });
-    const savedLocation = await this.locationRepository.save(newLocation);
+
+    const savedLocation = await this.createLocation(signupDto.location);
 
 
     const newUser = this.userRepository.create({
@@ -73,9 +68,38 @@ export class UserService extends CommonService<
     }
   }
 
-  async findByField(identifier: string): Promise<User> {
+  async createLocation(createLocation: LocationDto): Promise<Location> {
+    const newLocation = this.locationRepository.create({
+      name: createLocation.name,
+      coordinates: {
+        type: 'Point',
+        coordinates: [createLocation.longitude, createLocation.latitude],
+      },
+    });
+    return await this.locationRepository.save(newLocation);
+  }
+
+  async updateLocation(userId:string, newLocation : LocationDto): Promise<User>{
+    const user = await this.findOneById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+  
+    if (user.location) {
+      await this.locationRepository.remove(user.location);  
+    }
+    const updatedLocation  =  await this.createLocation(newLocation);
+    return this.update(userId, { location : updatedLocation });
+  }
+
+  async findByField(identifier: string,options?: FindOneOptions<User>): Promise<User> { // phone number not only digits but has the form +216 ** *** ***
     const field = identifier.includes('@') ? 'email' : /^\d+$/.test(identifier) ? 'phone' : 'username';
-    return this.findOne({ where: { [field]: identifier } });
+
+    const findOptions: FindOneOptions<User> = {
+      where: { [field]: identifier },
+      ...options,  
+    };
+    return this.findOne(findOptions);
   }
 
   async validatePassword(
@@ -146,5 +170,29 @@ export class UserService extends CommonService<
       throw new Error('User not found');
     }
     return user.achievements || [];
+  }
+  async getProfile(identifier:string){
+    const user =  await this.findByField(identifier,
+      {
+        relations: ['achievements','following','followers','userHobbies'],
+      }
+    );
+
+    if(!user){
+      throw new Error('User not found');
+    }
+    const profileData = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      profilePic: user.profilePic,
+      xp: user.xp,
+      followersCount: user.followers?.length,
+      followingCount: user.following?.length,
+      achievements: user.achievements, 
+      hobbies: user.userHobbies?.map((hobby) => hobby.hobby.title), 
+      postsCount: user.createdActivities?.length, 
+    };
+    return profileData;
   }
 }
