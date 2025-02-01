@@ -11,4 +11,6 @@ export const validationMessages = {
   isUrl: (field: string) => `${field} must be a valid URL.`,
   password: () =>
     `Password must contain at least one digit, one uppercase letter, and one special character.`,
+  min: (field: string, min: number) => `${field} must be at least ${min}.`,
+  max: (field: string, max: number) => `${field} must not exceed ${max}.`,
 };
