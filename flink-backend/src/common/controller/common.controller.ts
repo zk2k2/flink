@@ -8,6 +8,7 @@ import {
   Param,
   HttpException,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import { CommonService } from '../service/common.service';
 import { DeepPartial } from 'typeorm';
@@ -19,8 +20,8 @@ export class CommonController<
   UpdateDto extends DeepPartial<T>,
 > {
   constructor(
-    private readonly commonService: CommonService<T, CreateDto, UpdateDto>,
-  ) {}
+    private readonly commonService: CommonService<T>,
+  ) { }
 
   @Post()
   async create(@Body() createDto: CreateDto): Promise<T> {
@@ -73,7 +74,7 @@ export class CommonController<
     }
   }
 
-  @Delete(':id/soft')
+  @Delete('soft/:id')
   async softRemove(@Param('id') id: string): Promise<void> {
     try {
       await this.commonService.softRemove(id);
@@ -82,7 +83,7 @@ export class CommonController<
     }
   }
 
-  @Post(':id/restore')
+  @Patch('restore/:id')
   async restore(@Param('id') id: string): Promise<void> {
     try {
       await this.commonService.restore(id);

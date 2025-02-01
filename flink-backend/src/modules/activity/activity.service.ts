@@ -8,22 +8,21 @@ import { User } from '../user/entities/user.entity';
 import { ActivitySortCriteria } from 'src/common/enums/activity-sort-criteria.enum';
 import { CommonService } from '../../common/service/common.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
-import { UpdateActivityDto } from './dto/update-activity.dto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
-export class ActivityService extends CommonService<Activity, CreateActivityDto, UpdateActivityDto> {
+export class ActivityService extends CommonService<Activity> {
   constructor(
     @InjectRepository(Activity)
     private readonly activityRepository: Repository<Activity>,
     @InjectRepository(Location)
     private readonly locationRepository: Repository<Location>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    @InjectRepository(Category)
+       @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    private readonly userService: UserService,
+    
   ) {
     super(activityRepository);
-    console.log('ActivityService initialized');
   }
 
   async getActivities(
@@ -31,7 +30,7 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
     sortCriteria: ActivitySortCriteria = ActivitySortCriteria.NEWEST,
   ): Promise<Activity[]> {
     console.log(`getActivities called with userId: ${userId}, sortCriteria: ${sortCriteria}`);
-    
+
     let query = this.activityRepository
       .createQueryBuilder('activity')
       .where('activity.isFinished = false');
@@ -54,7 +53,7 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
         );
       }
 
-      const user = await this.userRepository.findOne({
+      const user = await this.userService.findOne({
         where: { id: userId },
         relations: ['location'],
       });
@@ -70,7 +69,7 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
 
       const userCoords = user.location.coordinates as any;
       console.log('User coordinates:', userCoords);
-      
+
       if (!userCoords?.coordinates || userCoords.coordinates.length !== 2) {
         console.error('Invalid coordinates format:', userCoords);
         throw new HttpException(
@@ -94,19 +93,19 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
         )
         .where('activity.isFinished = false')
         .orderBy('distance', 'ASC')
-        .setParameters({ 
+        .setParameters({
           userLng: userLng,
           userLat: userLat
         });
 
       const result = await nearestQuery.getRawAndEntities();
       console.log(`Found ${result.entities.length} activities with distances`);
-      
+
       // Log distances using raw results
       result.raw.forEach((raw, index) => {
         console.log(`Activity ${result.entities[index].id} distance: ${raw.distance}`);
       });
-      
+
       return result.entities;
     }
 
@@ -120,11 +119,11 @@ export class ActivityService extends CommonService<Activity, CreateActivityDto, 
     const { location, creatorId, categoryId, ...activityData } = createDto;
  
 
-    const creator = await this.userRepository.findOne({
+    const creator = await this.userService.findOne({
       where: { id: creatorId },
     });
     console.log('Found creator:', creator?.id);
-    
+
     if (!creator) {
       console.error('Creator not found with ID:', creatorId);
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);

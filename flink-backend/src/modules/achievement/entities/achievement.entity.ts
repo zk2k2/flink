@@ -1,5 +1,5 @@
 import { CommonEntity } from 'src/common/entities/common.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToMany } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 
 @Entity()
@@ -13,6 +13,6 @@ export class Achievement extends CommonEntity {
   @Column()
   photo: string;
 
-  @ManyToOne(() => User, (user) => user.achievements)
-  user: User;
+  @ManyToMany(() => User, (user) => user.achievements)
+  users: User[];
 }
