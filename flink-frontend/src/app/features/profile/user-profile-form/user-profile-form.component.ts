@@ -49,7 +49,10 @@ export class UserProfileFormComponent implements OnInit {
       phone: data.phone,
       birthDate: data.birthDate.toISOString().substring(0, 10),
       profilePic: data.profilePic,
-      location: data.location
+      location: this.fb.group({
+        lat: [data.location ? data.location.lat : ''],
+        lng: [data.location ? data.location.lng : '']
+      })
     });
 
     const hobbiesArray = this.profileForm.get('hobbies') as FormArray;
