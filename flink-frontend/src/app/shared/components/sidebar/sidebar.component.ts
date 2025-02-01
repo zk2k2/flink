@@ -1,40 +1,26 @@
 import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-
-interface MenuItem {
-  label: string;
-  icon: string;
-  route: string;
-}
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-  isScreenSmall: boolean = false;
-  isCollapsed: boolean = false;
-  hasUserCollapsed: boolean = false;
+  isHandset$: Observable<boolean> = this.breakpointObserver
+    .observe([Breakpoints.Handset])
+    .pipe(
+      map((result) => result.matches),
+      shareReplay()
+    );
 
-  menuItems: MenuItem[] = [
+  menuItems = [
     { label: 'Home', icon: 'home', route: '/home' },
-    { label: 'Profile', icon: 'person', route: '/profile' },
-    { label: 'Settings', icon: 'settings', route: '/settings' }
+    { label: 'About', icon: 'info', route: '/about' },
+    { label: 'Contact', icon: 'mail', route: '/contact' },
   ];
 
-  constructor(private breakpointObserver: BreakpointObserver) {
-    this.breakpointObserver.observe([Breakpoints.Handset, Breakpoints.Tablet])
-      .subscribe(result => {
-        this.isScreenSmall = result.matches;
-        if (!this.hasUserCollapsed) {
-          this.isCollapsed = this.isScreenSmall;
-        }
-      });
-  }
-
-  toggleSidebar(): void {
-    this.isCollapsed = !this.isCollapsed;
-    this.hasUserCollapsed = true;
-  }
+  constructor(private breakpointObserver: BreakpointObserver) {}
 }

@@ -1,7 +1,7 @@
-<div class="activity-card-container flex flex-col rounded-lg">
-  <mat-card class="activity-card w-full">
+<div class="activity-card-container flex flex-col">
+  <mat-card class="activity-card w-full !rounded-lg">
     <div class="flex xl:flex-row flex-col">
-      <div class="text-content flex flex-col space-y-3 xl:w-4/5">
+      <div class="text-content flex flex-col xl:w-4/5">
         <mat-card-header>
           <div class="activity-header w-full flex flex-col space-y-2">
             <div class="flex w-full justify-between">
@@ -23,13 +23,13 @@
               </div>
               <div>
                 <button
-                  class="bg-secondary max-w-16 xl:max-w-64 px-4 py-1 text-white rounded-xl"
+                  class="bg-secondary max-w-16 xl:max-w-36 px-2 py-1 text-white rounded-xl"
                 >
                   <div
                     class="flex justify-center space-x-2 px-2 py-1 rounded-xl text-white items-center"
                   >
                     <mat-icon>arrow_forward</mat-icon>
-                    <span class="text-lg"> Join now!</span>
+                    <span class="text-md"> Join now!</span>
                   </div>
                 </button>
               </div>
@@ -37,12 +37,14 @@
 
             <mat-card-title class="activity-title">
               <div class="flex space-x-4">
-                <h1 class="!text-3xl !m-0">Jam Session at Hard Rock Café</h1>
+                <h1 class="!text-2xl !m-0">Jam Session at Hard Rock Café</h1>
                 <div
-                  class="flex justify-center max-h-12 px-2 py-1 rounded-xl text-white bg-primary items-center"
+                  class="flex justify-center max-h-8 px-2 py-1 rounded-xl text-white bg-primary items-center"
                 >
-                  <mat-icon>music_note</mat-icon>
-                  <span class="font-normal">Music</span>
+                  <mat-icon class="!text-lg -translate-y-0.5"
+                    >music_note</mat-icon
+                  >
+                  <span class="font-normal !text-sm">Music</span>
                 </div>
               </div>
             </mat-card-title>
@@ -66,21 +68,17 @@
             </div>
           </div>
 
-          <p class="activity-description !my-2">
+          <p class="activity-description !mb-0">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
             feugiat posuere laoreet. Mauris at magna sed sapien vehicula
             sodales. Duis varius porttitor diam ac interdum. Phasellus lacinia
-            tempor elit, non auctor sem sagittis ut. Aliquam erat volutpat. Nam
-            consectetur nibh nunc, at commodo lorem bibendum sit amet. Fusce eu
-            dignissim dolor. Fusce pellentesque, risus sed lobortis iaculis,
-            dolor turpis congue nisi, nec suscipit metus libero nec mi. Quisque
-            gravida nisl quam, sit amet vestibulum orci ultricies eu.
+            tempor elit, non auctor sem sagittis ut.
           </p>
         </mat-card-content>
       </div>
       <div class="activity-image xl:w-1/5">
         <img
-          class="xl:h-full w-full max-h-[400px]"
+          class="xl:h-[220px] w-full !rounded-lg"
           src="https://picsum.photos/400"
           alt=""
         />
