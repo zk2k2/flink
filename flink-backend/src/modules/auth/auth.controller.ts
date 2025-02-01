@@ -46,6 +46,16 @@ export class AuthController {
     return this.authService.refreshToken(refreshToken);
   }
 
+  @Post('restore')
+  async restore(@Body('email') email: string) {
+    return this.authService.restoreAccount(email);
+  }
+
+  @Post('restore-account')
+  async restoreAccount(@Query('token') token: string) {
+    return this.authService.handleRestoreAccount(token);
+  }
+
 
 
 }

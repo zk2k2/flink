@@ -29,14 +29,12 @@ export class AuthService {
     }
 
     async login(identifier: string, password: string): Promise<{ accessToken: string; refreshToken: string }> {
-       const user = await this.userService.findByField(identifier);
+        const user = await this.userService.findByField(identifier);
         if (!user || !(await bcrypt.compare(password, user.password))) {
             throw new UnauthorizedException('Invalid credentials');
         }
-        if(user.deletedAt)
-        {
+        if (user.deletedAt) {
             throw new UnauthorizedException('User account has been deactivated');
-
         }
         return this.generateTokens(user);
     }
@@ -108,5 +106,32 @@ export class AuthService {
             throw new BadRequestException('Invalid or expired token');
         }
     }
-    
+
+    async restoreAccount(email: string) {
+        const user = await this.userService.findByField(email, { withDeleted: true });
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        const token = this.jwtService.sign({ id: user.id }, { secret: process.env.RECOVER_SECRET, expiresIn: '1h' });
+        await this.mailService.sendRestoreAccountEmail(email, token);
+
+        return { message: 'Restore account email sent' };
+    }
+    async handleRestoreAccount(token: string) {
+        try {
+            const decoded = this.jwtService.verify(token, { secret: process.env.RECOVER_SECRET });
+            const user = await this.userService.findOne({ where: { id: decoded.id }, withDeleted: true });
+            if (!user) {
+                throw new NotFoundException('User not found');
+            }
+
+            await this.userService.restore(user.id);
+
+            return { message: 'Account successfully restored' };
+        } catch (error) {
+            throw new BadRequestException('Invalid or expired token');
+        }
+    }
+
 }

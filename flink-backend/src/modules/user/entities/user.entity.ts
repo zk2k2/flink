@@ -55,7 +55,7 @@ export class User extends CommonEntity {
   @OneToMany(() => UserHobby, (userHobby) => userHobby.user)
   userHobbies: UserHobby[];
 
-  @OneToOne(() => Location, { eager: true, nullable: false, cascade: true })
+  @OneToOne(() => Location, (location) => location.user, { eager: true, cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   location: Location;
 
@@ -73,7 +73,7 @@ export class User extends CommonEntity {
   })
   followers: User[];
 
-  @ManyToMany(() => User, (user) => user.followers)
+  @ManyToMany(() => User, (user) => user.followers, { onDelete: 'CASCADE' })
   following: User[];
 
   @Column({ nullable: true })

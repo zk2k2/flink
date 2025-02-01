@@ -33,7 +33,7 @@ export class ProfileController {
         }
 
         const currentFollowings = await this.userService.getFollowings(user.id) || [];
-        
+
         user.following = [...currentFollowings, userToFollow];
         await this.userService.update(user.id, { following: user.following });
         return { message: 'Successfully followed user' };
@@ -53,7 +53,7 @@ export class ProfileController {
     @Get(':identifier')
     async getProfile(@Param('identifier') identifier: string) {
         return await this.userService.getProfile(identifier);
-    } 
+    }
 
     @Patch('change-password')
     async changePassword(@Req() req, @Body('newPassword') newPassword: string) {
@@ -65,28 +65,28 @@ export class ProfileController {
         return await this.userService.update(req.user.id, { profilePic });
     }
 
-    
+
     @Get('followers')
-    async getFollowers(@Req() req) : Promise<User[]> {
+    async getFollowers(@Req() req): Promise<User[]> {
         return await this.userService.getFollowers(req.user.id) || [];
-   
+
     }
 
     @Get('following')
-    async getFollowing(@Req() req) : Promise<User[]> {
+    async getFollowing(@Req() req): Promise<User[]> {
         return await this.userService.getFollowings(req.user.id) || [];
-     
+
     }
 
     @Get('achievements')
     async getAchievements(@Req() req) {
-        return await this.userService.getAchievements(req.user.id) || [];   
-        
+        return await this.userService.getAchievements(req.user.id) || [];
+
     }
 
     @Patch('update-location')
     async updateLocation(@Req() req, @Body('location') location: LocationDto) {
-        return this.userService.updateLocation(req.user.id,location);
+        return this.userService.updateLocation(req.user.id, location);
     }
 
     @Delete('deactivate')

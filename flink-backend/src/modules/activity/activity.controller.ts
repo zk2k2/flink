@@ -4,7 +4,7 @@ import { CommonController } from 'src/common/controller/common.controller';
 import { Activity } from 'src/modules/activity/entities/activity.entity';
 import { CreateActivityDto } from 'src/modules/activity/dto/create-activity.dto';
 import { UpdateActivityDto } from 'src/modules/activity/dto/update-activity.dto';
-import { Get, Query, HttpException, HttpStatus, Headers } from '@nestjs/common';
+import { Get, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { ActivitySortCriteria } from '../../common/enums/activity-sort-criteria.enum';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 

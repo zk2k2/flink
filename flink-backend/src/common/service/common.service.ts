@@ -76,6 +76,7 @@ export class CommonService<T extends { id: string }> {
       throw new NotFoundException(`${this.getEntityName()} with ID ${id} not found`);
     }
   }
+
   async restore(id: string): Promise<void> {
     const result = await this.repository.restore(id);
     if (result.affected === 0) {

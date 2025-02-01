@@ -15,8 +15,6 @@ import { LocationDto } from 'src/common/dto/location-dto';
 export class UserService extends CommonService<
   User
 > {
-
-
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Location) private readonly locationRepository: Repository<Location>,
@@ -35,7 +33,7 @@ export class UserService extends CommonService<
       ],
     });
     const hashedPassword = await bcrypt.hash(signupDto.password, parseInt(process.env.JWT_SALT || '10'));
-    
+
     if (userExists) {
       throw new Error('User already exists');
     }
@@ -79,25 +77,26 @@ export class UserService extends CommonService<
     return await this.locationRepository.save(newLocation);
   }
 
-  async updateLocation(userId:string, newLocation : LocationDto): Promise<User>{
+  async updateLocation(userId: string, newLocation: LocationDto): Promise<User> {
     const user = await this.findOneById(userId);
     if (!user) {
       throw new Error('User not found');
     }
-  
+
     if (user.location) {
-      await this.locationRepository.remove(user.location);  
+      await this.locationRepository.remove(user.location);
     }
-    const updatedLocation  =  await this.createLocation(newLocation);
-    return this.update(userId, { location : updatedLocation });
+    const updatedLocation = await this.createLocation(newLocation);
+    return this.update(userId, { location: updatedLocation });
   }
 
-  async findByField(identifier: string,options?: FindOneOptions<User>): Promise<User> { // phone number not only digits but has the form +216 ** *** ***
-    const field = identifier.includes('@') ? 'email' : /^\d+$/.test(identifier) ? 'phone' : 'username';
+  async findByField(identifier: string, options?: FindOneOptions<User>): Promise<User> {
+    const phoneRegex = /^\+216\d{8}$/;
+    const field = identifier.includes('@') ? 'email' : phoneRegex.test(identifier) ? 'phone' : 'username';
 
     const findOptions: FindOneOptions<User> = {
       where: { [field]: identifier },
-      ...options,  
+      ...options,
     };
     return this.findOne(findOptions);
   }
@@ -149,7 +148,7 @@ export class UserService extends CommonService<
   }
 
   async getFollowings(userId: string): Promise<User[]> {
-    
+
     const user = await this.findOne({
       where: { id: userId },
       relations: ['following'],
@@ -161,7 +160,7 @@ export class UserService extends CommonService<
   }
 
 
-  async getAchievements(userId :string) {
+  async getAchievements(userId: string) {
     const user = await this.findOne({
       where: { id: userId },
       relations: ['achievements'],
@@ -171,14 +170,14 @@ export class UserService extends CommonService<
     }
     return user.achievements || [];
   }
-  async getProfile(identifier:string){
-    const user =  await this.findByField(identifier,
+  async getProfile(identifier: string) {
+    const user = await this.findByField(identifier,
       {
-        relations: ['achievements','following','followers','userHobbies'],
+        relations: ['achievements', 'following', 'followers', 'userHobbies'],
       }
     );
 
-    if(!user){
+    if (!user) {
       throw new Error('User not found');
     }
     const profileData = {
@@ -189,9 +188,9 @@ export class UserService extends CommonService<
       xp: user.xp,
       followersCount: user.followers?.length,
       followingCount: user.following?.length,
-      achievements: user.achievements, 
-      hobbies: user.userHobbies?.map((hobby) => hobby.hobby.title), 
-      postsCount: user.createdActivities?.length, 
+      achievements: user.achievements,
+      hobbies: user.userHobbies?.map((hobby) => hobby.hobby.title),
+      postsCount: user.createdActivities?.length,
     };
     return profileData;
   }
