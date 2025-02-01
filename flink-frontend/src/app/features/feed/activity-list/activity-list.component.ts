@@ -4,8 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-activity-list',
   templateUrl: './activity-list.component.html',
   styleUrls: ['./activity-list.component.scss'],
-  standalone: false
+  standalone: false,
 })
-export class ActivityListComponent {
-
-}
+export class ActivityListComponent {}
