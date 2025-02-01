@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateProfileDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { User } from './entities/user.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('profile')
@@ -24,7 +25,7 @@ export class ProfileController {
     @Patch('follow/:username')
     async followUser(@Req() req, @Param('username') followUsername: string) {
         const user = await this.userService.findOneById(req.user.id);
-        const userToFollow = await this.userService.findByField('username', followUsername);
+        const userToFollow = await this.userService.findByField(followUsername);
 
         if (!userToFollow) {
             throw new Error('User not found');
@@ -48,15 +49,14 @@ export class ProfileController {
         return { message: 'Successfully unfollowed user' };
     }
 
-    @Get(':id')
-    async getProfile(@Param('id') userId: string) {
-        return this.userService.findByField('id', userId);
+    @Get(':identifier')
+    async getProfile(@Param('identifier') identifier: string) {
+        return this.userService.findByField(identifier);
     }
 
     @Patch('change-password')
     async changePassword(@Req() req, @Body('newPassword') newPassword: string) {
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        return this.userService.updatePassword(req.user.id, hashedPassword);
+        return this.userService.updatePassword(req.user.id, newPassword);
     }
 
     @Patch('update-profile-pic')
@@ -66,21 +66,21 @@ export class ProfileController {
 
     
     @Get('followers')
-    async getFollowers(@Req() req) {
-        const user = await this.userService.findByField('id', req.user.id);
-        return user.followers;
+    async getFollowers(@Req() req) : Promise<User[]> {
+        return await this.userService.getFollowers(req.user.id) || [];
+   
     }
 
     @Get('following')
-    async getFollowing(@Req() req) {
-        const user = await this.userService.findByField('id', req.user.id);
-        return user.following;
+    async getFollowing(@Req() req) : Promise<User[]> {
+        return await this.userService.getFollowings(req.user.id) || [];
+     
     }
 
     @Get('achievements')
     async getAchievements(@Req() req) {
-        const user = await this.userService.findByField('id', req.user.id);
-        return user.achievements;
+        return await this.userService.getAchievements(req.user.id) || [];   
+        
     }
 
     @Patch('update-location')
@@ -97,4 +97,5 @@ export class ProfileController {
     async deleteAccount(@Req() req) {
         return this.userService.remove(req.user.id);
     }
+
 }

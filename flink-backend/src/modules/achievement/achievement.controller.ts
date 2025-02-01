@@ -4,6 +4,7 @@ import { Achievement } from 'src/modules/achievement/entities/achievement.entity
 import { CommonController } from 'src/common/controller/common.controller';
 import { UpdateAchievementDto } from 'src/modules/achievement/dto/update-achievement.dto';
 import { AdminGuard } from '../auth/guards/admin.guard';
+
 @UseGuards(AdminGuard)
 @Controller('achievements')
 export class AchievementController extends CommonController<

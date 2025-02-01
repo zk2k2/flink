@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Req, UseGuards } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { CommonController } from 'src/common/controller/common.controller';
 import { Activity } from 'src/modules/activity/entities/activity.entity';
@@ -6,8 +6,11 @@ import { CreateActivityDto } from 'src/modules/activity/dto/create-activity.dto'
 import { UpdateActivityDto } from 'src/modules/activity/dto/update-activity.dto';
 import { Get, Query, HttpException, HttpStatus, Headers } from '@nestjs/common';
 import { ActivitySortCriteria } from '../../common/enums/activity-sort-criteria.enum';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+
 
 @Controller('activities')
+@UseGuards(JwtAuthGuard)
 export class ActivityController extends CommonController<
   Activity,
   CreateActivityDto,
@@ -20,12 +23,14 @@ export class ActivityController extends CommonController<
   @Get()
   async getActivities(
     @Query('sortBy') sortBy: ActivitySortCriteria,
-    @Headers('User-Id') userId: string,
+    @Req() req,
   ): Promise<Activity[]> {
+    const userId = req.user?.id;
+
     if (!userId) {
       throw new HttpException(
-        'User ID is required in headers',
-        HttpStatus.BAD_REQUEST,
+        'User ID is missing in authentication token',
+        HttpStatus.UNAUTHORIZED,
       );
     }
 

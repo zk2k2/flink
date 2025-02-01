@@ -5,13 +5,14 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserModule } from 'src/modules/user/user.module';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { MailModule } from '../mail/mail.module';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { AdminGuard } from './guards/admin.guard';
 
 
 @Module({
   imports: [
-    PassportModule,
+  PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '24h' },
@@ -20,6 +21,6 @@ import { MailModule } from '../mail/mail.module';
     MailModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard],
+  providers: [AuthService, JwtStrategy]
 })
 export class AuthModule { }

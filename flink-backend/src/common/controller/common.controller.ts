@@ -8,6 +8,7 @@ import {
   Param,
   HttpException,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import { CommonService } from '../service/common.service';
 import { DeepPartial } from 'typeorm';
@@ -82,7 +83,7 @@ export class CommonController<
     }
   }
 
-  @Post('restore/:id')
+  @Patch('restore/:id')
   async restore(@Param('id') id: string): Promise<void> {
     try {
       await this.commonService.restore(id);

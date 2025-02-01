@@ -15,6 +15,7 @@ export class UserService extends CommonService<
   User
 > {
 
+
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Location) private readonly locationRepository: Repository<Location>,
@@ -32,7 +33,8 @@ export class UserService extends CommonService<
         { phone: signupDto.phone },
       ],
     });
-
+    const hashedPassword = await bcrypt.hash(signupDto.password, parseInt(process.env.JWT_SALT || '10'));
+    
     if (userExists) {
       throw new Error('User already exists');
     }
@@ -48,6 +50,7 @@ export class UserService extends CommonService<
 
     const newUser = this.userRepository.create({
       ...signupDto,
+      password: hashedPassword,
       location: savedLocation,
     });
     const savedUser = await this.userRepository.save(newUser);
@@ -70,8 +73,9 @@ export class UserService extends CommonService<
     }
   }
 
-  async findByField(field: string, value: string): Promise<User> {
-    return this.findOne({ where: { [field]: value } });
+  async findByField(identifier: string): Promise<User> {
+    const field = identifier.includes('@') ? 'email' : /^\d+$/.test(identifier) ? 'phone' : 'username';
+    return this.findOne({ where: { [field]: identifier } });
   }
 
   async validatePassword(
@@ -104,7 +108,8 @@ export class UserService extends CommonService<
     );
   }
 
-  async updatePassword(id: string, hashedPassword: string): Promise<User> {
+  async updatePassword(id: string, newPassword: string): Promise<User> {
+    const hashedPassword = await bcrypt.hash(newPassword, process.env.JWT_SALT || 10);
     return this.update(id, { password: hashedPassword });
   }
 
@@ -129,5 +134,17 @@ export class UserService extends CommonService<
       throw new Error('User not found');
     }
     return user.following || [];
+  }
+
+
+  async getAchievements(userId :string) {
+    const user = await this.findOne({
+      where: { id: userId },
+      relations: ['achievements'],
+    });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user.achievements || [];
   }
 }

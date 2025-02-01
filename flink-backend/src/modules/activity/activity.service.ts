@@ -3,11 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Activity } from './entities/activity.entity';
 import { Location } from '../../common/entities/location.entity';
-import { User } from '../user/entities/user.entity';
 import { ActivitySortCriteria } from 'src/common/enums/activity-sort-criteria.enum';
 import { CommonService } from '../../common/service/common.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
-
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ActivityService extends CommonService<Activity> {
@@ -16,8 +15,8 @@ export class ActivityService extends CommonService<Activity> {
     private readonly activityRepository: Repository<Activity>,
     @InjectRepository(Location)
     private readonly locationRepository: Repository<Location>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userService: UserService,
+    
   ) {
     super(activityRepository);
     console.log('ActivityService initialized');
@@ -51,7 +50,7 @@ export class ActivityService extends CommonService<Activity> {
         );
       }
 
-      const user = await this.userRepository.findOne({
+      const user = await this.userService.findOne({
         where: { id: userId },
         relations: ['location'],
       });
@@ -117,7 +116,7 @@ export class ActivityService extends CommonService<Activity> {
     console.log('Creating new activity:', createDto);
     const { location, creatorId, ...activityData } = createDto;
 
-    const creator = await this.userRepository.findOne({
+    const creator = await this.userService.findOne({
       where: { id: creatorId },
     });
     console.log('Found creator:', creator?.id);

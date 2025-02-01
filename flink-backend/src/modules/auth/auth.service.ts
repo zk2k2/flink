@@ -16,11 +16,7 @@ export class AuthService {
     ) { }
 
     async signup(signupDto: SignupDto): Promise<{ message: string; user: User; accessToken: string; refreshToken: string }> {
-        const hashedPassword = await bcrypt.hash(signupDto.password, parseInt(process.env.JWT_SALT || '10'));
-        const user = await this.userService.create({
-            ...signupDto,
-            password: hashedPassword,
-        });
+        const user = await this.userService.create(signupDto);
 
         const { accessToken, refreshToken } = await this.generateTokens(user);
 
@@ -33,13 +29,15 @@ export class AuthService {
     }
 
     async login(identifier: string, password: string): Promise<{ accessToken: string; refreshToken: string }> {
-        const field = identifier.includes('@') ? 'email' : /^\d+$/.test(identifier) ? 'phone' : 'username';
-        const user = await this.userService.findByField(field, identifier);
-
+       const user = await this.userService.findByField(identifier);
         if (!user || !(await bcrypt.compare(password, user.password))) {
             throw new UnauthorizedException('Invalid credentials');
         }
+        if(user.deletedAt)
+        {
+            throw new UnauthorizedException('User account has been deactivated');
 
+        }
         return this.generateTokens(user);
     }
 
@@ -79,7 +77,7 @@ export class AuthService {
     }
 
     async forgotPassword(email: string) {
-        const user = await this.userService.findByField('email', email);
+        const user = await this.userService.findByField(email);
         if (!user) {
             throw new NotFoundException('User not found');
         }
@@ -103,14 +101,12 @@ export class AuthService {
             if (!user) {
                 throw new NotFoundException('User not found');
             }
-
-            const hashedPassword = await bcrypt.hash(newPassword, parseInt(process.env.JWT_SALT || '10'));
-
-            await this.userService.updatePassword(user.id, hashedPassword);
+            await this.userService.updatePassword(user.id, newPassword);
 
             return { message: 'Password successfully reset' };
         } catch (error) {
             throw new BadRequestException('Invalid or expired token');
         }
     }
+    
 }
