@@ -109,7 +109,10 @@ export class UserService extends CommonService<
   }
 
   async getFollowers(userId: string): Promise<User[]> {
-    const user = await this.findOneById(userId);
+    const user = await this.findOne({
+      where: { id: userId },
+      relations: ['followers'],
+    });
     if (!user) {
       throw new Error('User not found');
     }
@@ -117,7 +120,11 @@ export class UserService extends CommonService<
   }
 
   async getFollowings(userId: string): Promise<User[]> {
-    const user = await this.findOneById(userId);
+    
+    const user = await this.findOne({
+      where: { id: userId },
+      relations: ['following'],
+    });
     if (!user) {
       throw new Error('User not found');
     }

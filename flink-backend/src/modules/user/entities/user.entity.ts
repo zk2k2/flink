@@ -63,11 +63,11 @@ export class User extends CommonEntity {
   @JoinTable({
     name: 'user_followers',
     joinColumn: {
-      name: 'followerId',
+      name: 'followingId',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'followingId',
+      name: 'followerId',
       referencedColumnName: 'id',
     },
   })
