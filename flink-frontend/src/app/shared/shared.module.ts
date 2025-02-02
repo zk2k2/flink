@@ -6,10 +6,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
+import { ActivityCardComponent } from './components/activity-card/activity-card.component';
 
 @NgModule({
-  declarations: [SidebarComponent],
+  declarations: [SidebarComponent, ActivityCardComponent],
   imports: [
     CommonModule,
     MatSidenavModule,
@@ -17,7 +17,9 @@ import { MatIcon } from '@angular/material/icon';
     MatIconModule,
     RouterModule,
     MatCardModule,
+    MatIconModule
+
   ],
-  exports: [SidebarComponent, MatCardModule, MatIcon],
+  exports: [SidebarComponent, MatSidenavModule, MatListModule, MatIconModule, MatCardModule, ActivityCardComponent],
 })
-export class SharedModule {}
+export class SharedModule { }
