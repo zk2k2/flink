@@ -2,33 +2,35 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center">
         <img
-          [src]="user.image"
+          [src]="user?.image"
           alt="User Image"
           class="w-24 h-24 rounded-full object-cover border-4 border-primary"
         />
         <div class="ml-6">
           <div class="flex items-center space-x-4">
-            <div class="m-0 text-xl font-bold">{{ user.name }}</div>
-            <button class="bg-primary hover:bg-green-600 text-white px-4 py-2 rounded">
+            <div class="m-0 text-xl font-bold">{{ user?.name }}</div>
+            
+            <!-- Show Follow button only if it's not the current user's profile -->
+            <button 
+              *ngIf="!isCurrentUser" 
+              class="bg-primary hover:bg-green-600 text-white px-4 py-2 rounded">
               Follow
             </button>
           </div>
           <div class="mt-2 text-black-500">
-            <span class="mr-4">
-              Followers: {{ user.followers }} 
-            </span>
-            <span>
-              Following: {{ user.following }}
-            </span>
+            <span class="mr-4"> Followers: {{ user?.followers }} </span>
+            <span> Following: {{ user?.following }} </span>
           </div>
         </div>
       </div>
   
+      <!-- Show edit button only if it's the current user's profile -->
       <button
-        (click)="updateInformation()"
+        *ngIf="isCurrentUser"
         class="text-black hover:text-gray-600 transition-colors"
         aria-label="Update Information"
         type="button"
+        (click)="updateInformation()"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

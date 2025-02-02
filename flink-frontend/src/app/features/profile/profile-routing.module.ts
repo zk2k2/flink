@@ -4,8 +4,10 @@ import { ProfileComponent } from './profile.component';
 import { UpdateUserInformationComponent } from './update-user-information/update-user-information.component';
 
 const routes: Routes = [
-  { path: '', component: ProfileComponent },
+  { path: '', redirectTo: '/feed', pathMatch: 'full' },
   { path: 'update-information', component: UpdateUserInformationComponent },
+  { path: ':userid', component: ProfileComponent },
+  
 ];
 
 @NgModule({
