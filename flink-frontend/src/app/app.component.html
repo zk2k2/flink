@@ -1,4 +1,4 @@
-<div class="flex overflow-hidden">
-  <app-sidebar> </app-sidebar>
-  <app-feed></app-feed>
+<div>
+  <app-sidebar *ngIf="isAuthenticated"> </app-sidebar>
+  <router-outlet></router-outlet> 
 </div>
