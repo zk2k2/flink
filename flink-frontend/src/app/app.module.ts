@@ -7,6 +7,7 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FeedModule } from './features/feed/feed.module';
+import { LandingModule } from './features/landing/landing.module';
 import { ActivityModule } from './features/activity/activity.module';
 
 @NgModule({
@@ -18,6 +19,7 @@ import { ActivityModule } from './features/activity/activity.module';
     SharedModule,
     BrowserAnimationsModule,
     FeedModule,
+    LandingModule
     ActivityModule,
   ],
   providers: [],
