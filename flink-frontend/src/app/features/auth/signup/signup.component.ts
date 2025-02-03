@@ -77,7 +77,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
       ]],
       hobbies: this.fb.array([]),
       location: this.fb.group({
-        name: ['', [
+        // The "name" control will be auto-populated via reverse geocoding.
+        name: [{ value: '', disabled: true }, [
           Validators.required,
           Validators.minLength(5),
           Validators.maxLength(100)
@@ -148,18 +149,38 @@ export class SignupComponent implements OnInit, AfterViewInit {
     this.map.on('click', (e: L.LeafletMouseEvent) => {
       const { lat, lng } = e.latlng;
       this.setMarker(lat, lng);
+      this.fetchAddress(lat, lng);
     });
   }
 
   private setMarker(lat: number, lng: number): void {
+    const customIcon = L.icon({
+      iconUrl: 'assets/marker.png', 
+      iconSize: [38, 50],
+      iconAnchor: [19, 50],
+      popupAnchor: [0, -50]
+    });
     if (this.marker) {
       this.marker.setLatLng([lat, lng]);
     } else {
-      this.marker = L.marker([lat, lng]).addTo(this.map);
+      this.marker = L.marker([lat, lng], { icon: customIcon }).addTo(this.map);
     }
+    // Update the longitude and latitude in the form.
     this.signupForm.get('location')!.patchValue({
       longitude: lng,
       latitude: lat
+    });
+  }
+
+  private fetchAddress(lat: number, lng: number): void {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+    this.http.get<any>(url).subscribe({
+      next: (data) => {
+        if (data && data.display_name) {
+          this.signupForm.get('location')?.patchValue({ name: data.display_name });
+        }
+      },
+      error: (err) => console.error('Error fetching address:', err)
     });
   }
 
@@ -170,7 +191,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
       return;
     }
   
-    const formData = this.signupForm.value;
+    const formData = { ...this.signupForm.getRawValue() };
     this.http.post(this.signupApiUrl, formData).subscribe({
       next: (res: any) => {
         const { accessToken, refreshToken } = res;

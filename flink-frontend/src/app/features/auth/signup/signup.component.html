@@ -137,8 +137,8 @@
 
     <div formGroupName="location" class="flex flex-col space-y-2">
       <label for="locationName" class="text-lg">Address <span class="text-red-500">*</span></label>
-      <input type="text" id="locationName" formControlName="name"
-             class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
+      <input type="text" id="locationName" formControlName="name" readonly
+             class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 focus:border-gray-500 focus:outline-none transition-colors">
       <div *ngIf="signupForm.get('location.name')?.errors" class="text-red-500 text-sm">
         <div *ngIf="signupForm.get('location.name')?.hasError('required')">Address is required</div>
         <div *ngIf="signupForm.get('location.name')?.hasError('minlength')">
