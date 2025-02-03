@@ -1,8 +1,8 @@
 import { CommonEntity } from '../../../common/entities/common.entity';
 import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
-import { Category } from '../../../common/entities/category.entity';
-import { User } from '../../user/entities/user.entity';
 import { UserHobby } from 'src/modules/user-hobbies/entities/user-hobby.entity';
+import { Category } from 'src/modules/category/entities/category.entity';
+
 
 
 @Entity()

@@ -86,6 +86,7 @@ export class UserProfileFormComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.profileForm.valid);
     if (this.profileForm.valid) {
       this.isLoading = true;
       const formValue = this.profileForm.value;
@@ -96,7 +97,6 @@ export class UserProfileFormComponent implements OnInit {
         birthDate: new Date(formValue.birthDate)
       };
       
-      // Here you would call your service
       console.log('Submitting:', updatedProfile);
       this.isLoading = false;
       this.toggleEdit();
