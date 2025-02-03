@@ -15,8 +15,6 @@ export class ActivityService extends CommonService<Activity> {
   constructor(
     @InjectRepository(Activity)
     private readonly activityRepository: Repository<Activity>,
-    @InjectRepository(Location)
-    private readonly locationRepository: Repository<Location>,
     private readonly userService: UserService,
     private readonly categoryservice: CategoryService,
 
@@ -109,7 +107,6 @@ export class ActivityService extends CommonService<Activity> {
       const result = await nearestQuery.getRawAndEntities();
       console.log(`Found ${result.entities.length} activities with distances`);
 
-      // Log distances using raw results
       result.raw.forEach((raw, index) => {
         console.log(`Activity ${result.entities[index].id} distance: ${raw.distance}`);
       });
@@ -211,7 +208,7 @@ export class ActivityService extends CommonService<Activity> {
       throw new HttpException('Activity not found', HttpStatus.NOT_FOUND);
     }
 
-    if (!activity.users.some(u => u.id === userId)) {
+    if (!activity.users.some(u => u.id === userId) && activity.users.length < activity.nbOfParticipants) {
       activity.users.push(user);
       user.xp += 100;
     }
