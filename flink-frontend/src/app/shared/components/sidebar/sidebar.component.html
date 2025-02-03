@@ -1,17 +1,7 @@
-<div class="h-screen flex">
-  <div class="!bg-primary !text-secondary xl:w-48">
-    <div class="flex items-center justify-center py-2"></div>
-
-    <mat-nav-list>
-      <a
-        mat-list-item
-        *ngFor="let item of menuItems"
-        [routerLink]="item.route"
-        class="flex items-center py-2"
-      >
-        <mat-icon class="mr-2">{{ item.icon }}</mat-icon>
-        <span>{{ item.label }}</span>
-      </a>
-    </mat-nav-list>
+<div class="h-screen css-debug hidden xl:flex">
+  <div
+    class="!bg-gray-200 flex flex-col items-center justify-center !text-secondary xl:w-48"
+  >
+    <img src="/assets/logo_item.png" class="w-32" alt="" />
   </div>
 </div>

@@ -6,10 +6,18 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { ActivityCardComponent } from './components/activity-card/activity-card.component';
+import { MatIcon } from '@angular/material/icon';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { ModalComponent } from './components/modal/modal.component';
+import { InfoboxComponent } from './components/infobox/infobox.component';
 
 @NgModule({
-  declarations: [SidebarComponent, ActivityCardComponent],
+  declarations: [
+    SidebarComponent,
+    NavbarComponent,
+    ModalComponent,
+    InfoboxComponent,
+  ],
   imports: [
     CommonModule,
     MatSidenavModule,
@@ -17,9 +25,15 @@ import { ActivityCardComponent } from './components/activity-card/activity-card.
     MatIconModule,
     RouterModule,
     MatCardModule,
-    MatIconModule
-
+    MatIconModule,
   ],
-  exports: [SidebarComponent, MatSidenavModule, MatListModule, MatIconModule, MatCardModule, ActivityCardComponent],
+  exports: [
+    SidebarComponent,
+    MatCardModule,
+    MatIcon,
+    NavbarComponent,
+    ModalComponent,
+    InfoboxComponent,
+  ],
 })
-export class SharedModule { }
+export class SharedModule {}
