@@ -19,7 +19,7 @@ import { ActivityModule } from './features/activity/activity.module';
     SharedModule,
     BrowserAnimationsModule,
     FeedModule,
-    LandingModule
+    LandingModule,
     ActivityModule,
   ],
   providers: [],
