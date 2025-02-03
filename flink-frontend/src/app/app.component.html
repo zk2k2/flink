@@ -1,4 +1,9 @@
-<!--<router-outlet></router-outlet>-->
-<!--<div class="flex overflow-hidden">-->
-  <app-landing></app-landing>
-<!--</div>-->
+
+<div class="overflow-y-hidden w-full h-screen flex flex-col">
+  <app-navbar></app-navbar>
+  <div class="main-container flex flex-grow overflow-hidden">
+    <app-sidebar></app-sidebar>
+    <app-feed></app-feed>
+  </div>
+</div>
+ 

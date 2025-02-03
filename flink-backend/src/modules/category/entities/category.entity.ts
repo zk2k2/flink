@@ -1,8 +1,8 @@
+import { CommonEntity } from 'src/common/entities/common.entity';
+import { Activity } from 'src/modules/activity/entities/activity.entity';
+import { Hobby } from 'src/modules/hobby/entities/hobby.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
 
-import { Activity } from '../../modules/activity/entities/activity.entity';
-import { Hobby } from '../../modules/hobby/entities/hobby.entity';
-import { CommonEntity } from './common.entity';
 
 @Entity()
 export class Category extends CommonEntity {

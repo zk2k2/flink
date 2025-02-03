@@ -1,1 +1,165 @@
-<p>signup works!</p>
+<form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-container space-x-4 !w-full my-2 !overflow-auto bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row">
+  <div class="flex flex-col w-full md:w-1/2 space-y-4">
+    <div class="flex flex-col space-y-2">
+      <label for="firstName" class="text-lg">First Name <span class="text-red-500">*</span></label>
+      <input type="text" id="firstName" formControlName="firstName"
+             class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
+      <div *ngIf="signupForm.get('firstName')?.errors" class="text-red-500 text-sm">
+        <div *ngIf="signupForm.get('firstName')?.hasError('required')">First Name is required</div>
+        <div *ngIf="signupForm.get('firstName')?.hasError('pattern')">
+          2-50 letters only (no numbers/special characters)
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="lastName" class="text-lg">Last Name <span class="text-red-500">*</span></label>
+      <input type="text" id="lastName" formControlName="lastName"
+             class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
+      <div *ngIf="signupForm.get('lastName')?.errors" class="text-red-500 text-sm">
+        <div *ngIf="signupForm.get('lastName')?.hasError('required')">Last Name is required</div>
+        <div *ngIf="signupForm.get('lastName')?.hasError('pattern')">
+          2-50 letters only (no numbers/special characters)
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="username" class="text-lg">Username <span class="text-red-500">*</span></label>
+      <input type="text" id="username" formControlName="username"
+             class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
+      <div *ngIf="signupForm.get('username')?.errors" class="text-red-500 text-sm">
+        <div *ngIf="signupForm.get('username')?.hasError('required')">Username is required</div>
+        <div *ngIf="signupForm.get('username')?.hasError('minlength')">
+          Minimum 4 characters
+        </div>
+        <div *ngIf="signupForm.get('username')?.hasError('pattern')">
+          4-20 characters (letters, numbers, underscores)
+        </div>
+        <div *ngIf="signupForm.get('username')?.hasError('backendError')">
+          {{ signupForm.get('username')?.errors?.['backendError'] }}
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="email" class="text-lg">Email <span class="text-red-500">*</span></label>
+      <input type="email" id="email" formControlName="email"
+             class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
+      <div *ngIf="signupForm.get('email')?.errors" class="text-red-500 text-sm">
+        <div *ngIf="signupForm.get('email')?.hasError('required')">Email is required</div>
+        <div *ngIf="signupForm.get('email')?.hasError('email') || signupForm.get('email')?.hasError('pattern')">
+          Valid email format required (e.g., user@example.com)
+        </div>
+        <div *ngIf="signupForm.get('email')?.hasError('backendError')">
+          {{ signupForm.get('email')?.errors?.['backendError'] }}
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="phone" class="text-lg">Phone <span class="text-red-500">*</span></label>
+      <input type="tel" id="phone" formControlName="phone"
+             class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
+      <div *ngIf="signupForm.get('phone')?.errors" class="text-red-500 text-sm">
+        <div *ngIf="signupForm.get('phone')?.hasError('required')">Phone is required</div>
+        <div *ngIf="signupForm.get('phone')?.hasError('pattern')">
+          Valid international format (7-15 digits, + optional)
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="password" class="text-lg">Password <span class="text-red-500">*</span></label>
+      <input type="password" id="password" formControlName="password"
+             class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
+      <div *ngIf="signupForm.get('password')?.errors" class="text-red-500 text-sm">
+        <div *ngIf="signupForm.get('password')?.hasError('required')">Password is required</div>
+        <div *ngIf="signupForm.get('password')?.hasError('pattern')">
+          Must contain:
+          <ul class="list-disc list-inside pl-4">
+            <li>8+ characters</li>
+            <li>1 uppercase letter</li>
+            <li>1 number</li>
+            <li>1 special character (!@#$%^&*)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="birthDate" class="text-lg">Birth Date <span class="text-red-500">*</span></label>
+      <input type="date" id="birthDate" formControlName="birthDate" [max]="currentYear - 13 + '-12-31'"
+             class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
+      <div *ngIf="signupForm.get('birthDate')?.errors" class="text-red-500 text-sm">
+        <div *ngIf="signupForm.get('birthDate')?.hasError('required')">Birth Date is required</div>
+        <div *ngIf="signupForm.get('birthDate')?.hasError('underage')">
+          Must be at least 13 years old
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="profilePic" class="text-lg">Profile Picture URL <span class="text-red-500">*</span></label>
+      <input type="url" id="profilePic" formControlName="profilePic"
+             class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
+      <div *ngIf="signupForm.get('profilePic')?.errors" class="text-red-500 text-sm">
+        <div *ngIf="signupForm.get('profilePic')?.hasError('required')">URL is required</div>
+        <div *ngIf="signupForm.get('profilePic')?.hasError('pattern')">
+          Valid URL format required (e.g., https://example.com/image.jpg)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col w-full md:w-1/2 space-y-4">
+    <div class="flex flex-col space-y-2" *ngIf="hobbies.controls.length">
+      <label class="text-lg">Hobbies</label>
+      <div formArrayName="hobbies">
+        <div *ngFor="let hobbyCtrl of hobbies.controls; let i = index" [formGroupName]="i" class="flex items-center gap-4">
+          <input type="text" formControlName="title" readonly
+                 class="flex-1 p-2 border border-gray-300 rounded-lg bg-gray-100">
+          <div class="flex flex-col flex-1">
+            <label class="text-sm">Interest Level</label>
+            <mat-slider min="1" max="5" step="1" tickInterval="1" color="accent">
+              <input matSliderThumb formControlName="interestLevel">
+            </mat-slider>
+            <div *ngIf="hobbyCtrl.get('interestLevel')?.errors" class="text-red-500 text-xs">
+              <div *ngIf="hobbyCtrl.get('interestLevel')?.hasError('required')">Required</div>
+              <div *ngIf="hobbyCtrl.get('interestLevel')?.hasError('min')">Minimum 1</div>
+              <div *ngIf="hobbyCtrl.get('interestLevel')?.hasError('max')">Maximum 5</div>
+              <div *ngIf="hobbyCtrl.get('interestLevel')?.hasError('notInteger')">Must be whole number</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div formGroupName="location" class="flex flex-col space-y-2">
+      <label for="locationName" class="text-lg">Address <span class="text-red-500">*</span></label>
+      <input type="text" id="locationName" formControlName="name"
+             class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
+      <div *ngIf="signupForm.get('location.name')?.errors" class="text-red-500 text-sm">
+        <div *ngIf="signupForm.get('location.name')?.hasError('required')">Address is required</div>
+        <div *ngIf="signupForm.get('location.name')?.hasError('minlength')">
+          Minimum 5 characters
+        </div>
+        <div *ngIf="signupForm.get('location.name')?.hasError('maxlength')">
+          Maximum 100 characters
+        </div>
+      </div>
+    </div>
+
+    <div id="map" class="w-full h-64 rounded border"></div>
+    <div class="text-sm text-gray-600 mt-2">
+      Please click on the map to select your location.
+    </div>
+
+    <div class="translate-y-4 text-white text-lg px-4 py-3 rounded-lg bg-primary">
+      <button type="submit" [disabled]="signupForm.invalid"
+              class="btn-primary flex justify-center items-center w-full text-center">
+        <h3 class="!m-0 text-center">Sign Up</h3>
+      </button>
+    </div>
+  </div>
+</form>

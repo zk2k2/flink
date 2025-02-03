@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CreateHobbyDto {
   @IsString()
@@ -8,4 +8,8 @@ export class CreateHobbyDto {
   @IsString()
   @IsNotEmpty()
   photo: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  categoryId: string;
 }

@@ -10,14 +10,15 @@ import { User } from '../../user/entities/user.entity';
 import { CommonEntity } from '../../../common/entities/common.entity';
 import { ActivityConditions } from '../../../common/enums/activity-conditions.enum';
 import { Location } from '../../../common/entities/location.entity';
-import { Category } from '../../../common/entities/category.entity';
+import { Category } from 'src/modules/category/entities/category.entity';
+
 
 @Entity()
 export class Activity extends CommonEntity {
   @Column()
   title: string;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'timestamptz' })
   date: Date;
 
   @Column('text')
@@ -30,8 +31,8 @@ export class Activity extends CommonEntity {
   @JoinColumn()
   location: Location;
 
-  @Column('enum', { enum: ActivityConditions, nullable: true })
-  conditions: ActivityConditions;
+  @Column({ nullable: true })
+  conditions: string;
 
   @Column()
   nbOfParticipants: number;
@@ -43,6 +44,7 @@ export class Activity extends CommonEntity {
   @ManyToOne(() => User, (user) => user.createdActivities, {
     eager: true,
     nullable: false,
+    onDelete: 'CASCADE',
   })
   creator: User;
 
