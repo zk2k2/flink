@@ -10,6 +10,8 @@ import { HobbyModule } from './modules/hobby/hobby.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './modules/mail/mail.module';
 import { UserHobbiesModule } from './modules/user-hobbies/user-hobbies.module';
+import { CategoryModule } from './modules/category/category.module';
+
 
 dotenv.config();
 
@@ -32,8 +34,9 @@ dotenv.config();
     AuthModule,
     MailModule,
     UserHobbiesModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

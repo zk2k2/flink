@@ -25,6 +25,7 @@ import { InfoboxComponent } from './components/infobox/infobox.component';
     MatIconModule,
     RouterModule,
     MatCardModule,
+    MatIconModule,
   ],
   exports: [
     SidebarComponent,

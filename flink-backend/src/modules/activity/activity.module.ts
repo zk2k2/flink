@@ -4,13 +4,14 @@ import { ActivityController } from './activity.controller';
 import { Activity } from './entities/activity.entity';
 import { Location } from '../../common/entities/location.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../user/entities/user.entity';
 import { UserModule } from '../user/user.module';
-import { Category } from 'src/common/entities/category.entity';
+import { Category } from '../category/entities/category.entity';
+import { CategoryModule } from '../category/category.module';
+
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Activity, Location, User, Category]),UserModule],
+  imports: [TypeOrmModule.forFeature([Activity, Location, Category]), UserModule, CategoryModule],
   controllers: [ActivityController],
   providers: [ActivityService],
 })
-export class ActivityModule {}
+export class ActivityModule { }

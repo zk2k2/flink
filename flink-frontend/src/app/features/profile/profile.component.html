@@ -1,1 +1,62 @@
-<app-user-profile-form [initialData]="mockUser"></app-user-profile-form>
+<div class="container mx-auto p-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <img
+          [src]="user?.image"
+          alt="User Image"
+          class="w-24 h-24 rounded-full object-cover border-4 border-primary"
+        />
+        <div class="ml-6">
+          <div class="flex items-center space-x-4">
+            <div class="m-0 text-xl font-bold">{{ user?.name }}</div>
+            
+            <!-- Show Follow button only if it's not the current user's profile -->
+            <button 
+              *ngIf="!isCurrentUser" 
+              class="bg-primary hover:bg-green-600 text-white px-4 py-2 rounded">
+              Follow
+            </button>
+          </div>
+          <div class="mt-2 text-black-500">
+            <span class="mr-4"> Followers: {{ user?.followers }} </span>
+            <span> Following: {{ user?.following }} </span>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Show edit button only if it's the current user's profile -->
+      <button
+        *ngIf="isCurrentUser"
+        class="text-black hover:text-gray-600 transition-colors"
+        aria-label="Update Information"
+        type="button"
+        (click)="updateInformation()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+          />
+        </svg>
+      </button>
+    </div>
+  
+    <div class="mt-8">
+      <h1 class="text-xl font-semibold mb-4">Current Activities</h1>
+      <div class="space-y-4">
+        <app-activity-card
+          *ngFor="let activity of activities"
+          [activity]="activity"
+        ></app-activity-card>
+      </div>
+    </div>
+  </div>
+  

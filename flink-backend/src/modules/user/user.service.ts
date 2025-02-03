@@ -170,6 +170,7 @@ export class UserService extends CommonService<
     }
     return user.achievements || [];
   }
+
   async getProfile(identifier: string) {
     const user = await this.findByField(identifier,
       {
