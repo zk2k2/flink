@@ -21,7 +21,7 @@ export class UserHobbiesController {
 
   @Get()
   async getUserHobbies(@Req() req): Promise<UserHobby[]> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
     try {
       return await this.userHobbiesService.getUserHobbiesByUserId(userId);
     } catch (error) {
@@ -35,7 +35,7 @@ export class UserHobbiesController {
     @Body('hobbyId') hobbyId: string,
     @Body('interestLevel') interestLevel: number,
   ): Promise<UserHobby> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
     try {
       return await this.userHobbiesService.addHobbyToUser(userId, hobbyId, interestLevel);
     } catch (error) {
@@ -49,7 +49,7 @@ export class UserHobbiesController {
     @Body('hobbyId') hobbyId: string,
     @Body('interestLevel') interestLevel: number,
   ): Promise<UserHobby> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
     try {
       return await this.userHobbiesService.updateInterestLevel(userId, hobbyId, interestLevel);
     } catch (error) {
@@ -62,7 +62,7 @@ export class UserHobbiesController {
     @Req() req,
     @Body('hobbyId') hobbyId: string,
   ): Promise<void> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
     try {
       await this.userHobbiesService.removeHobbyFromUser(userId, hobbyId);
     } catch (error) {
