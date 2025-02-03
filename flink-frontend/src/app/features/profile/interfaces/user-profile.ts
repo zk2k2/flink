@@ -8,15 +8,25 @@ export interface Location {
     name: string;
   }
   
+
   export interface UserProfile {
-    id: string;
     firstName: string;
     lastName: string;
     username: string;
-    email: string;
-    phone: string;
-    birthDate: Date;
     profilePic?: string;
-    hobbies: UserHobbies[];
-    location: Location;
+    xp: number;
+    followersCount: number;
+    followingCount: number;
+    achievements: Achievement[];
+    hobbies: string[];  // Array of hobby titles
+    postsCount: number;
+  }
+  
+  // Supporting interfaces
+  export interface Achievement {
+    id: string;
+    title: string;
+    description: string;
+    photo: string;
+    // Add other achievement properties as needed
   }

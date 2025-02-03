@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ProfilesServiceService } from './profiles-service.service';
 
 @Component({
   selector: 'app-profile',
@@ -12,11 +13,13 @@ export class ProfileComponent implements OnInit {
 
   activities: any[] = []; 
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private route: ActivatedRoute, private router: Router, private profileService:ProfilesServiceService) {}
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       const userId = params.get('userid');
+      this.user = this.profileService.getUserProfile(userId);
+      
       if (userId) {
         this.isCurrentUser = userId === this.mockLoggedInUserId;
 
