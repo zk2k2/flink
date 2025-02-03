@@ -18,7 +18,7 @@ export class SidebarComponent {
 
   menuItems = [
     { label: 'Home', icon: 'home', route: '/home' },
-    { label: 'About', icon: 'info', route: '/about' },
+    { label: 'Start activity', icon: 'info', route: '/about' },
     { label: 'Contact', icon: 'mail', route: '/contact' },
   ];
 

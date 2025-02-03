@@ -24,6 +24,7 @@
               <div>
                 <button
                   class="bg-secondary max-w-16 xl:max-w-36 px-2 py-1 text-white rounded-xl"
+                  (click)="openModal()"
                 >
                   <div
                     class="flex justify-center space-x-2 px-2 py-1 rounded-xl text-white items-center"
@@ -85,4 +86,23 @@
       </div>
     </div>
   </mat-card>
+
+  <app-modal
+    *ngIf="isModalOpen"
+    [title]="'My Modal Title'"
+    [bodyText]="'This is the body text of the modal.'"
+    [showCancelButton]="true"
+    [showSubmitButton]="true"
+    [cancelButtonText]="'Cancel'"
+    [submitButtonText]="'Submit'"
+    (closeModal)="closeModal()"
+    (cancel)="onCancel()"
+    (submit)="onSubmit()"
+  ></app-modal>
+
+  <app-infobox
+    *ngIf="showInfobox"
+    [message]="infoboxMessage"
+    (close)="closeInfobox()"
+  ></app-infobox>
 </div>

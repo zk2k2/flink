@@ -1,0 +1,39 @@
+=
+<div
+  [@slideInOut]
+  class="fixed bottom-4 right-4 w-80 bg-white rounded-lg shadow-lg z-50"
+>
+  <!-- Header -->
+  <div class="flex justify-between items-center p-4 border-b">
+    <h3 class="text-lg font-semibold">Info</h3>
+    <button (click)="closeInfobox()" class="text-gray-500 hover:text-gray-700">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="p-4">
+    <p class="text-gray-700">{{ message }}</p>
+  </div>
+
+  <!-- Time Bar -->
+  <div class="h-1 bg-gray-200 rounded-b-lg overflow-hidden">
+    <div
+      class="h-1 bg-blue-500 rounded-b-lg"
+      [ngStyle]="{ width: timeBarWidth + '%' }"
+    ></div>
+  </div>
+</div>

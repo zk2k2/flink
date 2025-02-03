@@ -7,6 +7,7 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FeedModule } from './features/feed/feed.module';
+import { ActivityModule } from './features/activity/activity.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,6 +18,7 @@ import { FeedModule } from './features/feed/feed.module';
     SharedModule,
     BrowserAnimationsModule,
     FeedModule,
+    ActivityModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
