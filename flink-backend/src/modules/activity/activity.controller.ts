@@ -26,7 +26,7 @@ export class ActivityController extends CommonController<
     @Query('timeFrame') timeFrame?: 'past' | 'recent',
     @Query('creatorId') creatorId?: string,
   ): Promise<Activity[]> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
 
     if (!userId) {
       throw new HttpException('User ID is missing in authentication token', HttpStatus.UNAUTHORIZED);
@@ -44,7 +44,7 @@ export class ActivityController extends CommonController<
     @Req() req,
     @Body() createActivityDto: CreateActivityDto
   ): Promise<Activity> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
 
     if (!userId) {
       throw new HttpException('User ID is missing in authentication token', HttpStatus.UNAUTHORIZED);
@@ -62,7 +62,7 @@ export class ActivityController extends CommonController<
     @Req() req,
     @Query('activityId') activityId: string
   ): Promise<Activity> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
 
     if (!userId) {
       throw new HttpException('User ID is missing in authentication token', HttpStatus.UNAUTHORIZED);
@@ -80,7 +80,7 @@ export class ActivityController extends CommonController<
     @Req() req,
     @Query('activityId') activityId: string
   ): Promise<Activity> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
 
     if (!userId) {
       throw new HttpException('User ID is missing in authentication token', HttpStatus.UNAUTHORIZED);
@@ -98,7 +98,7 @@ export class ActivityController extends CommonController<
     @Req() req,
     @Query('activityId') activityId: string
   ): Promise<void> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
 
     if (!userId) {
       throw new HttpException('User ID is missing in authentication token', HttpStatus.UNAUTHORIZED);
