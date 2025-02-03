@@ -2,8 +2,6 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Activity } from './entities/activity.entity';
-import { Location } from '../../common/entities/location.entity';
-
 import { ActivitySortCriteria } from 'src/common/enums/activity-sort-criteria.enum';
 import { CommonService } from '../../common/service/common.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
@@ -81,7 +79,7 @@ export class ActivityService extends CommonService<Activity> {
         console.error('Invalid coordinates format:', userCoords);
         throw new HttpException(
           'Invalid user coordinates format',
-          HttpStatus.INTERNAL_SERVER_ERROR,
+          HttpStatus.BAD_REQUEST,
         );
       }
 
@@ -163,9 +161,7 @@ export class ActivityService extends CommonService<Activity> {
     const { location, categoryName, ...activityData } = createDto;
 
 
-    const creator = await this.userService.findOne({
-      where: { id: creatorId },
-    });
+    const creator = await this.userService.findOneById(creatorId);
 
     if (!creator) {
       console.error('Creator not found with ID:', creatorId);
@@ -180,7 +176,7 @@ export class ActivityService extends CommonService<Activity> {
 
     const savedLocation = await this.userService.createLocation(location);
 
-    creator.xp += 200;
+    creator.xp += 500;
     await this.userService.update(creatorId, creator);
 
     return this.create({
@@ -259,7 +255,7 @@ export class ActivityService extends CommonService<Activity> {
     }
 
     const creator = activity.creator;
-    creator.xp -= 200;
+    creator.xp -= 500;
     await this.userService.update(creator.id, creator);
 
     await this.remove(activityId);
