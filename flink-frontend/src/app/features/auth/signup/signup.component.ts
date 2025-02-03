@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as L from 'leaflet';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -28,7 +29,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private snackBar: MatSnackBar,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router 
   ) {}
 
   ngOnInit(): void {
@@ -167,12 +169,20 @@ export class SignupComponent implements OnInit, AfterViewInit {
       this.snackBar.open('Please fix all validation errors', 'Close', { duration: 3000 });
       return;
     }
-
+  
     const formData = this.signupForm.value;
     this.http.post(this.signupApiUrl, formData).subscribe({
-      next: (res) => {
+      next: (res: any) => {
+        const { accessToken, refreshToken } = res;
+        
+        document.cookie = `accessToken=${accessToken}; path=/;`;
+        document.cookie = `refreshToken=${refreshToken}; path=/;`;
+        
         this.snackBar.open('Registration successful!', 'Close', { duration: 3000 });
+        
         this.signupForm.reset();
+  
+        this.router.navigate(['/profile']);
       },
       error: (err) => {
         console.error('Registration error:', err);
@@ -180,6 +190,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
       }
     });
   }
+  
 
   private handleBackendErrors(error: any): void {
     if (error.status === 400 && error.error?.message) {

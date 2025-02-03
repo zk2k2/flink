@@ -21,6 +21,9 @@ export class UserProfileFormComponent implements OnInit {
     if (this.initialData) {
       this.setFormValues(this.initialData);
     }
+    alert('All Cookies:'+ document.cookie);
+    const accessToken = getCookie('accessToken');
+    alert('Access Token:'+ accessToken);
   }
 
   private initializeForm() {
@@ -99,4 +102,18 @@ export class UserProfileFormComponent implements OnInit {
       this.toggleEdit();
     }
   }
+
+
+  
+}
+function getCookie(name: string): string | null {
+  const nameEQ = name + "=";
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.indexOf(nameEQ) === 0) {
+      return cookie.substring(nameEQ.length);
+    }
+  }
+  return null;
 }
