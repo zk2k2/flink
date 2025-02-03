@@ -13,14 +13,15 @@ import { UpdateHobbyDto } from './dto/update-hobby.dto';
 import { HobbyService } from './hobby.service';
 import { AdminGuard } from '../auth/guards/admin.guard';
 
-@UseGuards(AdminGuard)
+//@UseGuards(AdminGuard)
 @Controller('hobbies')
 export class HobbyController extends CommonController<Hobby, CreateHobbyDto, UpdateHobbyDto> {
   constructor(private readonly hobbyService: HobbyService) {
     super(hobbyService);
   }
-
+  
   @Post()
+  @UseGuards(AdminGuard)
   async create(@Body() createHobbyDto: CreateHobbyDto): Promise<Hobby> {
     try {
       return await this.hobbyService.createHobby(createHobbyDto);
@@ -28,5 +29,6 @@ export class HobbyController extends CommonController<Hobby, CreateHobbyDto, Upd
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+
 }
 
