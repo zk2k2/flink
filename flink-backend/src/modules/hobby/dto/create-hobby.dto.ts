@@ -5,10 +5,6 @@ export class CreateHobbyDto {
   @IsNotEmpty()
   title: string;
 
-  @IsString()
-  @IsNotEmpty()
-  photo: string;
-
   @IsUUID()
   @IsNotEmpty()
   categoryId: string;
