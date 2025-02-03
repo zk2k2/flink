@@ -1,5 +1,9 @@
 import {
+  Body,
   Controller,
+  HttpException,
+  HttpStatus,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { CommonController } from 'src/common/controller/common.controller';
@@ -15,4 +19,14 @@ export class HobbyController extends CommonController<Hobby, CreateHobbyDto, Upd
   constructor(private readonly hobbyService: HobbyService) {
     super(hobbyService);
   }
+
+  @Post()
+  async create(@Body() createHobbyDto: CreateHobbyDto): Promise<Hobby> {
+    try {
+      return await this.hobbyService.createHobby(createHobbyDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 }
+

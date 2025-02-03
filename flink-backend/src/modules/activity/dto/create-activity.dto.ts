@@ -45,11 +45,8 @@ export class CreateActivityDto {
   @IsOptional()
   activityPhotos: string[];
 
-  @IsNotEmpty({ message: validationMessages.required('Conditions') })
-  @IsEnum(ActivityConditions, {
-    message: validationMessages.invalidFormat('Conditions'),
-  })
-  conditions: ActivityConditions;
+  @IsString({ message: validationMessages.invalidFormat('Conditions') })
+  conditions: string;
 
   @IsNotEmpty({
     message: validationMessages.required('Number of Participants'),
@@ -61,17 +58,13 @@ export class CreateActivityDto {
   @Max(100, { message: validationMessages.max('Number of Participants', 100) })
   nbOfParticipants: number;
 
-  @IsNotEmpty({ message: validationMessages.required('Creator ID') })
-  @IsUUID('4', { message: validationMessages.invalidFormat('Creator ID') })
-  creatorId: string;
-
   @IsNotEmpty({ message: validationMessages.required('Location') })
   @IsObject({ message: validationMessages.invalidFormat('Location') })
   @ValidateNested()
   @Type(() => LocationDto)
   location: LocationDto;
 
-  @IsNotEmpty({ message: validationMessages.required('Category ID') })
-  @IsUUID('4', { message: validationMessages.invalidFormat('Category ID') })
-  categoryId: string;
+  @IsNotEmpty({ message: validationMessages.required('Category Name') })
+  @IsString({ message: validationMessages.invalidFormat('Category Name') })
+  categoryName: string;
 }
