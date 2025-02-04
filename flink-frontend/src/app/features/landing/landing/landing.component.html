@@ -1,114 +1,72 @@
-<!-- app.component.html -->
-<nav class="bg-secondary py-4 px-6 shadow-lg">
-  <div class="container mx-auto flex justify-between items-center">
-    <h1 class="text-3xl text-white font-bold">Flink</h1>
-    <div class="flex gap-4">
-      <button 
-        class="border border-primary text-primary hover:bg-primary/10 px-6 py-2 rounded-full transition-all duration-300"
-        routerLink="/login">
-        Login
-      </button>
-      <button 
-        class="bg-primary hover:bg-teal-500 text-white px-6 py-2 rounded-full transition-all duration-300"
-        routerLink="/signup">
-        Join Now
-      </button>
-    </div>
-  </div>
-</nav>
-
-<main class="min-h-screen">
-  <!-- Hero Section -->
-  <section class="bg-secondary/10 py-32">
-    <div class="container mx-auto px-6">
-      <div class="flex flex-col items-center">
-        <h2 class="text-5xl md:text-7xl font-bold text-secondary mb-6 text-center">
-          Connect Through Shared Activities
+<main class="min-h-screen m-0">
+  <section class="bg-secondary/10 h-screen py-32">
+    <div class="container mx-auto px-6 flex">
+      <div class="flex flex-col justify-center items-center w-screen">
+        <h2
+          class="!text-4xl text-left md:text-7xl font-bold text-secondary mb-6 opacity-0 transform -translate-x-10 animate-slide-in"
+        >
+          Flink, because it's fun to
+          <span class="inline-block text-primary animate-shake">
+            link 🎉 <span class="text-black"> !</span>
+          </span>
         </h2>
-        <p class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto text-center">
-          Join local adventures, make new friends, and create unforgettable memories. 
-          Whether you're into sports, arts, or just hanging out - Flink has something for everyone!
+        <p
+          class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto text-center opacity-0 animate-fade-in-description"
+        >
+          Discover exciting activities, meet like-minded people, and make
+          lasting connections. Whether you're passionate about outdoor
+          adventures, creative pursuits, or simply socializing, Flink has the
+          perfect experience waiting for you!
         </p>
         <a
           href="#activities"
-          class="bg-primary hover:bg-teal-500 text-white px-8 py-3 rounded-full text-lg transition-all duration-300 cursor-pointer">
+          class="bg-primary mt-3 hover:bg-teal-500 text-white px-8 py-3 rounded-full text-lg transition-all duration-300 cursor-pointer opacity-0 animate-fade-in-button"
+        >
           Explore Activities
         </a>
       </div>
+      <div>
+        <img
+          src="assets/image.png"
+          alt="Hero Image"
+          class="mt-12 md:mt-0 opacity-0 animate-fade-in"
+        />
+      </div>
     </div>
   </section>
-
-  <!-- Activities Grid -->
-  <section id="activities" class="py-16">
-    <div class="container mx-auto px-6">
-      <div class="mb-12 text-center">
-        <div class="inline-block mb-4">
-          <span class="bg-primary/20 text-primary px-4 py-2 rounded-full text-sm font-semibold">
-            Examples of Activities you will enjoy!🌟
-          </span>
-        </div>
+  <section>
+    <div class="flex">
+      <div class="w-1/2">
+        <img src="/assets/yay.jpg" alt="" />
       </div>
-
-      <div class="grid grid-cols-1 gap-12 max-w-3xl mx-auto">
-        <!-- Activity 1 -->
-        <div class="bg-white rounded-2xl shadow-lg hover:shadow-md transition-shadow duration-300">
-          <img 
-            src="assets/activity1.png" 
-            alt="Weekend Hiking"
-            class="w-full h-48 object-cover rounded-t-2xl">
-          <div class="p-6">
-          </div>
-        </div>
-
-        <!-- Activity 2 -->
-        <div class="bg-white rounded-2xl shadow-lg hover:shadow-md transition-shadow duration-300">
-          <img 
-            src="assets/activity2.png" 
-            alt="Art Workshop"
-            class="w-full h-48 object-cover rounded-t-2xl">
-          <div class="p-6">
-          </div>
-        </div>
-
-        <!-- Activity 3 -->
-        <div class="bg-white rounded-2xl shadow-lg hover:shadow-md transition-shadow duration-300">
-          <img 
-            src="assets/activity3.png" 
-            alt="Beach Sports"
-            class="w-full h-48 object-cover rounded-t-2xl">
-          <div class="p-6">
-          </div>
-        </div>
+      <div class="flex flex-col justify-center items-center w-1/2">
+        <h2
+          class="!text-4xl text-center md:text-7xl font-bold text-secondary mb-6"
+        >
+          No bore, no hassle, just <br />
+          <span class="text-primary"> straight fun! </span>
+        </h2>
+        <p class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto text-center">
+          Join local adventures, make new friends, and create unforgettable
+          memories. Whether you're into sports, arts, or just hanging out -
+          Flink has something for everyone!
+        </p>
+        <a
+          href="#activities"
+          class="bg-primary mt-3 hover:bg-teal-500 text-white px-8 py-3 rounded-full text-lg transition-all duration-300 cursor-pointer opacity-0 animate-fade-in-button"
+        >
+          Explore Activities
+        </a>
       </div>
     </div>
   </section>
 </main>
 
 <footer class="bg-secondary text-white py-8">
-  <div class="container mx-auto px-6">
-    <div class="grid md:grid-cols-3 gap-8">
-      <div>
-        <h5 class="text-primary text-lg font-bold mb-4">Flink</h5>
-        <p class="text-sm">Making social connections through shared experiences</p>
-      </div>
-      <div>
-        <h6 class="text-primary mb-4">Quick Links</h6>
-        <ul class="space-y-2 text-sm">
-          <li><a href="#" class="hover:text-primary transition-colors">About Us</a></li>
-          <li><a href="#" class="hover:text-primary transition-colors">Contact</a></li>
-          <li><a href="#" class="hover:text-primary transition-colors">FAQ</a></li>
-        </ul>
-      </div>
-      <div>
-        <h6 class="text-primary mb-4">Legal</h6>
-        <ul class="space-y-2 text-sm">
-          <li><a href="#" class="hover:text-primary transition-colors">Privacy Policy</a></li>
-          <li><a href="#" class="hover:text-primary transition-colors">Terms of Service</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="border-t border-primary/20 mt-8 pt-4 text-center text-sm">
-      © 2025 Flink. All rights reserved.
-    </div>
+  <div class="flex justify-center items-center">
+    <img src="/assets/flink_logo.png" class="max-h-8 px-4" alt="" />
+  </div>
+  <div class="border-t border-primary/20 mt-8 pt-4 text-center text-sm">
+    © 2025 Flink. All rights reserved.
   </div>
 </footer>

@@ -2,19 +2,16 @@ import {
   IsNotEmpty,
   IsString,
   IsDate,
-  IsEnum,
   IsArray,
   IsInt,
-  IsUUID,
   ValidateNested,
   IsObject,
   Min,
   Max,
   IsOptional,
-
+  IsUUID,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ActivityConditions } from '../../../common/enums/activity-conditions.enum';
 import { LocationDto } from '../../../common/dto/location-dto';
 import { validationMessages } from '../../../common/error_messages/validation-messages';
 import { MinLength, MaxLength } from 'class-validator';
@@ -45,9 +42,6 @@ export class CreateActivityDto {
   @IsOptional()
   activityPhotos: string[];
 
-  @IsString({ message: validationMessages.invalidFormat('Conditions') })
-  conditions: string;
-
   @IsNotEmpty({
     message: validationMessages.required('Number of Participants'),
   })
@@ -64,7 +58,7 @@ export class CreateActivityDto {
   @Type(() => LocationDto)
   location: LocationDto;
 
-  @IsNotEmpty({ message: validationMessages.required('Category Name') })
-  @IsString({ message: validationMessages.invalidFormat('Category Name') })
-  categoryName: string;
+  @IsNotEmpty({ message: validationMessages.required('Category ID') })
+  @IsUUID()
+  categoryId: string;
 }

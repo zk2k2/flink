@@ -1,8 +1,9 @@
-import { IsString, IsNumber, Min} from 'class-validator';
+import { IsString, IsNumber, Min, IsUUID } from 'class-validator';
 
 export class CreateUserHobbiesDto {
+  @IsUUID()
   @IsString()
-  title: string;
+  hobbyId: string;
 
   @IsNumber()
   @Min(1)

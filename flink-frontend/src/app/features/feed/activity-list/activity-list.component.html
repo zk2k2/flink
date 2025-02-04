@@ -1,3 +1,4 @@
 <div class="activities-list flex flex-col space-y-8">
-  <app-activity-card [activity]="mockActivity"></app-activity-card>
+  <app-activity-card *ngFor="let activity of activities" [activity]="activity">
+  </app-activity-card>
 </div>

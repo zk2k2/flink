@@ -8,10 +8,8 @@ import {
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { CommonEntity } from '../../../common/entities/common.entity';
-import { ActivityConditions } from '../../../common/enums/activity-conditions.enum';
 import { Location } from '../../../common/entities/location.entity';
 import { Category } from 'src/modules/category/entities/category.entity';
-
 
 @Entity()
 export class Activity extends CommonEntity {
@@ -24,15 +22,12 @@ export class Activity extends CommonEntity {
   @Column('text')
   description: string;
 
-  @Column('simple-array')
+  @Column('simple-array', { nullable: true })
   activityPhotos: string[];
 
   @ManyToOne(() => Location, { eager: true, nullable: false })
   @JoinColumn()
   location: Location;
-
-  @Column({ nullable: true })
-  conditions: string;
 
   @Column()
   nbOfParticipants: number;

@@ -1,3 +1,57 @@
-html {
-    scroll-behavior: smooth;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
   }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+}
+
+.animate-shake {
+  display: inline-block;
+  animation: shake 0.3s ease-in-out 1.5s forwards; /* Shake ends at 1.8s */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out 1s forwards;
+}
+
+.animate-fade-in-description {
+  animation: fadeIn 0.5s ease-in-out 2s forwards; /* Starts after the shake finishes */
+}
+
+.animate-fade-in-button {
+  animation: fadeIn 0.5s ease-in-out 2.5s forwards; /* Starts after description fades in */
+}
