@@ -12,12 +12,11 @@ import { UserHobby } from '../user-hobbies/entities/user-hobby.entity';
 import { forwardRef, Inject } from '@nestjs/common';
 import { LocationDto } from 'src/common/dto/location-dto';
 @Injectable()
-export class UserService extends CommonService<
-  User
-> {
+export class UserService extends CommonService<User> {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Location) private readonly locationRepository: Repository<Location>,
+    @InjectRepository(Location)
+    private readonly locationRepository: Repository<Location>,
     private readonly hobbyService: HobbyService,
     @Inject(forwardRef(() => UserHobbiesService))
     private readonly UserHobbiesService: UserHobbiesService,
@@ -32,14 +31,16 @@ export class UserService extends CommonService<
         { phone: signupDto.phone },
       ],
     });
-    const hashedPassword = await bcrypt.hash(signupDto.password, parseInt(process.env.JWT_SALT || '10'));
+    const hashedPassword = await bcrypt.hash(
+      signupDto.password,
+      parseInt(process.env.JWT_SALT || '10'),
+    );
 
     if (userExists) {
       throw new Error('User already exists');
     }
 
     const savedLocation = await this.createLocation(signupDto.location);
-
 
     const newUser = this.userRepository.create({
       ...signupDto,
@@ -49,17 +50,18 @@ export class UserService extends CommonService<
     const savedUser = await this.userRepository.save(newUser);
     if (signupDto.hobbies && signupDto.hobbies.length > 0) {
       for (const hobbyDto of signupDto.hobbies) {
-        const hobby = await this.hobbyService.findByField('title', hobbyDto.title);
+        const hobby = await this.hobbyService.findByField(
+          'id',
+          hobbyDto.hobbyId,
+        );
         if (!hobby) {
-          throw new Error(`Hobby "${hobbyDto.title}" does not exist.`);
+          throw new Error(`Hobby "${hobbyDto.hobbyId}" does not exist.`);
         }
         const newUserHobby = new UserHobby();
         newUserHobby.user = savedUser;
         newUserHobby.hobby = hobby;
         newUserHobby.interestLevel = hobbyDto.interestLevel;
-        await this.UserHobbiesService.create(
-          newUserHobby
-        );
+        await this.UserHobbiesService.create(newUserHobby);
       }
 
       return savedUser;
@@ -77,7 +79,10 @@ export class UserService extends CommonService<
     return await this.locationRepository.save(newLocation);
   }
 
-  async updateLocation(userId: string, newLocation: LocationDto): Promise<User> {
+  async updateLocation(
+    userId: string,
+    newLocation: LocationDto,
+  ): Promise<User> {
     const user = await this.findOneById(userId);
     if (!user) {
       throw new Error('User not found');
@@ -90,9 +95,16 @@ export class UserService extends CommonService<
     return this.update(userId, { location: updatedLocation });
   }
 
-  async findByField(identifier: string, options?: FindOneOptions<User>): Promise<User> {
+  async findByField(
+    identifier: string,
+    options?: FindOneOptions<User>,
+  ): Promise<User> {
     const phoneRegex = /^\+216\d{8}$/;
-    const field = identifier.includes('@') ? 'email' : phoneRegex.test(identifier) ? 'phone' : 'username';
+    const field = identifier.includes('@')
+      ? 'email'
+      : phoneRegex.test(identifier)
+        ? 'phone'
+        : 'username';
 
     const findOptions: FindOneOptions<User> = {
       where: { [field]: identifier },
@@ -108,31 +120,30 @@ export class UserService extends CommonService<
     return bcrypt.compare(plainPassword, hashedPassword);
   }
 
-  async updateRefreshToken(userId: string, refreshToken: string): Promise<void> {
+  async updateRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<void> {
     if (!userId) {
       throw new Error('Invalid userId provided');
     }
 
-    await this.update(
-      userId,
-      { refreshToken }
-    );
+    await this.update(userId, { refreshToken });
   }
-
 
   async clearRefreshToken(userId: string): Promise<void> {
     if (!userId) {
       throw new Error('Invalid userId provided');
     }
 
-    await this.update(
-      userId,
-      { refreshToken: null }
-    );
+    await this.update(userId, { refreshToken: null });
   }
 
   async updatePassword(id: string, newPassword: string): Promise<User> {
-    const hashedPassword = await bcrypt.hash(newPassword, process.env.JWT_SALT || 10);
+    const hashedPassword = await bcrypt.hash(
+      newPassword,
+      process.env.JWT_SALT || 10,
+    );
     return this.update(id, { password: hashedPassword });
   }
 
@@ -148,7 +159,6 @@ export class UserService extends CommonService<
   }
 
   async getFollowings(userId: string): Promise<User[]> {
-
     const user = await this.findOne({
       where: { id: userId },
       relations: ['following'],
@@ -158,7 +168,6 @@ export class UserService extends CommonService<
     }
     return user.following || [];
   }
-
 
   async getAchievements(userId: string) {
     const user = await this.findOne({
@@ -172,11 +181,9 @@ export class UserService extends CommonService<
   }
 
   async getProfile(identifier: string) {
-    const user = await this.findByField(identifier,
-      {
-        relations: ['achievements', 'following', 'followers', 'userHobbies'],
-      }
-    );
+    const user = await this.findByField(identifier, {
+      relations: ['achievements', 'following', 'followers', 'userHobbies'],
+    });
 
     if (!user) {
       throw new Error('User not found');

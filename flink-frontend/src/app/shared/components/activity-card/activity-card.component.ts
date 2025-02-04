@@ -9,16 +9,13 @@ export interface Activity {
   title: string;
   category: {
     icon: string;
-    label: string;
+    name: string;
   };
-  details: {
-    date: string;
-    location: string;
-    participants: string;
-  };
+  date: string;
+  location: string;
   description: string;
-  image: string;
-  
+  photoUrls: string[];
+  nbOfParticipants: number;
 }
 
 @Component({

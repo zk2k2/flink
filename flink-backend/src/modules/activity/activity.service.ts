@@ -7,6 +7,7 @@ import { CommonService } from '../../common/service/common.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UserService } from '../user/user.service';
 import { CategoryService } from '../category/category.service';
+import { S3Service } from 'src/common/service/s3.service';
 
 @Injectable()
 export class ActivityService extends CommonService<Activity> {
@@ -15,7 +16,7 @@ export class ActivityService extends CommonService<Activity> {
     private readonly activityRepository: Repository<Activity>,
     private readonly userService: UserService,
     private readonly categoryservice: CategoryService,
-
+    private readonly s3Service: S3Service,
   ) {
     super(activityRepository);
   }
@@ -25,16 +26,28 @@ export class ActivityService extends CommonService<Activity> {
     sortCriteria: ActivitySortCriteria = ActivitySortCriteria.NEWEST,
     activityType: 'feed' | 'profile',
     timeFrame?: 'past' | 'recent',
-    creatorId?: string
+    creatorId?: string,
   ): Promise<Activity[]> {
     let query = this.activityRepository
-      .createQueryBuilder('activity');
+      .createQueryBuilder('activity')
+      .leftJoin('activity.category', 'category') // Join with category
+      .leftJoin('activity.location', 'location') // Join with location
+      .leftJoin('activity.creator', 'user') // Join with user table
+      .addSelect([
+        'category.name',
+        'location.name',
+        'user.firstName',
+        'user.lastName',
+        'user.profilePic',
+      ]); // Select category, location names, and user details
 
     if (activityType === 'feed') {
       query = query.andWhere('activity.creatorId != :userId', { userId });
 
       if (creatorId) {
-        query = query.andWhere('activity.creatorId = :creatorId', { creatorId });
+        query = query.andWhere('activity.creatorId = :creatorId', {
+          creatorId,
+        });
       }
     } else if (activityType === 'profile') {
       query = query.andWhere('activity.creatorId = :userId', { userId });
@@ -89,27 +102,43 @@ export class ActivityService extends CommonService<Activity> {
       const nearestQuery = this.activityRepository
         .createQueryBuilder('activity')
         .leftJoin('activity.location', 'location')
+        .leftJoin('activity.category', 'category')
+        .leftJoin('activity.creator', 'user') // Join with user table
+        .addSelect([
+          'category.name',
+          'location.name',
+          'user.firstName',
+          'user.lastName',
+          'user.profilePic',
+        ]) // Select category, location names, and user details
         .addSelect(
           `ST_Distance(
             ST_SetSRID(ST_MakePoint(:userLng, :userLat), 4326)::geography,
             location.coordinates::geography
           )`,
-          'distance'
+          'distance',
         )
         .orderBy('distance', 'ASC')
         .setParameters({
           userLng: userLng,
-          userLat: userLat
+          userLat: userLat,
         });
 
       const result = await nearestQuery.getRawAndEntities();
       console.log(`Found ${result.entities.length} activities with distances`);
 
       result.raw.forEach((raw, index) => {
-        console.log(`Activity ${result.entities[index].id} distance: ${raw.distance}`);
+        console.log(
+          `Activity ${result.entities[index].id} distance: ${raw.distance}`,
+        );
       });
 
-      return result.entities;
+      // Map the result to include category, location names, and user details
+      const activitiesWithDetails = result.entities.map((activity, index) => ({
+        ...activity,
+      }));
+
+      return activitiesWithDetails;
     } else if (sortCriteria === ActivitySortCriteria.CUSTOM) {
       const user = await this.userService.findOne({
         where: { id: userId },
@@ -117,67 +146,102 @@ export class ActivityService extends CommonService<Activity> {
       });
 
       if (!user?.location) {
-        throw new HttpException('User or user location not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'User or user location not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       const userCoords = user.location.coordinates as any;
       const [userLng, userLat] = userCoords.coordinates;
+
       query = query
         .leftJoin('activity.location', 'location')
         .leftJoin('activity.category', 'category')
+        .leftJoin('activity.creator', 'user') // Join with user table
+        .addSelect([
+          'category.name',
+          'location.name',
+          'user.firstName',
+          'user.lastName',
+          'user.profilePic',
+        ]) // Select category, location names, and user details
         .addSelect(
           `ST_Distance(
-          ST_SetSRID(ST_MakePoint(:userLng, :userLat), 4326)::geography,
-          location.coordinates::geography
-        ) + 1`,
-          'distance'
+            ST_SetSRID(ST_MakePoint(:userLng, :userLat), 4326)::geography,
+            location.coordinates::geography
+          ) + 1`,
+          'distance',
         )
         .addSelect(
           `EXP(
-        (SELECT COALESCE(SUM(uh."interestLevel"), 0)
-         FROM user_hobby uh
-         JOIN hobby h ON uh."hobbyId" = h.id
-         WHERE uh."userId" = :userId
-         AND h."categoryId" = activity."categoryId"
-        ) - (0.5 * LN(ST_Distance(
-          ST_SetSRID(ST_MakePoint(:userLng, :userLat), 4326)::geography,
-          location.coordinates::geography
-        ) + 1) / LN(2))
-      )`,
-          'score'
+            (SELECT COALESCE(SUM(uh."interestLevel"), 0)
+             FROM user_hobby uh
+             JOIN hobby h ON uh."hobbyId" = h.id
+             WHERE uh."userId" = :userId
+             AND h."categoryId" = activity."categoryId"
+            ) - (0.5 * LN(ST_Distance(
+              ST_SetSRID(ST_MakePoint(:userLng, :userLat), 4326)::geography,
+              location.coordinates::geography
+            ) + 1) / LN(2))
+          )`,
+          'score',
         )
         .orderBy('score', 'DESC')
         .setParameters({ userLng, userLat, userId });
     }
+
     const result = await query.getRawAndEntities();
     console.log(`Found ${result.entities.length} activities with scores`);
     result.raw.forEach((raw, index) => {
       console.log(`Activity ${result.entities[index].id} score: ${raw.score}`);
     });
-    return await query.getMany();
+
+    // Map the result to include category, location names, and user details
+    const activitiesWithDetails = result.entities.map((activity, index) => ({
+      ...activity,
+      categoryName: result.raw[index].category_name,
+      locationName: result.raw[index].location_name,
+      creatorFirstName: result.raw[index].user_firstName,
+      creatorLastName: result.raw[index].user_lastName,
+      creatorProfilePic: result.raw[index].user_profilePic,
+    }));
+
+    return activitiesWithDetails;
   }
 
-  async createActivity(creatorId: string, createDto: CreateActivityDto): Promise<Activity> {
-    const { location, categoryName, ...activityData } = createDto;
-
+  async createActivity(
+    creatorId: string,
+    createDto: CreateActivityDto,
+    photos?: Express.Multer.File[],
+  ): Promise<Activity> {
+    const { location, categoryId, ...activityData } = createDto;
 
     const creator = await this.userService.findOneById(creatorId);
-
-    if (!creator) {
-      console.error('Creator not found with ID:', creatorId);
+    if (!creator)
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
 
-    const categoryEntity = await this.categoryservice.findByField('name', categoryName);
-
-    if (!categoryEntity) {
+    const categoryEntity = await this.categoryservice.findOneById(categoryId);
+    if (!categoryEntity)
       throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
-    }
 
     const savedLocation = await this.userService.createLocation(location);
-
     creator.xp += 500;
     await this.userService.update(creatorId, creator);
+
+    let photoUrls: string[] = [];
+    if (photos?.length) {
+      try {
+        photoUrls = await Promise.all(
+          photos.map((photo) => this.s3Service.uploadFile(photo)),
+        );
+      } catch (error) {
+        throw new HttpException(
+          'Error uploading photos',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
 
     return this.create({
       ...activityData,
@@ -185,6 +249,7 @@ export class ActivityService extends CommonService<Activity> {
       creator,
       category: categoryEntity,
       users: [creator],
+      activityPhotos: photoUrls,
     });
   }
 
@@ -204,7 +269,10 @@ export class ActivityService extends CommonService<Activity> {
       throw new HttpException('Activity not found', HttpStatus.NOT_FOUND);
     }
 
-    if (!activity.users.some(u => u.id === userId) && activity.users.length < activity.nbOfParticipants) {
+    if (
+      !activity.users.some((u) => u.id === userId) &&
+      activity.users.length < activity.nbOfParticipants
+    ) {
       activity.users.push(user);
       user.xp += 100;
     }
@@ -230,8 +298,8 @@ export class ActivityService extends CommonService<Activity> {
       throw new HttpException('Activity not found', HttpStatus.NOT_FOUND);
     }
 
-    if (activity.users.some(u => u.id === userId)) {
-      activity.users = activity.users.filter(u => u.id !== userId);
+    if (activity.users.some((u) => u.id === userId)) {
+      activity.users = activity.users.filter((u) => u.id !== userId);
       user.xp -= 100;
     }
 
@@ -251,7 +319,10 @@ export class ActivityService extends CommonService<Activity> {
     }
 
     if (activity.creator.id !== userId) {
-      throw new HttpException('User is not the creator of the activity', HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        'User is not the creator of the activity',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     const creator = activity.creator;
@@ -260,5 +331,4 @@ export class ActivityService extends CommonService<Activity> {
 
     await this.remove(activityId);
   }
-
 }
