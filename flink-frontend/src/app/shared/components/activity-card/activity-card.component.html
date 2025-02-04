@@ -8,7 +8,7 @@
               <div class="activity-poster flex space-x-2">
                 <div class="flex justify-center flex-col">
                   <img
-                    [src]="activity.creator.profilePic"
+                    [src]="activity.creator.profilePic | imageNotFound"
                     class="rounded-full !m-0 max-w-10 max-h-10"
                     alt=""
                   />
@@ -20,7 +20,7 @@
                     {{ activity.creator.lastName }}
                   </p>
                   <p class="text-gray-400 !text-[10px] italic !m-0">
-                    posted on
+                    posted on {{ activity.createdAt | customDate }}
                   </p>
                 </div>
               </div>
@@ -59,7 +59,7 @@
           <div class="activity-details !my-4 flex space-x-5">
             <div class="flex justify-center space-x-1 items-center">
               <mat-icon>date_range</mat-icon>
-              <span class="time">{{ activity.date }}</span>
+              <span class="time">{{ activity.date | customDate }}</span>
             </div>
 
             <div class="flex justify-center items-center">
@@ -68,7 +68,9 @@
             </div>
             <div class="flex justify-center items-center space-x-1">
               <mat-icon>people</mat-icon>
-              <span class="time">{{ activity.nbOfParticipants }} / 10 </span>
+              <span class="time"
+                >{{ activity.nbOfParticipants }} participants
+              </span>
             </div>
           </div>
 
@@ -80,7 +82,7 @@
       <div class="activity-image xl:w-1/5">
         <img
           class="xl:h-[220px] w-full !rounded-lg"
-          [src]="activity.activityPhotos[0]"
+          [src]="activity.activityPhotos[0] | imageNotFound"
           alt=""
         />
       </div>

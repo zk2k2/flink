@@ -3,24 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-
-export interface Activity {
-  creator: {
-    firstName: string;
-    lastName: string;
-    profilePic: string;
-  };
-  title: string;
-  category: {
-    icon: string;
-    name: string;
-  };
-  date: string;
-  location: string;
-  nbOfParticipants: number;
-  description: string;
-  activityPhotos: string[];
-}
+import { ActivityCard } from '../../shared/types/ActivityCard';
 
 @Injectable({ providedIn: 'root' })
 export class ActivityService {
@@ -28,8 +11,8 @@ export class ActivityService {
 
   constructor(private http: HttpClient) {}
 
-  getActivities(): Observable<Activity[]> {
-    return this.http.get<Activity[]>(this.apiUrl, {
+  getActivities(): Observable<ActivityCard[]> {
+    return this.http.get<ActivityCard[]>(this.apiUrl, {
       headers: new HttpHeaders({
         Authorization: `Bearer ${environment.bearerToken}`,
       }),
