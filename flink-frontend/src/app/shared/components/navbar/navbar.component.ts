@@ -20,4 +20,10 @@ export class NavbarComponent {
   ngOnInit() {
     this.isLoggedIn$ = this.authService.isLoggedIn();
   }
+
+  logout() {
+    this.authService.logout().subscribe(() => {
+      window.location.reload();
+    });
+  }
 }

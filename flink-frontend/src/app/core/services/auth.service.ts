@@ -12,11 +12,16 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   isLoggedIn(): Observable<boolean> {
-    return this.http.post(`${this.authUrl}/check-status`,{}).pipe(
+    return this.http.post(`${this.authUrl}/check-status`, {}).pipe(
       map(() => true),
-      catchError(() => of(false)) 
+      catchError(() => of(false))
     );
   }
-  
 
+  logout(): Observable<boolean> {
+    return this.http.post(`${this.authUrl}/logout`, {}).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    );
+  }
 }
