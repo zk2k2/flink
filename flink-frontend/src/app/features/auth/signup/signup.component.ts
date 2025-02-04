@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as L from 'leaflet';
@@ -15,9 +15,10 @@ export class SignupComponent implements OnInit, AfterViewInit {
   map!: L.Map;
   marker?: L.Marker;
   currentYear = new Date().getFullYear();
+  categories: any[] = [];
 
   private signupApiUrl = 'http://localhost:3000/auth/signup';
-  private hobbiesApiUrl = 'http://localhost:3000/hobbies';
+  private categoriesApiUrl = 'http://localhost:3000/category';
 
   private namePattern = /^[a-zA-ZÀ-ÿ\s']{2,50}$/;
   private usernamePattern = /^[a-zA-Z0-9_]{4,20}$/;
@@ -35,79 +36,89 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.initializeForm();
-    this.loadHobbies();
+    this.loadCategories();
   }
 
   private initializeForm(): void {
     this.signupForm = this.fb.group({
-      firstName: ['', [
-        Validators.required,
-        Validators.pattern(this.namePattern)
-      ]],
-      lastName: ['', [
-        Validators.required,
-        Validators.pattern(this.namePattern)
-      ]],
-      username: ['', [
-        Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(20),
-        Validators.pattern(this.usernamePattern)
-      ]],
-      email: ['', [
-        Validators.required,
-        Validators.email,
-        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
-      ]],
-      phone: ['', [
-        Validators.required,
-        Validators.pattern(this.phonePattern)
-      ]],
-      password: ['', [
-        Validators.required,
-        Validators.pattern(this.passwordPattern)
-      ]],
-      birthDate: ['', [
-        Validators.required,
-        this.ageValidator(13)
-      ]],
-      profilePic: ['', [
-        Validators.required,
-        Validators.pattern(this.urlPattern)
-      ]],
-      hobbies: this.fb.array([]),
+      firstName: ['', [Validators.required, Validators.pattern(this.namePattern)]],
+      lastName: ['', [Validators.required, Validators.pattern(this.namePattern)]],
+      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20), Validators.pattern(this.usernamePattern)]],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+      phone: ['', [Validators.required, Validators.pattern(this.phonePattern)]],
+      password: ['', [Validators.required, Validators.pattern(this.passwordPattern)]],
+      confirmPassword: ['', Validators.required],
+      birthDate: ['', [Validators.required, this.ageValidator(13)]],
+      profilePic: ['', [Validators.required, Validators.pattern(this.urlPattern)]],
+      selectedCategory: ['', Validators.required],
+      hobbies: this.fb.group({}),
       location: this.fb.group({
-        name: ['', [
-          Validators.required,
-          Validators.minLength(5),
-          Validators.maxLength(100)
-        ]],
+        name: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
         longitude: [null, Validators.required],
         latitude: [null, Validators.required]
       })
-    });
+    }, { validators: this.passwordMatchValidator });
   }
 
-  private loadHobbies(): void {
-    this.http.get<any[]>(this.hobbiesApiUrl).subscribe({
+  private passwordMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordMismatch: true };
+  };
+
+  private loadCategories(): void {
+    this.http.get<any[]>(this.categoriesApiUrl).subscribe({
       next: (data) => {
-        const hobbiesArray = this.signupForm.get('hobbies') as FormArray;
-        data.forEach(hobby => {
-          hobbiesArray.push(this.fb.group({
-            id: [hobby.id],
-            title: [hobby.title],
-            interestLevel: [3, [
-              Validators.required,
-              Validators.min(1),
-              Validators.max(5),
-              this.integerValidator()
-            ]]
-          }));
+        this.categories = data;
+        const hobbiesGroup = this.signupForm.get('hobbies') as FormGroup;
+        data.forEach(category => {
+          const catHobbies = this.fb.array<FormGroup<any>>([]); 
+          category.hobbies.forEach((hobby: any) => {
+            const hobbyGroup = this.fb.group({
+              id: [hobby.id],
+              title: [hobby.title],
+              categoryId: [category.id],
+              checked: [false],
+              interestLevel: [{ value: 3, disabled: true }, [
+                Validators.required,
+                Validators.min(1),
+                Validators.max(5),
+                this.integerValidator()
+              ]]
+            });
+            hobbyGroup.get('checked')?.valueChanges.subscribe(checked => {
+              Promise.resolve().then(() => {
+                const interestControl = hobbyGroup.get('interestLevel');
+                if (checked) {
+                  interestControl?.enable({ emitEvent: false });
+                } else {
+                  interestControl?.disable({ emitEvent: false });
+                }
+                this.cdr.detectChanges();
+              });
+            });
+
+            catHobbies.push(hobbyGroup);
+          });
+          hobbiesGroup.addControl(category.id, catHobbies);
         });
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Error loading hobbies:', err)
+      error: (err) => console.error('Error loading categories:', err)
     });
+  }
+
+  get filteredHobbies(): FormArray<FormGroup<any>> {
+    const selectedCategory = this.signupForm.get('selectedCategory')?.value;
+    if (!selectedCategory) {
+      return this.fb.array<FormGroup<any>>([]); 
+    }
+    const hobbiesGroup = this.signupForm.get('hobbies') as FormGroup;
+    return hobbiesGroup.get(selectedCategory) as FormArray<FormGroup<any>>;
+  }
+
+  trackByHobbyId(index: number, hobby: AbstractControl): string {
+    return hobby.get('id')?.value;
   }
 
   private ageValidator(minAge: number) {
@@ -116,11 +127,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
       const today = new Date();
       let age = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
-      
       if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
         age--;
       }
-      
       return age >= minAge ? null : { underage: { requiredAge: minAge } };
     };
   }
@@ -129,10 +138,6 @@ export class SignupComponent implements OnInit, AfterViewInit {
     return (control: AbstractControl): { [key: string]: any } | null => {
       return Number.isInteger(control.value) ? null : { notInteger: true };
     };
-  }
-
-  get hobbies(): FormArray {
-    return this.signupForm.get('hobbies') as FormArray;
   }
 
   ngAfterViewInit(): void {
@@ -148,18 +153,37 @@ export class SignupComponent implements OnInit, AfterViewInit {
     this.map.on('click', (e: L.LeafletMouseEvent) => {
       const { lat, lng } = e.latlng;
       this.setMarker(lat, lng);
+      this.fetchAddress(lat, lng);
     });
   }
 
   private setMarker(lat: number, lng: number): void {
+    const customIcon = L.icon({
+      iconUrl: 'assets/marker.png',
+      iconSize: [38, 50],
+      iconAnchor: [19, 50],
+      popupAnchor: [0, -50]
+    });
     if (this.marker) {
       this.marker.setLatLng([lat, lng]);
     } else {
-      this.marker = L.marker([lat, lng]).addTo(this.map);
+      this.marker = L.marker([lat, lng], { icon: customIcon }).addTo(this.map);
     }
     this.signupForm.get('location')!.patchValue({
       longitude: lng,
       latitude: lat
+    });
+  }
+
+  private fetchAddress(lat: number, lng: number): void {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+    this.http.get<any>(url).subscribe({
+      next: (data) => {
+        if (data && data.display_name) {
+          this.signupForm.get('location')?.patchValue({ name: data.display_name });
+        }
+      },
+      error: (err) => console.error('Error fetching address:', err)
     });
   }
 
@@ -169,19 +193,30 @@ export class SignupComponent implements OnInit, AfterViewInit {
       this.snackBar.open('Please fix all validation errors', 'Close', { duration: 3000 });
       return;
     }
-  
-    const formData = this.signupForm.value;
+    const hobbiesGroup = this.signupForm.get('hobbies') as FormGroup;
+    const checkedHobbies: any[] = [];
+    Object.keys(hobbiesGroup.controls).forEach(catId => {
+      const catArray = hobbiesGroup.get(catId) as FormArray<FormGroup<any>>;
+      catArray.controls.forEach(ctrl => {
+        if (ctrl.get('checked')?.value) {
+          checkedHobbies.push({
+            id: ctrl.get('id')?.value,
+            title: ctrl.get('title')?.value,
+            interestLevel: ctrl.get('interestLevel')?.value
+          });
+        }
+      });
+    });
+    const formData = { ...this.signupForm.getRawValue(), hobbies: checkedHobbies };
+    delete formData.selectedCategory;
+
     this.http.post(this.signupApiUrl, formData).subscribe({
       next: (res: any) => {
         const { accessToken, refreshToken } = res;
-        
         document.cookie = `accessToken=${accessToken}; path=/;`;
         document.cookie = `refreshToken=${refreshToken}; path=/;`;
-        
         this.snackBar.open('Registration successful!', 'Close', { duration: 3000 });
-        
         this.signupForm.reset();
-  
         this.router.navigate(['/profile']);
       },
       error: (err) => {
@@ -190,7 +225,6 @@ export class SignupComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  
 
   private handleBackendErrors(error: any): void {
     if (error.status === 400 && error.error?.message) {

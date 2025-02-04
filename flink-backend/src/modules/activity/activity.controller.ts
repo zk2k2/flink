@@ -43,7 +43,7 @@ export class ActivityController extends CommonController<
     @Query('timeFrame') timeFrame?: 'past' | 'recent',
     @Query('creatorId') creatorId?: string,
   ): Promise<Activity[]> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
 
     if (!userId) {
       throw new HttpException(
@@ -72,7 +72,7 @@ export class ActivityController extends CommonController<
     @UploadedFiles() files: { photos?: Express.Multer.File[] },
     @Body() body: any,
   ): Promise<Activity> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
 
     if (!userId) {
       throw new HttpException(
@@ -107,7 +107,7 @@ export class ActivityController extends CommonController<
     @Req() req,
     @Query('activityId') activityId: string,
   ): Promise<Activity> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
 
     if (!userId) {
       throw new HttpException(
@@ -128,7 +128,7 @@ export class ActivityController extends CommonController<
     @Req() req,
     @Query('activityId') activityId: string,
   ): Promise<Activity> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
 
     if (!userId) {
       throw new HttpException(
@@ -149,7 +149,7 @@ export class ActivityController extends CommonController<
     @Req() req,
     @Query('activityId') activityId: string,
   ): Promise<void> {
-    const userId = req.user.id;
+    const userId = req.user['id'];
 
     if (!userId) {
       throw new HttpException(

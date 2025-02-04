@@ -19,8 +19,9 @@ export class HobbyController extends CommonController<Hobby, CreateHobbyDto, Upd
   constructor(private readonly hobbyService: HobbyService) {
     super(hobbyService);
   }
-
+  
   @Post()
+  @UseGuards(AdminGuard)
   async create(@Body() createHobbyDto: CreateHobbyDto): Promise<Hobby> {
     try {
       return await this.hobbyService.createHobby(createHobbyDto);
@@ -28,5 +29,6 @@ export class HobbyController extends CommonController<Hobby, CreateHobbyDto, Upd
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+
 }
 

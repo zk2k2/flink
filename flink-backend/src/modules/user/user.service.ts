@@ -94,11 +94,9 @@ export class UserService extends CommonService<User> {
     const updatedLocation = await this.createLocation(newLocation);
     return this.update(userId, { location: updatedLocation });
   }
-
-  async findByField(
-    identifier: string,
-    options?: FindOneOptions<User>,
-  ): Promise<User> {
+ 
+  async findByField(identifier: string, options?: FindOneOptions<User>): Promise<User> {
+ 
     const phoneRegex = /^\+216\d{8}$/;
     const field = identifier.includes('@')
       ? 'email'
@@ -120,25 +118,8 @@ export class UserService extends CommonService<User> {
     return bcrypt.compare(plainPassword, hashedPassword);
   }
 
-  async updateRefreshToken(
-    userId: string,
-    refreshToken: string,
-  ): Promise<void> {
-    if (!userId) {
-      throw new Error('Invalid userId provided');
-    }
-
-    await this.update(userId, { refreshToken });
-  }
-
-  async clearRefreshToken(userId: string): Promise<void> {
-    if (!userId) {
-      throw new Error('Invalid userId provided');
-    }
-
-    await this.update(userId, { refreshToken: null });
-  }
-
+ 
+ 
   async updatePassword(id: string, newPassword: string): Promise<User> {
     const hashedPassword = await bcrypt.hash(
       newPassword,

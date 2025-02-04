@@ -9,7 +9,7 @@ export class Category extends CommonEntity {
   @Column({ type: 'varchar', unique: true })
   name: string;
 
-  @OneToMany(() => Hobby, (hobby) => hobby.category)
+  @OneToMany(() => Hobby, (hobby) => hobby.category,{ eager:true })
   hobbies: Hobby[];
 
   @OneToMany(() => Activity, (activity) => activity.category)
