@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import {
   HttpClient,
   HttpClientModule,
-  HttpHandler,
 } from '@angular/common/http';
 
 @NgModule({

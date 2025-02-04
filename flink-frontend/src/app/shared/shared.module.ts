@@ -5,7 +5,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { MatCard, MatCardModule, MatCardTitle } from '@angular/material/card';
+import {  MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ModalComponent } from './components/modal/modal.component';

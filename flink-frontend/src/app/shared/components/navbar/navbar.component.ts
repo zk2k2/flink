@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 export class NavbarComponent {
   menuItems = [
     { label: 'Home', icon: 'home', route: '/home' },
-    { label: 'Start activity', icon: 'queue', route: '/home' },
+    { label: 'Start activity', icon: 'queue', route: '/activity/new' },
     { label: 'About us', icon: 'info', route: '/about' },
     { label: 'My profile', icon: 'person', route: '/profile' },
   ];

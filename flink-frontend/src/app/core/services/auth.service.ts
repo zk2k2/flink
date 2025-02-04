@@ -1,14 +1,22 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthService {
-  private isAuthenticated = false;
+  private authUrl = 'http://localhost:3000/auth';
 
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
-  }
+  constructor(private http: HttpClient) {}
 
-  logout(): void {
-    localStorage.removeItem('token');
+  isLoggedIn(): Observable<boolean> {
+    return this.http.post(`${this.authUrl}/check-status`,{}).pipe(
+      map(() => true),
+      catchError(() => of(false)) 
+    );
   }
+  
+
 }
