@@ -4,17 +4,15 @@ import { FeedComponent } from './feed/feed.component';
 import { ActivityListComponent } from './activity-list/activity-list.component';
 
 const routes: Routes = [
-  { 
-    path: '', 
+  {
+    path: 'feed',
     component: FeedComponent,
-    children: [
-      { path: '', component: ActivityListComponent }
-    ]
-  }
+    children: [{ path: '', component: ActivityListComponent }],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class FeedRoutingModule { }
+export class FeedRoutingModule {}
