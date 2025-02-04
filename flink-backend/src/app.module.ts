@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './modules/mail/mail.module';
 import { UserHobbiesModule } from './modules/user-hobbies/user-hobbies.module';
 import { CategoryModule } from './modules/category/category.module';
+import { UploadModule } from './modules/upload/upload.module';
 
 
 dotenv.config();
@@ -35,6 +36,7 @@ dotenv.config();
     MailModule,
     UserHobbiesModule,
     CategoryModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

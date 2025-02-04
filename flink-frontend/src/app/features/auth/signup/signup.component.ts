@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as L from 'leaflet';
 import { Router } from '@angular/router';
+import { UploadService } from 'src/app/core/services/upload.service';
 
 @Component({
   selector: 'app-signup',
@@ -31,7 +32,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
     private http: HttpClient,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef,
-    private router: Router 
+    private router: Router,
+    private uploadService: UploadService
   ) {}
 
   ngOnInit(): void {
@@ -49,7 +51,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
       password: ['', [Validators.required, Validators.pattern(this.passwordPattern)]],
       confirmPassword: ['', Validators.required],
       birthDate: ['', [Validators.required, this.ageValidator(13)]],
-      profilePic: ['', [Validators.required, Validators.pattern(this.urlPattern)]],
+      // Remove the URL validator here – it will be set automatically after upload.
+      profilePic: ['', Validators.required],
       selectedCategory: ['', Validators.required],
       hobbies: this.fb.group({}),
       location: this.fb.group({
@@ -72,7 +75,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
         this.categories = data;
         const hobbiesGroup = this.signupForm.get('hobbies') as FormGroup;
         data.forEach(category => {
-          const catHobbies = this.fb.array<FormGroup<any>>([]); 
+          const catHobbies = this.fb.array<FormGroup<any>>([]);
+
           category.hobbies.forEach((hobby: any) => {
             const hobbyGroup = this.fb.group({
               id: [hobby.id],
@@ -97,7 +101,6 @@ export class SignupComponent implements OnInit, AfterViewInit {
                 this.cdr.detectChanges();
               });
             });
-
             catHobbies.push(hobbyGroup);
           });
           hobbiesGroup.addControl(category.id, catHobbies);
@@ -108,16 +111,17 @@ export class SignupComponent implements OnInit, AfterViewInit {
     });
   }
 
-  get filteredHobbies(): FormArray<FormGroup<any>> {
+  get filteredHobbies(): FormArray<FormGroup> {
     const selectedCategory = this.signupForm.get('selectedCategory')?.value;
     if (!selectedCategory) {
-      return this.fb.array<FormGroup<any>>([]); 
+      return new FormArray<FormGroup>([]);
     }
     const hobbiesGroup = this.signupForm.get('hobbies') as FormGroup;
-    return hobbiesGroup.get(selectedCategory) as FormArray<FormGroup<any>>;
+    return hobbiesGroup.get(selectedCategory) as FormArray<FormGroup>;
   }
+  
 
-  trackByHobbyId(index: number, hobby: AbstractControl): string {
+  trackByHobbyId(index: number, hobby: FormGroup): string {
     return hobby.get('id')?.value;
   }
 
@@ -187,6 +191,24 @@ export class SignupComponent implements OnInit, AfterViewInit {
     });
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file: File = input.files[0];
+      this.uploadService.uploadFile(file).subscribe({
+        next: (response: { fileUrl: string }) => {
+          this.signupForm.patchValue({ profilePic: response.fileUrl });
+          this.snackBar.open('File uploaded successfully', 'Close', { duration: 3000 });
+        },
+        error: (error: any) => {
+          console.error('File upload error:', error);
+          this.snackBar.open('File upload failed', 'Close', { duration: 3000 });
+        }
+      });
+      
+    }
+  }
+
   onSubmit(): void {
     if (this.signupForm.invalid) {
       this.signupForm.markAllAsTouched();
@@ -196,12 +218,11 @@ export class SignupComponent implements OnInit, AfterViewInit {
     const hobbiesGroup = this.signupForm.get('hobbies') as FormGroup;
     const checkedHobbies: any[] = [];
     Object.keys(hobbiesGroup.controls).forEach(catId => {
-      const catArray = hobbiesGroup.get(catId) as FormArray<FormGroup<any>>;
+      const catArray = hobbiesGroup.get(catId) as FormArray;
       catArray.controls.forEach(ctrl => {
         if (ctrl.get('checked')?.value) {
           checkedHobbies.push({
-            id: ctrl.get('id')?.value,
-            title: ctrl.get('title')?.value,
+            hobbyId: ctrl.get('id')?.value,
             interestLevel: ctrl.get('interestLevel')?.value
           });
         }
@@ -212,9 +233,6 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
     this.http.post(this.signupApiUrl, formData).subscribe({
       next: (res: any) => {
-        const { accessToken, refreshToken } = res;
-        document.cookie = `accessToken=${accessToken}; path=/;`;
-        document.cookie = `refreshToken=${refreshToken}; path=/;`;
         this.snackBar.open('Registration successful!', 'Close', { duration: 3000 });
         this.signupForm.reset();
         this.router.navigate(['/profile']);
