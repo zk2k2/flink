@@ -5,6 +5,7 @@ import { CreateActivityFormComponent } from './components/create-activity-form/c
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivityDetailsComponent } from './components/activity-details/activity-details.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ActivityRoutingModule } from './activity-routing.module';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,12 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CreateActivityFormComponent,
     ActivityDetailsComponent,
   ],
-  imports: [CommonModule, ReactiveFormsModule, SharedModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    SharedModule,
+    ActivityRoutingModule,
+  ],
   exports: [CreateActivityComponent, ActivityDetailsComponent],
 })
 export class ActivityModule {}

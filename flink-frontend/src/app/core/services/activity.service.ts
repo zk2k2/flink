@@ -12,10 +12,6 @@ export class ActivityService {
   constructor(private http: HttpClient) {}
 
   getActivities(): Observable<ActivityCard[]> {
-    return this.http.get<ActivityCard[]>(this.apiUrl, {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${environment.bearerToken}`,
-      }),
-    });
+    return this.http.get<ActivityCard[]>(this.apiUrl);
   }
 }

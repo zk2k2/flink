@@ -12,7 +12,7 @@ export class NavbarComponent implements OnInit {
   isLoggedIn$!: Observable<boolean>;
   menuItems = [
     { label: 'Home', icon: 'home', route: '/feed' },
-    { label: 'Start activity', icon: 'queue', route: '/activity/new' },
+    { label: 'Start activity', icon: 'queue', route: '/activity' },
     { label: 'About us', icon: 'info', route: '/about' },
     { label: 'My profile', icon: 'person', route: '/profile' },
   ];
