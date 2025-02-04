@@ -61,4 +61,9 @@ export class AuthController {
   async restoreAccount(@Query('token') token: string) {
     return this.authService.handleRestoreAccount(token);
   }
+@UseGuards(JwtAuthGuard)
+@Post('check-status')
+async getAuthenticatedUser(@Req() req: Request) {
+  return req.user; 
+}
 }

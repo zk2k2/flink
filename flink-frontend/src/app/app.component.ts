@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'flink-frontend';
-  isAuthenticated = false;//handle later when session is functional
+  isAuthenticated = false;
 }
