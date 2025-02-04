@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivityService } from 'src/app/core/services/activity.service';
-import { Activity } from 'src/app/core/services/activity.service';
+import { ActivityCard } from 'src/app/shared/types/ActivityCard';
 
 @Component({
   selector: 'app-activity-list',
@@ -9,7 +9,7 @@ import { Activity } from 'src/app/core/services/activity.service';
   standalone: false,
 })
 export class ActivityListComponent implements OnInit {
-  activities: Activity[] = [];
+  activities: ActivityCard[] = [];
 
   constructor(private activityService: ActivityService) {}
 

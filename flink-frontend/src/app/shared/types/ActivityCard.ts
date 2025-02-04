@@ -1,6 +1,7 @@
 import { Location } from './Location';
 
 export interface ActivityCard {
+  createdAt: Date;
   creator: {
     firstName: string;
     lastName: string;
