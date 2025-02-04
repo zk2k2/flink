@@ -34,7 +34,7 @@ const routes: Routes = [
         (m) => m.ActivityModule
       ),
   },
-  { path: '**', redirectTo: '' },
+  { path: '**', redirectTo: 'landing' },
 ];
 
 @NgModule({

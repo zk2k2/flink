@@ -22,20 +22,15 @@
           </div>
         </a>
         <div class="flex justify-center items-center min-w-16 space-x-1">
-          <Button (click)="logout()">
+          <button (click)="logout()">
             <mat-icon class="mr-2">logout</mat-icon>
             <span class="text-lg">Logout</span>
-          </Button>
+          </button>
         </div>
       </ng-container>
 
       <ng-template #guestMenu>
-        <a
-          mat-list-item
-          cl
-          [routerLink]="'/auth/login'"
-          class="flex items-center"
-        >
+        <a mat-list-item [routerLink]="'/auth/login'" class="flex items-center">
           <button
             class="bg-white translate translate-x-[600px] text-primary px-4 py-2 rounded"
           >

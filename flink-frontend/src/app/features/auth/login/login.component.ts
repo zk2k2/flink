@@ -1,47 +1,65 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+  ValidatorFn,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-  private loginApiUrl = 'http://localhost:3000/auth/login';
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
     private snackBar: MatSnackBar,
+    private authService: AuthService,
     private router: Router
   ) {}
 
-  
-  private singleIdentifierValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+  private singleIdentifierValidator: ValidatorFn = (
+    group: AbstractControl
+  ): ValidationErrors | null => {
     const email = group.get('email')?.value;
     const username = group.get('username')?.value;
     const phone = group.get('phone')?.value;
-    
-    const filledFields = [email, username, phone].filter(val => val && val.toString().trim() !== '');
+
+    const filledFields = [email, username, phone].filter(
+      (val) => val && val.toString().trim() !== ''
+    );
     if (filledFields.length === 0) {
-      return { ['noIdentifier']: 'Please provide either an email, username, or phone number.' };
+      return {
+        ['noIdentifier']:
+          'Please provide either an email, username, or phone number.',
+      };
     } else if (filledFields.length > 1) {
-      return { ['multipleIdentifiers']: 'Please fill in only one: email, username, or phone number.' };
+      return {
+        ['multipleIdentifiers']:
+          'Please fill in only one: email, username, or phone number.',
+      };
     }
     return null;
   };
 
   private initializeForm(): void {
-    this.loginForm = this.fb.group({
-      email: [''],
-      username: [''],
-      phone: [''],
-      password: ['', Validators.required]
-    }, { validators: this.singleIdentifierValidator });
+    this.loginForm = this.fb.group(
+      {
+        email: [''],
+        username: [''],
+        phone: [''],
+        password: ['', Validators.required],
+      },
+      { validators: this.singleIdentifierValidator }
+    );
   }
 
   ngOnInit(): void {
@@ -55,9 +73,15 @@ export class LoginComponent implements OnInit {
       if (errors?.['noIdentifier']) {
         this.snackBar.open(errors['noIdentifier'], 'Close', { duration: 3000 });
       } else if (errors?.['multipleIdentifiers']) {
-        this.snackBar.open(errors['multipleIdentifiers'], 'Close', { duration: 3000 });
+        this.snackBar.open(errors['multipleIdentifiers'], 'Close', {
+          duration: 3000,
+        });
       } else {
-        this.snackBar.open('Please fill in all required fields correctly.', 'Close', { duration: 3000 });
+        this.snackBar.open(
+          'Please fill in all required fields correctly.',
+          'Close',
+          { duration: 3000 }
+        );
       }
       return;
     }
@@ -79,19 +103,20 @@ export class LoginComponent implements OnInit {
 
     const loginData = { identifier, password };
 
-    this.http.post(this.loginApiUrl, loginData).subscribe({
-      next: (res: any) => {
-        const { accessToken, refreshToken } = res;
-        document.cookie = `accessToken=${accessToken}; path=/;`;
-        document.cookie = `refreshToken=${refreshToken}; path=/;`;
+    this.authService.login(loginData).subscribe({
+      next: () => {
         this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
         this.loginForm.reset();
-        this.router.navigate(['/profile']);
+        this.router.navigate(['/feed']);
       },
       error: (err) => {
         console.error('Login error:', err);
-        this.snackBar.open('Login failed. Please check your credentials and try again.', 'Close', { duration: 3000 });
-      }
+        this.snackBar.open(
+          'Login failed. Please check your credentials and try again.',
+          'Close',
+          { duration: 3000 }
+        );
+      },
     });
   }
 }

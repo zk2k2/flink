@@ -5,9 +5,8 @@ import { ActivityListComponent } from './activity-list/activity-list.component';
 
 const routes: Routes = [
   {
-    path: 'feed',
+    path: '',
     component: FeedComponent,
-    children: [{ path: '', component: ActivityListComponent }],
   },
 ];
 
