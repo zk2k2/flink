@@ -76,7 +76,5 @@ export class User extends CommonEntity {
   @ManyToMany(() => User, (user) => user.followers, { onDelete: 'CASCADE' })
   following: User[];
 
-  @Column({ nullable: true })
-  refreshToken: string;
 }
 

@@ -10,9 +10,6 @@ export class Hobby extends CommonEntity {
   @Column({ unique: true })
   title: string;
 
-  @Column()
-  photo: string;
-
   @OneToMany(() => UserHobby, (userHobby) => userHobby.hobby)
   userHobbies: UserHobby[];
 
