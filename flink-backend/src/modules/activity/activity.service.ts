@@ -110,7 +110,7 @@ export class ActivityService extends CommonService<Activity> {
           'user.firstName',
           'user.lastName',
           'user.profilePic',
-        ]) // Select category, location names, and user details
+        ])
         .addSelect(
           `ST_Distance(
             ST_SetSRID(ST_MakePoint(:userLng, :userLat), 4326)::geography,
@@ -133,7 +133,6 @@ export class ActivityService extends CommonService<Activity> {
         );
       });
 
-      // Map the result to include category, location names, and user details
       const activitiesWithDetails = result.entities.map((activity, index) => ({
         ...activity,
       }));
@@ -158,14 +157,14 @@ export class ActivityService extends CommonService<Activity> {
       query = query
         .leftJoin('activity.location', 'location')
         .leftJoin('activity.category', 'category')
-        .leftJoin('activity.creator', 'user') // Join with user table
+        .leftJoin('activity.creator', 'user')
         .addSelect([
           'category.name',
           'location.name',
           'user.firstName',
           'user.lastName',
           'user.profilePic',
-        ]) // Select category, location names, and user details
+        ])
         .addSelect(
           `ST_Distance(
             ST_SetSRID(ST_MakePoint(:userLng, :userLat), 4326)::geography,

@@ -1,3 +1,5 @@
+import { Location } from './Location';
+
 export interface ActivityCard {
   creator: {
     firstName: string;
@@ -10,8 +12,10 @@ export interface ActivityCard {
     name: string;
   };
   date: string;
-  location: string;
+
   nbOfParticipants: number;
   description: string;
   activityPhotos: string[];
+
+  location: Location;
 }
