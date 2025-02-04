@@ -1,1 +1,68 @@
-<p>login works!</p>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-container bg-white p-4 rounded-lg shadow-md flex flex-col space-y-4">
+    <div class="flex flex-col">
+      <label for="email" class="text-lg">Email</label>
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+        placeholder="Enter your email"
+      />
+    </div>
+  
+    <div class="flex flex-col">
+      <label for="username" class="text-lg">Username</label>
+      <input
+        type="text"
+        id="username"
+        formControlName="username"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+        placeholder="Enter your username"
+      />
+    </div>
+  
+    <div class="flex flex-col">
+      <label for="phone" class="text-lg">Phone</label>
+      <input
+        type="tel"
+        id="phone"
+        formControlName="phone"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+        placeholder="Enter your phone number"
+      />
+    </div>
+  
+    <div *ngIf="loginForm.errors && (loginForm.errors['noIdentifier'] || loginForm.errors['multipleIdentifiers'])" class="text-red-500 text-sm">
+      <ng-container *ngIf="loginForm.errors['noIdentifier'] as noIdentifier">
+        {{ noIdentifier }}
+      </ng-container>
+      <ng-container *ngIf="loginForm.errors['multipleIdentifiers'] as multipleIdentifiers">
+        {{ multipleIdentifiers }}
+      </ng-container>
+    </div>
+  
+    <div class="flex flex-col">
+      <label for="password" class="text-lg">
+        Password <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+        placeholder="Enter your password"
+      />
+      <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="text-red-500 text-sm">
+        <div *ngIf="loginForm.get('password')?.hasError('required')">
+          Password is required.
+        </div>
+      </div>
+    </div>
+  
+    <div class="text-white text-lg px-4 py-3 rounded-lg bg-primary">
+      <button type="submit" class="w-full">
+        Login
+      </button>
+    </div>
+  </form>
+  

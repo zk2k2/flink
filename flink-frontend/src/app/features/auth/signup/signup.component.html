@@ -1,7 +1,9 @@
 <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-container space-x-4 !w-full my-2 !overflow-auto bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row">
   <div class="flex flex-col w-full md:w-1/2 space-y-4">
     <div class="flex flex-col space-y-2">
-      <label for="firstName" class="text-lg">First Name <span class="text-red-500">*</span></label>
+      <label for="firstName" class="text-lg">
+        First Name <span class="text-red-500">*</span>
+      </label>
       <input type="text" id="firstName" formControlName="firstName"
              class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
       <div *ngIf="signupForm.get('firstName')?.errors" class="text-red-500 text-sm">
@@ -13,7 +15,9 @@
     </div>
 
     <div class="flex flex-col space-y-2">
-      <label for="lastName" class="text-lg">Last Name <span class="text-red-500">*</span></label>
+      <label for="lastName" class="text-lg">
+        Last Name <span class="text-red-500">*</span>
+      </label>
       <input type="text" id="lastName" formControlName="lastName"
              class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
       <div *ngIf="signupForm.get('lastName')?.errors" class="text-red-500 text-sm">
@@ -25,14 +29,14 @@
     </div>
 
     <div class="flex flex-col space-y-2">
-      <label for="username" class="text-lg">Username <span class="text-red-500">*</span></label>
+      <label for="username" class="text-lg">
+        Username <span class="text-red-500">*</span>
+      </label>
       <input type="text" id="username" formControlName="username"
              class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
       <div *ngIf="signupForm.get('username')?.errors" class="text-red-500 text-sm">
         <div *ngIf="signupForm.get('username')?.hasError('required')">Username is required</div>
-        <div *ngIf="signupForm.get('username')?.hasError('minlength')">
-          Minimum 4 characters
-        </div>
+        <div *ngIf="signupForm.get('username')?.hasError('minlength')">Minimum 4 characters</div>
         <div *ngIf="signupForm.get('username')?.hasError('pattern')">
           4-20 characters (letters, numbers, underscores)
         </div>
@@ -43,7 +47,9 @@
     </div>
 
     <div class="flex flex-col space-y-2">
-      <label for="email" class="text-lg">Email <span class="text-red-500">*</span></label>
+      <label for="email" class="text-lg">
+        Email <span class="text-red-500">*</span>
+      </label>
       <input type="email" id="email" formControlName="email"
              class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
       <div *ngIf="signupForm.get('email')?.errors" class="text-red-500 text-sm">
@@ -58,7 +64,9 @@
     </div>
 
     <div class="flex flex-col space-y-2">
-      <label for="phone" class="text-lg">Phone <span class="text-red-500">*</span></label>
+      <label for="phone" class="text-lg">
+        Phone <span class="text-red-500">*</span>
+      </label>
       <input type="tel" id="phone" formControlName="phone"
              class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
       <div *ngIf="signupForm.get('phone')?.errors" class="text-red-500 text-sm">
@@ -70,7 +78,9 @@
     </div>
 
     <div class="flex flex-col space-y-2">
-      <label for="password" class="text-lg">Password <span class="text-red-500">*</span></label>
+      <label for="password" class="text-lg">
+        Password <span class="text-red-500">*</span>
+      </label>
       <input type="password" id="password" formControlName="password"
              class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
       <div *ngIf="signupForm.get('password')?.errors" class="text-red-500 text-sm">
@@ -88,7 +98,21 @@
     </div>
 
     <div class="flex flex-col space-y-2">
-      <label for="birthDate" class="text-lg">Birth Date <span class="text-red-500">*</span></label>
+      <label for="confirmPassword" class="text-lg">
+        Confirm Password <span class="text-red-500">*</span>
+      </label>
+      <input type="password" id="confirmPassword" formControlName="confirmPassword"
+             class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
+      <div *ngIf="signupForm.get('confirmPassword')?.touched && (signupForm.get('confirmPassword')?.errors || signupForm.hasError('passwordMismatch'))" class="text-red-500 text-sm">
+        <div *ngIf="signupForm.get('confirmPassword')?.hasError('required')">Confirm Password is required</div>
+        <div *ngIf="signupForm.hasError('passwordMismatch')">Passwords do not match</div>
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="birthDate" class="text-lg">
+        Birth Date <span class="text-red-500">*</span>
+      </label>
       <input type="date" id="birthDate" formControlName="birthDate" [max]="currentYear - 13 + '-12-31'"
              class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
       <div *ngIf="signupForm.get('birthDate')?.errors" class="text-red-500 text-sm">
@@ -100,7 +124,9 @@
     </div>
 
     <div class="flex flex-col space-y-2">
-      <label for="profilePic" class="text-lg">Profile Picture URL <span class="text-red-500">*</span></label>
+      <label for="profilePic" class="text-lg">
+        Profile Picture URL <span class="text-red-500">*</span>
+      </label>
       <input type="url" id="profilePic" formControlName="profilePic"
              class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
       <div *ngIf="signupForm.get('profilePic')?.errors" class="text-red-500 text-sm">
@@ -112,9 +138,11 @@
     </div>
   </div>
 
-   <div class="flex flex-col w-full md:w-1/2 space-y-4">
+  <div class="flex flex-col w-full md:w-1/2 space-y-4">
     <div class="flex flex-col space-y-2">
-      <label for="category" class="text-lg">Category <span class="text-red-500">*</span></label>
+      <label for="category" class="text-lg">
+        Category <span class="text-red-500">*</span>
+      </label>
       <select id="category" formControlName="selectedCategory"
               class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors">
         <option value="">Select a Category</option>
@@ -136,7 +164,6 @@
               Interest Level: {{ hobbyCtrl.get('interestLevel')?.value }}
             </label>
             <input type="range" formControlName="interestLevel" min="1" max="5" step="1">
-
             <div *ngIf="hobbyCtrl.get('interestLevel')?.errors" class="text-red-500 text-xs">
               <div *ngIf="hobbyCtrl.get('interestLevel')?.hasError('required')">Required</div>
               <div *ngIf="hobbyCtrl.get('interestLevel')?.hasError('min')">Minimum 1</div>
@@ -149,7 +176,9 @@
     </div>
 
     <div formGroupName="location" class="flex flex-col space-y-2">
-      <label for="locationName" class="text-lg">Address <span class="text-red-500">*</span></label>
+      <label for="locationName" class="text-lg">
+        Address <span class="text-red-500">*</span>
+      </label>
       <input type="text" id="locationName" formControlName="name" readonly
              class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 focus:border-gray-500 focus:outline-none transition-colors">
       <div *ngIf="signupForm.get('location.name')?.errors" class="text-red-500 text-sm">

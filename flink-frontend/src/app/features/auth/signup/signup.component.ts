@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as L from 'leaflet';
@@ -47,6 +47,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
       phone: ['', [Validators.required, Validators.pattern(this.phonePattern)]],
       password: ['', [Validators.required, Validators.pattern(this.passwordPattern)]],
+      confirmPassword: ['', Validators.required],
       birthDate: ['', [Validators.required, this.ageValidator(13)]],
       profilePic: ['', [Validators.required, Validators.pattern(this.urlPattern)]],
       selectedCategory: ['', Validators.required],
@@ -56,8 +57,14 @@ export class SignupComponent implements OnInit, AfterViewInit {
         longitude: [null, Validators.required],
         latitude: [null, Validators.required]
       })
-    });
+    }, { validators: this.passwordMatchValidator });
   }
+
+  private passwordMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordMismatch: true };
+  };
 
   private loadCategories(): void {
     this.http.get<any[]>(this.categoriesApiUrl).subscribe({
