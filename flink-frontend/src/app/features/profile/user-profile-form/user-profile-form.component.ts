@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+/*import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserProfile } from '../interfaces/user-profile';
 
@@ -42,7 +42,7 @@ export class UserProfileFormComponent implements OnInit {
       })
     });
   }
-
+/*
   private setFormValues(data: UserProfile) {
     this.profileForm.patchValue({
       firstName: data.firstName,
@@ -117,3 +117,4 @@ function getCookie(name: string): string | null {
   }
   return null;
 }
+*/

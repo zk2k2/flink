@@ -1,22 +1,5 @@
 import { Component, Input } from '@angular/core';
-
-export interface Activity {
-  poster: {
-    name: string;
-    avatar: string;
-    postedOn: string;
-  };
-  title: string;
-  category: {
-    icon: string;
-    name: string;
-  };
-  date: string;
-  location: string;
-  description: string;
-  photoUrls: string[];
-  nbOfParticipants: number;
-}
+import { ActivityCard } from '../../types/ActivityCard';
 
 @Component({
   selector: 'app-activity-card',
@@ -25,5 +8,5 @@ export interface Activity {
 })
 export class ActivityCardComponent {
   @Input()
-  activity!: Activity;
+  activity!: ActivityCard;
 }
