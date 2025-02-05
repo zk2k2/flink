@@ -13,17 +13,48 @@ export class ActivityCardComponent {
     private readonly activityService: ActivityService,
     private readonly router: Router
   ) {}
+
   @Input()
-  activity!: ActivityCard;
+  activity: ActivityCard = {
+    id: '',
+    createdAt: new Date(),
+    creator: {
+      firstName: '',
+      lastName: '',
+      profilePic: '',
+    },
+    title: '',
+    category: {
+      icon: '',
+      name: '',
+    },
+    date: '',
+    nbOfParticipants: 0,
+    description: '',
+    activityPhotos: [],
+    users: [],
+    location: {
+      name: '',
+      lat: 0,
+      lng: 0,
+    },
+  };
+
+  showInfobox = false;
 
   joinActivity(id: string) {
-    this.activityService.joinActivity(id).subscribe(
-      () => {
-        this.router.navigate(['/activity', id]);
+    this.activityService.joinActivity(id).subscribe({
+      next: () => {
+        this.showInfobox = true;
+
+        setTimeout(() => {
+          this.router.navigate(['/activity', id]);
+        }, 2000);
       },
-      (error) => {
+      error: (error) => {
         console.error('Error joining activity:', error);
-      }
-    );
+        // Optionally show an error message to the user
+      },
+    });
   }
 }

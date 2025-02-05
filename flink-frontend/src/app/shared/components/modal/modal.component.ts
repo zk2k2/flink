@@ -48,15 +48,18 @@ export class ModalComponent {
   @Output() cancel = new EventEmitter<void>();
   @Output() submit = new EventEmitter<void>();
 
-  onClose() {
-    this.closeModal.emit();
+  onSubmit() {
+    console.log('Submit button clicked');
+    this.submit.emit();
   }
 
   onCancel() {
+    console.log('Cancel button clicked');
     this.cancel.emit();
   }
 
-  onSubmit() {
-    this.submit.emit();
+  onClose() {
+    console.log('Close button clicked');
+    this.closeModal.emit();
   }
 }

@@ -50,4 +50,11 @@ export class ActivityService {
   createActivity(formData: FormData): Observable<any> {
     return this.http.post<any>(this.apiUrl, formData);
   }
+
+  leaveActivity(id: string): Observable<void> {
+    const url = `${this.apiUrl}/leave`;
+    const params = { activityId: id };
+
+    return this.http.patch<void>(url, null, { params });
+  }
 }

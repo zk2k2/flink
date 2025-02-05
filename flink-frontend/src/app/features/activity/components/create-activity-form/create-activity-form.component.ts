@@ -1,4 +1,9 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import * as L from 'leaflet';
@@ -8,7 +13,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-create-activity-form',
   templateUrl: './create-activity-form.component.html',
-  styleUrls: ['./create-activity-form.component.scss']
+  styleUrls: ['./create-activity-form.component.scss'],
 })
 export class CreateActivityFormComponent implements OnInit, AfterViewInit {
   activityForm!: FormGroup;
@@ -16,7 +21,7 @@ export class CreateActivityFormComponent implements OnInit, AfterViewInit {
   marker?: L.Marker;
   selectedFiles: File[] = [];
   photoPreviews: string[] = [];
-  
+
   categories: any[] = [];
   private categoriesApiUrl = 'http://localhost:3000/category';
 
@@ -41,12 +46,12 @@ export class CreateActivityFormComponent implements OnInit, AfterViewInit {
       location: this.fb.group({
         latitude: [null, Validators.required],
         longitude: [null, Validators.required],
-        name: ['']
+        name: ['', Validators.required],
       }),
       date: ['', Validators.required],
       time: ['', Validators.required],
       maxParticipants: ['', [Validators.required, Validators.min(1)]],
-      category: ['', Validators.required]
+      category: ['', Validators.required],
     });
   }
 
@@ -56,7 +61,7 @@ export class CreateActivityFormComponent implements OnInit, AfterViewInit {
         this.categories = data;
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Error loading categories:', err)
+      error: (err) => console.error('Error loading categories:', err),
     });
   }
 
@@ -67,7 +72,7 @@ export class CreateActivityFormComponent implements OnInit, AfterViewInit {
   private initMap(): void {
     this.map = L.map('map').setView([51.505, -0.09], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
+      attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
     const customIcon = L.icon({
       iconUrl: 'assets/marker.png',
@@ -83,21 +88,35 @@ export class CreateActivityFormComponent implements OnInit, AfterViewInit {
       } else {
         this.marker = L.marker(e.latlng, { icon: customIcon }).addTo(this.map);
       }
-      const locationName = `Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}`;
-      this.activityForm.patchValue({
-        locationName,
-        location: { latitude: lat, longitude: lng, name: locationName }
-      });
+      this.fetchAddress(lat, lng);
     });
   }
-  
+
+  private fetchAddress(lat: number, lng: number): void {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+    this.http.get<any>(url).subscribe({
+      next: (data) => {
+        if (data && data.display_name) {
+          this.activityForm.patchValue({
+            locationName: data.display_name,
+            location: {
+              latitude: lat,
+              longitude: lng,
+              name: data.display_name,
+            },
+          });
+        }
+      },
+      error: (err) => console.error('Error fetching address:', err),
+    });
+  }
 
   onFileSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length) {
       this.selectedFiles = Array.from(target.files);
       this.photoPreviews = [];
-      this.selectedFiles.forEach(file => {
+      this.selectedFiles.forEach((file) => {
         const reader = new FileReader();
         reader.onload = (e: any) => {
           this.photoPreviews.push(e.target.result);
@@ -124,23 +143,23 @@ export class CreateActivityFormComponent implements OnInit, AfterViewInit {
       date: dateTime,
       nbOfParticipants: formValue.maxParticipants,
       categoryId: formValue.category,
-      location: formValue.location 
+      location: formValue.location,
     };
 
     const formData = new FormData();
     formData.append('data', JSON.stringify(payload));
-    this.selectedFiles.forEach(file => {
+    this.selectedFiles.forEach((file) => {
       formData.append('photos', file);
     });
 
     this.activityService.createActivity(formData).subscribe({
       next: (activity) => {
         console.log('Activity created successfully', activity);
-        this.router.navigate(['/feed']);
+        this.router.navigate(['/activity', activity.id]);
       },
       error: (err) => {
         console.error('Error creating activity', err);
-      }
+      },
     });
   }
 

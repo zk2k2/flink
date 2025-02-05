@@ -1,5 +1,6 @@
 <div
   class="xl:h-16 w-full !min-h-12 !overflow-hidden flex text-white bg-primary"
+  [ngClass]="{ hidden: currentRoute === '/auth/login' }"
 >
   <img
     src="/assets/flink_logo.png"

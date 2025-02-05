@@ -1,4 +1,4 @@
-<div class="h-full w-full p-4 xl:w-full bg-[#F9F9FA] overflow-auto">
+<div class="h-full w-full p-4 xl:w-full bg-[#F9F9FA] overflow-hidden">
   <div class="bg-white p-4 rounded-lg shadow-md">
     <div class="flex space-x-2">
       <img class="h-6 self-center" src="/assets/logo_item_colored.png" alt="" />
@@ -77,5 +77,35 @@
         </div>
       </div>
     </div>
+    <div class="my-4">
+      <h1>Actions</h1>
+      <div class="flex space-x-4 justify-end">
+        <button
+          class="bg-red-500 text-white px-4 py-2 rounded"
+          (click)="openLeaveActivityModal()"
+        >
+          Leave Activity
+        </button>
+      </div>
+    </div>
   </div>
 </div>
+
+<app-modal
+  *ngIf="showLeaveActivityModal"
+  [title]="'Leave Activity'"
+  [bodyText]="'Are you sure you want to leave this activity?'"
+  [showCancelButton]="true"
+  [showSubmitButton]="true"
+  [cancelButtonText]="'Cancel'"
+  [submitButtonText]="'Leave'"
+  (submit)="leaveActivity()"
+  (cancel)="closeLeaveActivityModal()"
+  (closeModal)="closeLeaveActivityModal()"
+></app-modal>
+
+<app-infobox
+  *ngIf="showInfobox"
+  [message]="'Successfully left activity!'"
+  (close)="showInfobox = false"
+></app-infobox>

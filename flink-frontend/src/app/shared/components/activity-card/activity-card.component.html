@@ -90,3 +90,8 @@
     </div>
   </mat-card>
 </div>
+<app-infobox
+  *ngIf="showInfobox"
+  [message]="'Successfully joined Activity!'"
+  (close)="showInfobox = false"
+></app-infobox>
