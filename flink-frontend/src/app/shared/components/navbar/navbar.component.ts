@@ -18,6 +18,7 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit() {
     this.isLoggedIn$ = this.authService.isLoggedIn();
+    this.authService.checkStatus().subscribe();
 
     // Dynamically set menu items after login status is determined
     this.isLoggedIn$.subscribe((isLoggedIn) => {

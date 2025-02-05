@@ -12,8 +12,16 @@
 =    <div class="flex items-center space-x-6">
       <img [src]="profileForm.get('profilePic')?.value || 'assets/default_profile_pic.jpg'" 
            class="w-24 h-24 rounded-full object-cover border-2 border-primary-100">
-      <input type="text" formControlName="profilePic" *ngIf="isEditing"
-             class="block w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all">
+      <!--<input type="text" formControlName="profilePic" *ngIf="isEditing"
+             class="block w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+             >-->
+        <input
+        type="file"
+        id="profilePic"
+        (change)="onFileSelected($event)"
+        accept="image/*"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+      />
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

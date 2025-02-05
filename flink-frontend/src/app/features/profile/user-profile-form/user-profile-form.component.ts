@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ProfilesServiceService } from '../profiles-service.service';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { UploadService } from 'src/app/core/services/upload.service';
+//import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-user-profile-form',
   templateUrl: './user-profile-form.component.html',
@@ -13,7 +15,9 @@ export class UserProfileFormComponent implements OnInit {
   isLoading = false;
   errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private profileService: ProfilesServiceService) {}
+  constructor(private fb: FormBuilder, private authService: AuthService, private profileService: ProfilesServiceService,
+    private uploadService: UploadService/*, private snackBar: MatSnackBar,*/
+  ) {}
 
   ngOnInit() {
     this.initializeForm();
@@ -118,6 +122,24 @@ export class UserProfileFormComponent implements OnInit {
           this.isLoading = false;
         }
       });
+    }
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file: File = input.files[0];
+      this.uploadService.uploadFile(file).subscribe({
+        next: (response: { fileUrl: string }) => {
+          this.profileForm.patchValue({ profilePic: response.fileUrl });
+          //this.snackBar.open('File uploaded successfully', 'Close', { duration: 3000 });
+        },
+        error: (error: any) => {
+          console.error('File upload error:', error);
+          //this.snackBar.open('File upload failed', 'Close', { duration: 3000 });
+        }
+      });
+      
     }
   }
 }
