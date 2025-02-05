@@ -11,12 +11,7 @@ import { filter } from 'rxjs/operators';
 })
 export class NavbarComponent implements OnInit {
   isLoggedIn$!: Observable<boolean>;
-  menuItems = [
-    { label: 'Home', icon: 'home', route: '/feed' },
-    { label: 'Start activity', icon: 'queue', route: '/activity' },
-    { label: 'About us', icon: 'info', route: '/about' },
-    { label: 'My profile', icon: 'person', route: '/profile' },
-  ];
+  menuItems: any[] = [];
   currentRoute: string = '';
 
   constructor(private authService: AuthService, private router: Router) {}
@@ -24,6 +19,24 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     this.isLoggedIn$ = this.authService.isLoggedIn();
 
+ 
+   
+    this.isLoggedIn$.subscribe((isLoggedIn) => {
+      this.menuItems = [
+        { label: 'Home', icon: 'home', route: '/feed' },
+        { label: 'Start activity', icon: 'queue', route: '/activity' },
+        { label: 'About us', icon: 'info', route: '/about' },
+        {
+          label: 'My profile',
+          icon: 'person',
+          route: isLoggedIn
+            ? `/profile/${this.authService.getCurrentUserId()}`
+            : '/auth/login',
+        },
+      ];
+    });
+
+  
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {

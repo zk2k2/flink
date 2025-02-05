@@ -1,4 +1,4 @@
-<div class="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
+<div class="w-[80%] mx-auto p-6 bg-white rounded-lg shadow-md">
   <div class="flex flex-col md:flex-row items-center md:justify-between">
     <div class="flex items-center space-x-4">
       <img
@@ -10,19 +10,21 @@
         <h2 class="text-2xl font-bold text-gray-800">
           {{ user?.firstName }} {{ user?.lastName }}
         </h2>
-        
+
         <div class="flex space-x-4 mt-2">
           <p class="text-gray-600">@{{ user?.username }}</p>
-        <p class="mt-1 text-gray-700">
-          XP: <span class="font-semibold">{{ user?.xp }}</span>
-        </p>
+          <p class="mt-1 text-gray-700">
+            XP: <span class="font-semibold">{{ user?.xp }}</span>
+          </p>
         </div>
         <div class="flex space-x-4 mt-2">
           <span class="text-gray-600">
-            Followers: <span class="font-semibold">{{ user?.followersCount }}</span>
+            Followers:
+            <span class="font-semibold">{{ user?.followersCount }}</span>
           </span>
           <span class="text-gray-600">
-            Following: <span class="font-semibold">{{ user?.followingCount }}</span>
+            Following:
+            <span class="font-semibold">{{ user?.followingCount }}</span>
           </span>
         </div>
       </div>
@@ -64,7 +66,9 @@
           *ngFor="let achievement of user.achievements"
           class="p-4 border rounded shadow-sm bg-white"
         >
-          <p class="font-bold text-gray-700">{{ achievement.title || 'Achievement' }}</p>
+          <p class="font-bold text-gray-700">
+            {{ achievement.title || "Achievement" }}
+          </p>
         </div>
       </ng-container>
       <ng-template #noAchievements>
@@ -83,7 +87,8 @@
     <div *ngIf="activities?.length; else noActivities">
       <app-activity-card
         *ngFor="let activity of activities"
-        [activity]="activity">
+        [activity]="activity"
+      >
       </app-activity-card>
     </div>
     <ng-template #noActivities>

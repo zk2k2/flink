@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActivityService } from 'src/app/core/services/activity.service';
-import { UserService } from 'src/app/core/services/user.service'; // Assuming you have a UserService to fetch user details
 import { ActivityCard } from 'src/app/shared/types/ActivityCard';
-import { ActivityMember } from 'src/app/shared/types/ActivityMember';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-activity-details',
@@ -15,6 +14,7 @@ export class ActivityDetailsComponent implements OnInit {
     id: '',
     createdAt: new Date(),
     creator: {
+      id: '',
       firstName: '',
       lastName: '',
       profilePic: '',
@@ -36,11 +36,14 @@ export class ActivityDetailsComponent implements OnInit {
     },
   };
   showLeaveActivityModal = false;
+  showDeleteActivityModal = false;
   showInfobox = false;
+  isCreator = false;
 
   constructor(
     private route: ActivatedRoute,
     private activityService: ActivityService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -54,7 +57,8 @@ export class ActivityDetailsComponent implements OnInit {
       this.activityService.getActivityById(id).subscribe(
         (activity) => {
           this.activity = activity;
-          console.log(activity);
+          this.isCreator =
+            this.activity.creator.id === this.authService.getCurrentUserId();
         },
         (error) => {
           console.error('Error fetching activity details:', error);
@@ -91,5 +95,23 @@ export class ActivityDetailsComponent implements OnInit {
 
   closeLeaveActivityModal(): void {
     this.showLeaveActivityModal = false;
+  }
+
+  openDeleteActivityModal(): void {
+    this.showDeleteActivityModal = true;
+  }
+
+  deleteActivity(): void {
+    this.activityService.deleteActivity(this.activity.id).subscribe(
+      () => {
+        setTimeout(() => {
+          this.router.navigate(['/feed']);
+        }, 2000);
+        this.showInfobox = true;
+      },
+      (error) => {
+        console.error('Error deleting activity:', error);
+      }
+    );
   }
 }

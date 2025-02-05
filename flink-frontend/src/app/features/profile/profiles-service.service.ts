@@ -10,7 +10,6 @@ export class ProfilesServiceService {
   constructor(private http: HttpClient) {}
 
   getUserProfile(identifier: string): Observable<any> {
-    console.log('getUserProfile', identifier);
     return this.http.get<any>(`${this.apiUrl}/${identifier}`);
   }
   updateProfile(updateData: any): Observable<any> {

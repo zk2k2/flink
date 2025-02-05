@@ -5,6 +5,7 @@ export interface ActivityCard {
   id: string;
   createdAt: Date;
   creator: {
+    id?: string;
     firstName: string;
     lastName: string;
     profilePic: string;

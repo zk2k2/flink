@@ -1,0 +1,197 @@
+<form
+  [formGroup]="activityForm"
+  (ngSubmit)="onSubmit()"
+  class="form-container space-x-4 !w-full my-2 !overflow-auto bg-white p-4 rounded-lg shadow-md flex flex-wrap"
+>
+  <div class="flex flex-col w-full md:w-1/2 space-y-4">
+    <div class="flex flex-col space-y-2">
+      <label for="title" class="text-lg">
+        Title <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        id="title"
+        formControlName="title"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+      />
+      <div
+        *ngIf="
+          activityForm.get('title')?.invalid &&
+          activityForm.get('title')?.touched
+        "
+        class="text-red-500 text-sm"
+      >
+        Title is required (min 3 characters)
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="description" class="text-lg">
+        Description <span class="text-red-500">*</span>
+      </label>
+      <textarea
+        id="description"
+        formControlName="description"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+      ></textarea>
+      <div
+        *ngIf="
+          activityForm.get('description')?.invalid &&
+          activityForm.get('description')?.touched
+        "
+        class="text-red-500 text-sm"
+      >
+        Description is required (min 10 characters)
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="date" class="text-lg">
+        Date <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="date"
+        id="date"
+        formControlName="date"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+      />
+      <div
+        *ngIf="
+          activityForm.get('date')?.invalid && activityForm.get('date')?.touched
+        "
+        class="text-red-500 text-sm"
+      >
+        Date is required
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="time" class="text-lg">
+        Time <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="time"
+        id="time"
+        formControlName="time"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+      />
+      <div
+        *ngIf="
+          activityForm.get('time')?.invalid && activityForm.get('time')?.touched
+        "
+        class="text-red-500 text-sm"
+      >
+        Time is required
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col w-full md:w-1/2 space-y-4">
+    <div class="flex flex-col space-y-2">
+      <label for="locationMap" class="text-lg">
+        Location <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="hidden"
+        id="locationName"
+        formControlName="locationName"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+        readonly
+      />
+      <div id="map" class="w-full h-64 rounded border"></div>
+      <div
+        *ngIf="
+          activityForm.get('location')?.invalid &&
+          activityForm.get('location')?.touched
+        "
+        class="text-red-500 text-sm"
+      >
+        Please select a location on the map.
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="photos" class="text-lg"> Activity Photos (up to 5) </label>
+      <input
+        type="file"
+        id="photos"
+        (change)="onFileSelected($event)"
+        accept="image/*"
+        multiple
+        class="w-full p-2 border border-gray-300 rounded-lg"
+      />
+      <div class="flex space-x-2 mt-2">
+        <div *ngFor="let preview of photoPreviews" class="w-16 h-16">
+          <img
+            [src]="preview"
+            alt="Preview"
+            class="w-full h-full object-cover rounded"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="maxParticipants" class="text-lg">
+        Max Participants <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="number"
+        id="maxParticipants"
+        formControlName="maxParticipants"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+      />
+      <div
+        *ngIf="
+          activityForm.get('maxParticipants')?.invalid &&
+          activityForm.get('maxParticipants')?.touched
+        "
+        class="text-red-500 text-sm"
+      >
+        Must be at least 1 participant
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <label for="category" class="text-lg">
+        Category <span class="text-red-500">*</span>
+      </label>
+      <select
+        id="category"
+        formControlName="category"
+        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+      >
+        <option value="" disabled selected>Select a category</option>
+        <option *ngFor="let category of categories" [value]="category.id">
+          {{ category.name }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+          activityForm.get('category')?.invalid &&
+          activityForm.get('category')?.touched
+        "
+        class="text-red-500 text-sm"
+      >
+        Category is required
+      </div>
+    </div>
+
+    <div class="flex space-x-4 mt-4">
+      <button
+        type="submit"
+        [disabled]="activityForm.invalid"
+        class="btn-primary flex-1 text-center py-2 rounded-lg"
+      >
+        Update Activity
+      </button>
+      <button
+        type="button"
+        (click)="onCancel()"
+        class="btn-secondary flex-1 text-center py-2 rounded-lg"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</form>

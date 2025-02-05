@@ -9,6 +9,7 @@ import {
   Body,
   Post,
   Patch,
+  Param,
   Delete,
 } from '@nestjs/common';
 import { ActivityService } from './activity.service';
@@ -147,9 +148,10 @@ export class ActivityController extends CommonController<
   @Delete(':id')
   async deleteActivity(
     @Req() req,
-    @Query('activityId') activityId: string,
+    @Param('id') activityId: string,
   ): Promise<void> {
     const userId = req.user['id'];
+    console.log('userId', userId);
 
     if (!userId) {
       throw new HttpException(
