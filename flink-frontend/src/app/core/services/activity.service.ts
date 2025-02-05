@@ -46,4 +46,8 @@ export class ActivityService {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<ActivityCard>(url);
   }
+
+  createActivity(formData: FormData): Observable<any> {
+    return this.http.post<any>(this.apiUrl, formData);
+  }
 }
