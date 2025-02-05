@@ -35,10 +35,12 @@ export class ActivityService extends CommonService<Activity> {
       .leftJoin('activity.creator', 'user') // Join with user table
       .addSelect([
         'category.name',
+        'category.icon', // Add category icon
         'location.name',
         'user.firstName',
         'user.lastName',
         'user.profilePic',
+        'user.id',
       ]); // Select category, location names, and user details
 
     // Filtering logic
@@ -176,10 +178,12 @@ export class ActivityService extends CommonService<Activity> {
     const activitiesWithDetails = result.entities.map((activity, index) => ({
       ...activity,
       categoryName: result.raw[index].category_name,
+      categoryIcon: result.raw[index].category_icon, // Map category icon
       locationName: result.raw[index].location_name,
       creatorFirstName: result.raw[index].user_firstName,
       creatorLastName: result.raw[index].user_lastName,
       creatorProfilePic: result.raw[index].user_profilePic,
+      creatorId: result.raw[index].user_id,
     }));
 
     return activitiesWithDetails;

@@ -16,7 +16,7 @@ export class S3Service {
   private bucketName = process.env.AWS_S3_BUCKET;
 
   async uploadFile(file: Express.Multer.File): Promise<string> {
-    const fileKey = `activities/${uuid()}${path.extname(file.originalname)}`;
+    const fileKey = `photos/${uuid()}${path.extname(file.originalname)}`;
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
       Key: fileKey,

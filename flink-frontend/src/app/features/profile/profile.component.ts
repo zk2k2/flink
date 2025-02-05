@@ -5,7 +5,6 @@ import { ActivityService } from 'src/app/core/services/activity.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ActivityCard } from 'src/app/shared/types/ActivityCard';
 
-
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -25,7 +24,7 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const userId = params.get('userid');
       if (userId) {
         this.loadUserProfile(userId);
@@ -43,7 +42,7 @@ export class ProfileComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading user profile:', error);
-      }
+      },
     });
   }
 
@@ -55,7 +54,7 @@ export class ProfileComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading activities:', error);
-      }
+      },
     });
   }
 

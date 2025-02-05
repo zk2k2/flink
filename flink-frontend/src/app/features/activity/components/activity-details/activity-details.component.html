@@ -1,4 +1,4 @@
-<div class="h-full w-full p-4 xl:w-full bg-[#F9F9FA] overflow-hidden">
+<div class="w-full p-4 xl:w-full bg-[#F9F9FA] overflow-x-hidden">
   <div class="bg-white p-4 rounded-lg shadow-md">
     <div class="flex space-x-2">
       <img class="h-6 self-center" src="/assets/logo_item_colored.png" alt="" />
@@ -10,7 +10,7 @@
       <div class="flex justify-center flex-col">
         <img
           src="{{ activity.creator.profilePic | imageNotFound }}"
-          class="rounded-full !m-0 max-w-10 max-h-10"
+          class="rounded-fulL object-cover !m-0 max-w-10 max-h-10"
           alt=""
         />
       </div>
@@ -50,12 +50,14 @@
     </p>
 
     <h1 class="!my-2">Photos</h1>
-    <div class="flex space-x-2" *ngFor="let photo of activity.activityPhotos">
-      <img
-        [src]="photo | imageNotFound"
-        class="rounded-lg !m-0 max-w-32 max-h-32"
-        alt=""
-      />
+    <div class="flex flex-row space-x-2">
+      <div *ngFor="let photo of activity.activityPhotos">
+        <img
+          [src]="photo | imageNotFound"
+          class="rounded-lg !m-0 w-36 h-36 object-cover"
+          alt=""
+        />
+      </div>
     </div>
     <div class="my-4">
       <h1>People</h1>
@@ -87,13 +89,14 @@
         >
           Delete Activity
         </button>
-
+        <!--
         <button
           class="bg-blue-500 text-white px-4 py-2 rounded"
           [routerLink]="['/activity/edit', activity.id]"
         >
           Edit Activity
         </button>
+        -->
       </div>
       <button
         *ngIf="!isCreator"

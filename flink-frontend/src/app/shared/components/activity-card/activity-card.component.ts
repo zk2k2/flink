@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ActivityCard } from '../../types/ActivityCard';
 import { ActivityService } from 'src/app/core/services/activity.service';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/core/services/auth.service'; // Import AuthService
 
 @Component({
   selector: 'app-activity-card',
@@ -11,7 +12,8 @@ import { Router } from '@angular/router';
 export class ActivityCardComponent {
   constructor(
     private readonly activityService: ActivityService,
-    private readonly router: Router
+    readonly router: Router,
+    private readonly authService: AuthService // Inject AuthService
   ) {}
 
   @Input()
@@ -19,6 +21,7 @@ export class ActivityCardComponent {
     id: '',
     createdAt: new Date(),
     creator: {
+      id: '', // Ensure the creator object has an id field
       firstName: '',
       lastName: '',
       profilePic: '',
@@ -41,6 +44,14 @@ export class ActivityCardComponent {
   };
 
   showInfobox = false;
+
+  // Helper method to check if the current user is the creator of the activity
+  isCurrentUserCreator(): boolean {
+    const currentUserId = this.authService.getCurrentUserId();
+    console.log('Current user ID:', currentUserId);
+    console.log('Activity creator ID:', this.activity.creator.id);
+    return this.activity.creator.id === currentUserId;
+  }
 
   joinActivity(id: string) {
     this.activityService.joinActivity(id).subscribe({
