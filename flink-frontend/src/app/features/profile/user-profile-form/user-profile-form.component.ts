@@ -66,7 +66,7 @@ export class UserProfileFormComponent implements OnInit {
   private fetchUserData() {
     this.isLoading = true;
     this.profileService
-      .getUserProfile(this.authService.getCurrentUserId())
+      .getUserData(this.authService.getCurrentUserId())
       .subscribe({
         next: (data) => {
           this.setFormValues(data);

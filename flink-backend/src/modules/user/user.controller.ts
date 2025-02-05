@@ -6,7 +6,7 @@ import { SignupDto } from './dto/signup-user.dto';
 import { UpdateProfileDto } from './dto/update-user.dto';
 import { AdminGuard } from '../auth/guards/admin.guard';
 
-@UseGuards(AdminGuard)
+//@UseGuards(AdminGuard)
 @Controller('users')
 export class UserController extends CommonController<
   User,
