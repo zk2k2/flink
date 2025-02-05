@@ -1,6 +1,8 @@
+import { ActivityMember } from './ActivityMember';
 import { Location } from './Location';
 
 export interface ActivityCard {
+  id: string;
   createdAt: Date;
   creator: {
     firstName: string;
@@ -17,6 +19,7 @@ export interface ActivityCard {
   nbOfParticipants: number;
   description: string;
   activityPhotos: string[];
+  users: ActivityMember[];
 
   location: Location;
 }

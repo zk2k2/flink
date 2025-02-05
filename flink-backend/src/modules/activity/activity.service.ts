@@ -41,17 +41,31 @@ export class ActivityService extends CommonService<Activity> {
         'user.profilePic',
       ]); // Select category, location names, and user details
 
+    // Filtering logic
     if (activityType === 'feed') {
-      query = query.andWhere('activity.creatorId != :userId', { userId });
+      // Exclude activities created by the user
+      query = query
+        .andWhere('activity.creatorId != :userId', { userId })
+        .andWhere(
+          `NOT EXISTS (
+        SELECT 1 FROM activity_users_user au 
+        WHERE au."activityId" = activity.id 
+        AND au."userId" = :userId
+      )`,
+          { userId },
+        );
 
+      // If a specific creatorId is provided, filter by that creatorId
       if (creatorId) {
         query = query.andWhere('activity.creatorId = :creatorId', {
           creatorId,
         });
       }
     } else if (activityType === 'profile') {
+      // Only show activities created by the user
       query = query.andWhere('activity.creatorId = :userId', { userId });
 
+      // Apply time frame filter for profile activities
       if (timeFrame === 'past') {
         query = query.andWhere('activity.date < CURRENT_TIMESTAMP');
       } else if (timeFrame === 'recent' || !timeFrame) {
@@ -59,6 +73,7 @@ export class ActivityService extends CommonService<Activity> {
       }
     }
 
+    // Sorting logic
     if (sortCriteria === ActivitySortCriteria.NEWEST) {
       query = query.orderBy('activity.createdAt', 'DESC');
     } else if (sortCriteria === ActivitySortCriteria.NEAREST) {
@@ -99,18 +114,8 @@ export class ActivityService extends CommonService<Activity> {
       const [userLng, userLat] = userCoords.coordinates;
       console.log(`User longitude: ${userLng}, latitude: ${userLat}`);
 
-      const nearestQuery = this.activityRepository
-        .createQueryBuilder('activity')
-        .leftJoin('activity.location', 'location')
-        .leftJoin('activity.category', 'category')
-        .leftJoin('activity.creator', 'user') // Join with user table
-        .addSelect([
-          'category.name',
-          'location.name',
-          'user.firstName',
-          'user.lastName',
-          'user.profilePic',
-        ]) // Select category, location names, and user details
+      // Add distance calculation and sorting for nearest activities
+      query = query
         .addSelect(
           `ST_Distance(
             ST_SetSRID(ST_MakePoint(:userLng, :userLat), 4326)::geography,
@@ -119,31 +124,7 @@ export class ActivityService extends CommonService<Activity> {
           'distance',
         )
         .orderBy('distance', 'ASC')
-        .setParameters({
-          userLng: userLng,
-          userLat: userLat,
-        });
-
-      const result = await nearestQuery.getRawAndEntities();
-      console.log(`Found ${result.entities.length} activities with distances`);
-
-      result.raw.forEach((raw, index) => {
-        console.log(
-          `Activity ${result.entities[index].id} distance: ${raw.distance}`,
-        );
-      });
-
-      // Map the result to include category, location names, and user details
-      const activitiesWithDetails = result.entities.map((activity, index) => ({
-        ...activity,
-        categoryName: result.raw[index].category_name,
-        locationName: result.raw[index].location_name,
-        creatorFirstName: result.raw[index].user_firstName,
-        creatorLastName: result.raw[index].user_lastName,
-        creatorProfilePic: result.raw[index].user_profilePic,
-      }));
-
-      return activitiesWithDetails;
+        .setParameters({ userLng, userLat });
     } else if (sortCriteria === ActivitySortCriteria.CUSTOM) {
       const user = await this.userService.findOne({
         where: { id: userId },
@@ -160,17 +141,8 @@ export class ActivityService extends CommonService<Activity> {
       const userCoords = user.location.coordinates as any;
       const [userLng, userLat] = userCoords.coordinates;
 
+      // Add custom scoring and sorting logic
       query = query
-        .leftJoin('activity.location', 'location')
-        .leftJoin('activity.category', 'category')
-        .leftJoin('activity.creator', 'user') // Join with user table
-        .addSelect([
-          'category.name',
-          'location.name',
-          'user.firstName',
-          'user.lastName',
-          'user.profilePic',
-        ]) // Select category, location names, and user details
         .addSelect(
           `ST_Distance(
             ST_SetSRID(ST_MakePoint(:userLng, :userLat), 4326)::geography,
@@ -196,11 +168,9 @@ export class ActivityService extends CommonService<Activity> {
         .setParameters({ userLng, userLat, userId });
     }
 
+    // Execute the query and return the results
     const result = await query.getRawAndEntities();
-    console.log(`Found ${result.entities.length} activities with scores`);
-    result.raw.forEach((raw, index) => {
-      console.log(`Activity ${result.entities[index].id} score: ${raw.score}`);
-    });
+    console.log(`Found ${result.entities.length} activities`);
 
     // Map the result to include category, location names, and user details
     const activitiesWithDetails = result.entities.map((activity, index) => ({

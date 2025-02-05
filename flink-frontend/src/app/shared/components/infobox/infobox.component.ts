@@ -30,7 +30,7 @@ import {
       transition(':leave', [
         animate(
           '500ms ease-in',
-          style({ transform: 'translateY(20px)', opacity: 0 }) // Less movement for smoother effect
+          style({ transform: 'translateY(20px)', opacity: 0 })
         ),
       ]),
     ]),
@@ -40,13 +40,13 @@ export class InfoboxComponent implements OnInit, OnDestroy {
   @Input() message: string = '';
   @Output() close = new EventEmitter<void>();
 
-  timeBarWidth: number = 100; // Initial width of the time bar
+  timeBarWidth: number = 100;
   private interval: any;
   private startTime!: number;
 
   ngOnInit() {
     this.startTime = Date.now();
-    this.interval = setInterval(() => this.updateTimeBar(), 10); // Update every 10ms for smooth animation
+    this.interval = setInterval(() => this.updateTimeBar(), 10);
   }
 
   ngOnDestroy() {
@@ -56,18 +56,18 @@ export class InfoboxComponent implements OnInit, OnDestroy {
   }
 
   updateTimeBar() {
-    const elapsedTime = Date.now() - this.startTime; // Time elapsed in milliseconds
-    const totalDuration = 5000; // Total duration in milliseconds (5 seconds)
+    const elapsedTime = Date.now() - this.startTime;
+    const totalDuration = 5000;
 
     if (elapsedTime >= totalDuration) {
       this.closeInfobox();
       return;
     }
 
-    this.timeBarWidth = 100 - (elapsedTime / totalDuration) * 100; // Calculate remaining width
+    this.timeBarWidth = 100 - (elapsedTime / totalDuration) * 100;
   }
 
   closeInfobox() {
-    setTimeout(() => this.close.emit(), 500); // Match the duration of the fade-out animation
+    setTimeout(() => this.close.emit(), 500);
   }
 }

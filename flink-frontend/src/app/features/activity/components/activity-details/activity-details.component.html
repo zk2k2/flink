@@ -1,152 +1,111 @@
-<div class="h-full w-full p-4 xl:w-[1335px] bg-[#F9F9FA] overflow-auto">
+<div class="h-full w-full p-4 xl:w-full bg-[#F9F9FA] overflow-hidden">
   <div class="bg-white p-4 rounded-lg shadow-md">
     <div class="flex space-x-2">
       <img class="h-6 self-center" src="/assets/logo_item_colored.png" alt="" />
       <h1 class="!text-3xl !my-2">
-        Activity details: Jam session at Hard Rock Café
+        {{ activity.title }}
       </h1>
     </div>
     <div class="activity-poster flex space-x-2">
       <div class="flex justify-center flex-col">
         <img
-          src="https://thispersondoesnotexist.com/"
+          src="{{ activity.creator.profilePic | imageNotFound }}"
           class="rounded-full !m-0 max-w-10 max-h-10"
           alt=""
         />
       </div>
 
       <div class="flex h-full flex-col justify-center">
-        <p class="!m-0">John Doe (creator)</p>
+        <p class="!m-0">
+          {{ activity.creator.firstName }}
+          {{ activity.creator.lastName }} (Creator)
+        </p>
         <p class="text-gray-400 !text-[10px] italic !m-0">
-          Posted on 12/01/2025 at 21:04
+          Posted on {{ activity.createdAt | customDate }}
         </p>
       </div>
     </div>
     <div class="activity-details !my-4 flex space-x-5">
       <div class="flex justify-center space-x-1 items-center">
         <mat-icon>date_range</mat-icon>
-        <span class="time">Sun. 02/02/25 at 17:05 </span>
+        <span class="time"> {{ activity.date | customDate }} </span>
       </div>
 
       <div class="flex justify-center items-center">
         <mat-icon>place</mat-icon>
-        <span class="time">Hard Rock Café Tunis (Within 5.6km)</span>
+        <span class="time">{{ activity.location.name }}</span>
       </div>
       <div class="flex justify-center items-center space-x-1">
         <mat-icon>people</mat-icon>
-        <span class="time">8/10 participants</span>
+        <span class="time"
+          >{{ activity.users.length }}/{{ activity.nbOfParticipants }}</span
+        >
       </div>
     </div>
   </div>
   <div class="w-full bg-white p-4 my-3 rounded-lg shadow-md">
     <h1>Description</h1>
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-      consectetur, nunc nec ultricies tincidunt, nunc nisl ultricies sapien, nec
-      ultricies nunc nisl nec nunc. Nullam consectetur, nunc nec ultricies
-      tincidunt, nunc nisl ultricies sapien, nec ultricies nunc nisl nec nunc.
-      Nullam consectetur, nunc nec ultricies
+      {{ activity.description }}
     </p>
-    <h1>Hobbies</h1>
-    <ul>
-      <li>-Music</li>
-      <li>-Rock</li>
-      <li>-Drums</li>
-    </ul>
+
     <h1 class="!my-2">Photos</h1>
-    <div class="flex space-x-2">
+    <div class="flex space-x-2" *ngFor="let photo of activity.activityPhotos">
       <img
-        class="w-48 h-48 object-cover rounded-lg"
-        src="https://picsum.photos/400"
-        alt=""
-      />
-      <img
-        class="w-48 h-48 object-cover rounded-lg"
-        src="https://picsum.photos/400"
-        alt=""
-      />
-      <img
-        class="w-48 h-48 object-cover rounded-lg"
-        src="https://picsum.photos/400"
+        [src]="photo | imageNotFound"
+        class="rounded-lg !m-0 max-w-32 max-h-32"
         alt=""
       />
     </div>
     <div class="my-4">
       <h1>People</h1>
       <div class="flex space-x-4">
-        <div class="flex justify-center flex-col relative group">
+        <div
+          class="flex justify-center flex-col relative group"
+          *ngFor="let user of activity.users"
+        >
           <img
-            src="https://thispersondoesnotexist.com/"
+            [src]="user.profilePic | imageNotFound"
             class="rounded-full !m-0 max-w-14 max-h-14"
             alt=""
           />
           <span
             class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-sm px-2 py-1 rounded"
           >
-            John Doe
-          </span>
-        </div>
-        <div class="flex justify-center flex-col relative group">
-          <img
-            src="https://thispersondoesnotexist.com/"
-            class="rounded-full !m-0 max-w-14 max-h-14"
-            alt=""
-          />
-          <span
-            class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-sm px-2 py-1 rounded"
-          >
-            John Doe
-          </span>
-        </div>
-        <div class="flex justify-center flex-col relative group">
-          <img
-            src="https://thispersondoesnotexist.com/"
-            class="rounded-full !m-0 max-w-14 max-h-14"
-            alt=""
-          />
-          <span
-            class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-sm px-2 py-1 rounded"
-          >
-            John Doe
-          </span>
-        </div>
-        <div class="flex justify-center flex-col relative group">
-          <img
-            src="https://thispersondoesnotexist.com/"
-            class="rounded-full !m-0 max-w-14 max-h-14"
-            alt=""
-          />
-          <span
-            class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-sm px-2 py-1 rounded"
-          >
-            John Doe
-          </span>
-        </div>
-        <div class="flex justify-center flex-col relative group">
-          <img
-            src="https://thispersondoesnotexist.com/"
-            class="rounded-full !m-0 max-w-14 max-h-14"
-            alt=""
-          />
-          <span
-            class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-sm px-2 py-1 rounded"
-          >
-            John Doe
-          </span>
-        </div>
-        <div class="flex justify-center flex-col relative group">
-          <img
-            src="https://thispersondoesnotexist.com/"
-            class="rounded-full !m-0 max-w-14 max-h-14"
-            alt=""
-          />
-          <span
-            class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-sm px-2 py-1 rounded"
-          >
-            John Doe
+            {{ user.firstName }} {{ user.lastName }}
           </span>
         </div>
       </div>
     </div>
+    <div class="my-4">
+      <h1>Actions</h1>
+      <div class="flex space-x-4 justify-end">
+        <button
+          class="bg-red-500 text-white px-4 py-2 rounded"
+          (click)="openLeaveActivityModal()"
+        >
+          Leave Activity
+        </button>
+      </div>
+    </div>
   </div>
 </div>
+
+<app-modal
+  *ngIf="showLeaveActivityModal"
+  [title]="'Leave Activity'"
+  [bodyText]="'Are you sure you want to leave this activity?'"
+  [showCancelButton]="true"
+  [showSubmitButton]="true"
+  [cancelButtonText]="'Cancel'"
+  [submitButtonText]="'Leave'"
+  (submit)="leaveActivity()"
+  (cancel)="closeLeaveActivityModal()"
+  (closeModal)="closeLeaveActivityModal()"
+></app-modal>
+
+<app-infobox
+  *ngIf="showInfobox"
+  [message]="'Successfully left activity!'"
+  (close)="showInfobox = false"
+></app-infobox>
