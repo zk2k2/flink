@@ -1,4 +1,17 @@
 <div class="activities-list flex flex-col space-y-8">
   <app-activity-card *ngFor="let activity of activities" [activity]="activity">
   </app-activity-card>
+
+  <div class="activities-list flex flex-col space-y-8">
+    <ng-container *ngIf="activities?.length; else notFound">
+      <app-activity-card
+        *ngFor="let activity of activities"
+        [activity]="activity"
+      >
+      </app-activity-card>
+    </ng-container>
+  </div>
 </div>
+<ng-template #notFound>
+  <app-not-found></app-not-found>
+</ng-template>

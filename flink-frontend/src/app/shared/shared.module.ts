@@ -5,7 +5,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import {  MatCardModule } from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ModalComponent } from './components/modal/modal.component';
@@ -13,6 +13,7 @@ import { InfoboxComponent } from './components/infobox/infobox.component';
 import { ActivityCardComponent } from './components/activity-card/activity-card.component';
 import { CustomDatePipe } from '../core/pipes/CustomDataPipe';
 import { ImageNotFoundPipe } from '../core/pipes/ImageNotFoundPipe';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { ImageNotFoundPipe } from '../core/pipes/ImageNotFoundPipe';
     ModalComponent,
     InfoboxComponent,
     ActivityCardComponent,
+    NotFoundComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +43,7 @@ import { ImageNotFoundPipe } from '../core/pipes/ImageNotFoundPipe';
     ModalComponent,
     InfoboxComponent,
     ActivityCardComponent,
+    NotFoundComponent,
   ],
 })
 export class SharedModule {}

@@ -25,16 +25,31 @@
                 </div>
               </div>
               <div>
-                <button
-                  class="bg-secondary max-w-16 xl:max-w-36 px-2 py-1 text-white rounded-xl"
-                  (click)="joinActivity(activity.id)"
-                >
-                  <div
-                    class="flex justify-center space-x-2 px-2 py-1 rounded-xl text-white items-center"
+                <!-- Conditional Rendering of Button -->
+                <ng-container *ngIf="isCurrentUserCreator(); else joinButton">
+                  <button
+                    class="bg-secondary max-w-16 xl:max-w-36 px-2 py-1 text-white rounded-xl"
+                    (click)="router.navigate(['/activity', activity.id])"
                   >
-                    <span class="text-md">Join Now!</span>
-                  </div>
-                </button>
+                    <div
+                      class="flex justify-center space-x-2 px-2 py-1 rounded-xl text-white items-center"
+                    >
+                      <span class="text-md">View</span>
+                    </div>
+                  </button>
+                </ng-container>
+                <ng-template #joinButton>
+                  <button
+                    class="bg-secondary max-w-16 xl:max-w-36 px-2 py-1 text-white rounded-xl"
+                    (click)="joinActivity(activity.id)"
+                  >
+                    <div
+                      class="flex justify-center space-x-2 px-2 py-1 rounded-xl text-white items-center"
+                    >
+                      <span class="text-md">Join Now!</span>
+                    </div>
+                  </button>
+                </ng-template>
               </div>
             </div>
 

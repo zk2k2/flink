@@ -10,6 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import * as L from 'leaflet';
 import { UploadService } from 'src/app/core/services/upload.service';
 
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -43,8 +44,10 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+ 
+  ngOnInit() {
+    this.route.paramMap.subscribe((params) => {
+ 
       const userId = params.get('userid');
       if (userId) {
         this.loadUserProfile(userId);
@@ -101,7 +104,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error loading user profile:', error);
-      }
+      },
     });
   }
 
@@ -113,7 +116,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error loading activities:', error);
-      }
+      },
     });
   }
 
@@ -223,6 +226,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       error: (err) => console.error('Error fetching address:', err)
     });
   }
+ 
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -273,4 +277,5 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
 
   
   
+ 
 }
