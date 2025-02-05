@@ -14,4 +14,8 @@ export class ActivityService {
   getActivities(): Observable<ActivityCard[]> {
     return this.http.get<ActivityCard[]>(this.apiUrl);
   }
+
+  createActivity(formData: FormData): Observable<any> {
+    return this.http.post<any>(this.apiUrl, formData);
+  }
 }
