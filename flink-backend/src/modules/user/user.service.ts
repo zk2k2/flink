@@ -161,6 +161,9 @@ export class UserService extends CommonService<User> {
     return user.achievements || [];
   }
 
+  
+
+  /*
   async getProfile(identifier: string) {
     const user = await this.findOneById(identifier);
 
@@ -181,4 +184,38 @@ export class UserService extends CommonService<User> {
     };
     return profileData;
   }
+  */
+  async getProfile(identifier: string) {
+    const user = await this.findOne({
+      where: { id: identifier },
+      relations: [
+        'followers',
+        'following',
+        'achievements',
+        'userHobbies',
+        'userHobbies.hobby',
+        'createdActivities'
+      ]
+    });
+  
+    if (!user) {
+      throw new Error('User not found');
+    }
+  
+    const profileData = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      profilePic: user.profilePic,
+      xp: user.xp,
+      followersCount: user.followers ? user.followers.length : 0,
+      followingCount: user.following ? user.following.length : 0,
+      achievements: user.achievements,
+      hobbies: user.userHobbies ? user.userHobbies.map((uh) => uh.hobby.title) : [],
+      postsCount: user.createdActivities ? user.createdActivities.length : 0,
+    };
+  
+    return profileData;
+  }
+  
 }
