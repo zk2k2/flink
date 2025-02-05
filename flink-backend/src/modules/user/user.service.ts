@@ -123,7 +123,7 @@ export class UserService extends CommonService<User> {
   async updatePassword(id: string, newPassword: string): Promise<User> {
     const hashedPassword = await bcrypt.hash(
       newPassword,
-      parseInt(process.env.JWT_SALT),
+      process.env.JWT_SALT || 10,
     );
     return this.update(id, { password: hashedPassword });
   }

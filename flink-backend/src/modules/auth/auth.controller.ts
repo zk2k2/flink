@@ -37,7 +37,6 @@ export class AuthController {
     @Query('token') token: string,
     @Body('password') password: string,
   ) {
-
     return this.authService.resetPassword(token, password);
   }
 
@@ -62,8 +61,9 @@ export class AuthController {
   async restoreAccount(@Query('token') token: string) {
     return this.authService.handleRestoreAccount(token);
   }
+@UseGuards(JwtAuthGuard)
 @Post('check-status')
 async getAuthenticatedUser(@Req() req: Request) {
-    return req.user;
+  return req.user; 
 }
 }
