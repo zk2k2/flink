@@ -5,7 +5,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 @Component({
   selector: 'app-user-profile-form',
   templateUrl: './user-profile-form.component.html',
-  styleUrls: ['./user-profile-form.component.scss']
+  styleUrls: ['./user-profile-form.component.scss'],
 })
 export class UserProfileFormComponent implements OnInit {
   profileForm!: FormGroup;
@@ -13,7 +13,11 @@ export class UserProfileFormComponent implements OnInit {
   isLoading = false;
   errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private profileService: ProfilesServiceService) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private profileService: ProfilesServiceService
+  ) {}
 
   ngOnInit() {
     this.initializeForm();
@@ -24,38 +28,56 @@ export class UserProfileFormComponent implements OnInit {
     this.profileForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
       lastName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
-      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+      username: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(20),
+        ],
+      ],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern(/^\+216\d{8}$/)]],
-      password: ['', [
-        Validators.required,
-        Validators.minLength(8),
-        Validators.pattern(/^(?=.*\d)(?=.*[A-Z])(?=.*\W).+$/)
-      ]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/^(?=.*\d)(?=.*[A-Z])(?=.*\W).+$/),
+        ],
+      ],
       birthDate: ['', Validators.required],
       profilePic: [''],
       hobbies: this.fb.array([]),
       location: this.fb.group({
         name: ['', Validators.required],
-        lat: [0, [Validators.required, Validators.min(-90), Validators.max(90)]],
-        lng: [0, [Validators.required, Validators.min(-180), Validators.max(180)]]
-      })
+        lat: [
+          0,
+          [Validators.required, Validators.min(-90), Validators.max(90)],
+        ],
+        lng: [
+          0,
+          [Validators.required, Validators.min(-180), Validators.max(180)],
+        ],
+      }),
     });
   }
 
   private fetchUserData() {
     this.isLoading = true;
-    this.profileService.getUserData(this.authService.getCurrentUserId()).subscribe({
-      next: (data) => {
-        this.setFormValues(data);
-        console.log('User data:', data);
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.errorMessage = 'Failed to load profile data.';
-        this.isLoading = false;
-      }
-    });
+    this.profileService
+      .getUserProfile(this.authService.getCurrentUserId())
+      .subscribe({
+        next: (data) => {
+          this.setFormValues(data);
+          console.log('User data:', data);
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.errorMessage = 'Failed to load profile data.';
+          this.isLoading = false;
+        },
+      });
   }
 
   private setFormValues(data: any) {
@@ -63,7 +85,7 @@ export class UserProfileFormComponent implements OnInit {
     this.profileForm.patchValue({
       ...data,
       birthDate: data.birthDate ? data.birthDate.substring(0, 10) : '',
-      location: locationData
+      location: locationData,
     });
 
     const hobbiesArray = this.profileForm.get('hobbies') as FormArray;
@@ -87,7 +109,7 @@ export class UserProfileFormComponent implements OnInit {
 
   toggleEdit() {
     this.isEditing = !this.isEditing;
-    Object.keys(this.profileForm.controls).forEach(controlName => {
+    Object.keys(this.profileForm.controls).forEach((controlName) => {
       const control = this.profileForm.get(controlName);
       control?.[this.isEditing ? 'enable' : 'disable']();
     });
@@ -104,8 +126,8 @@ export class UserProfileFormComponent implements OnInit {
         location: {
           name: formValue.location.name,
           lat: parseFloat(formValue.location.lat),
-          lng: parseFloat(formValue.location.lng)
-        }
+          lng: parseFloat(formValue.location.lng),
+        },
       };
 
       this.profileService.updateProfile(updatedData).subscribe({
@@ -116,7 +138,7 @@ export class UserProfileFormComponent implements OnInit {
         error: (error) => {
           this.errorMessage = 'Failed to update profile.';
           this.isLoading = false;
-        }
+        },
       });
     }
   }
