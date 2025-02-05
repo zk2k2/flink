@@ -19,7 +19,8 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     this.isLoggedIn$ = this.authService.isLoggedIn();
 
-    // Dynamically set menu items after login status is determined
+ 
+   
     this.isLoggedIn$.subscribe((isLoggedIn) => {
       this.menuItems = [
         { label: 'Home', icon: 'home', route: '/feed' },
@@ -35,7 +36,7 @@ export class NavbarComponent implements OnInit {
       ];
     });
 
-    // Listen for route changes
+  
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
