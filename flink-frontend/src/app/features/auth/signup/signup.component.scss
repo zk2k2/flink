@@ -7,3 +7,32 @@
     height: 16rem; /* 64 * 0.25rem = 16rem */
   }
   
+ /* Hide browser's password toggle */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+/* Ensure icon stays above input text */
+.relative {
+  position: relative;
+  z-index: 0;
+}
+
+button {
+  z-index: 10;
+}
+
+/* Smooth transitions */
+input {
+  transition: all 0.2s ease;
+}
+
+.material-icons-outlined {
+  transition: transform 0.2s ease;
+}
+
+button:hover .material-icons-outlined {
+  transform: scale(1.1);
+}
+  

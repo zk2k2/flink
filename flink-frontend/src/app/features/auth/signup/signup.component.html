@@ -159,66 +159,87 @@
       </div>
     </div>
 
-    <!-- Password -->
-    <div class="flex flex-col space-y-2">
-      <label for="password" class="text-lg">
-        Password <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="password"
-        id="password"
-        formControlName="password"
-        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
-      />
-      <div
-        *ngIf="
-          signupForm.get('password')?.touched &&
-          signupForm.get('password')?.errors
-        "
-        class="text-red-500 text-sm"
-      >
-        <div *ngIf="signupForm.get('password')?.hasError('required')">
-          Password is required
-        </div>
-        <div *ngIf="signupForm.get('password')?.hasError('pattern')">
-          Must contain:
-          <ul class="list-disc list-inside pl-4">
-            <li>8+ characters</li>
-            <li>1 uppercase letter</li>
-            <li>1 number</li>
-            <li>1 special character (!@#$%^&*)</li>
-          </ul>
-        </div>
-      </div>
+<!-- Password Field -->
+<div class="flex flex-col space-y-2">
+  <label for="password" class="text-lg">
+    Password <span class="text-red-500">*</span>
+  </label>
+  <div class="relative">
+    <input
+      [type]="showPassword ? 'text' : 'password'"
+      id="password"
+      formControlName="password"
+      autocomplete="new-password"
+      class="w-full p-2 pr-10 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+    />
+    <button
+      type="button"
+      (click)="togglePasswordVisibility('password')"
+      class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+      aria-label="Toggle password visibility"
+    >
+      <span class="material-icons-outlined text-xl">
+        {{ showPassword ? 'visibility_off' : 'visibility' }}
+      </span>
+    </button>
+  </div>
+  <!-- Move validation messages outside the relative container -->
+  <div *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.errors" class="text-red-500 text-sm">
+    <div *ngIf="signupForm.get('password')?.hasError('required')">
+      Password is required
     </div>
+    <div *ngIf="signupForm.get('password')?.hasError('pattern')">
+      Must contain:
+      <ul class="list-disc list-inside pl-4">
+        <li>8+ characters</li>
+        <li>1 uppercase letter</li>
+        <li>1 number</li>
+        <li>1 special character (!@#$%^&*)</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-    <!-- Confirm Password -->
-    <div class="flex flex-col space-y-2">
-      <label for="confirmPassword" class="text-lg">
-        Confirm Password <span class="text-red-500">*</span>
-      </label>
-      <input
-        type="password"
-        id="confirmPassword"
-        formControlName="confirmPassword"
-        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
-      />
-      <div
-        *ngIf="
-          signupForm.get('confirmPassword')?.touched &&
-          (signupForm.get('confirmPassword')?.errors ||
-            signupForm.hasError('passwordMismatch'))
-        "
-        class="text-red-500 text-sm"
-      >
-        <div *ngIf="signupForm.get('confirmPassword')?.hasError('required')">
-          Confirm Password is required
-        </div>
-        <div *ngIf="signupForm.hasError('passwordMismatch')">
-          Passwords do not match
-        </div>
-      </div>
+<!-- Confirm Password -->
+<div class="flex flex-col space-y-2">
+  <label for="confirmPassword" class="text-lg">
+    Confirm Password <span class="text-red-500">*</span>
+  </label>
+  <div class="relative">
+    <input
+      [type]="showConfirmPassword ? 'text' : 'password'"
+      id="confirmPassword"
+      formControlName="confirmPassword"
+      autocomplete="new-password"
+      class="w-full p-2 pr-10 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+    />
+    <button
+      type="button"
+      (click)="togglePasswordVisibility('confirmPassword')"
+      class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+      aria-label="Toggle confirm password visibility"
+    >
+      <span class="material-icons-outlined text-xl">
+        {{ showConfirmPassword ? 'visibility_off' : 'visibility' }}
+      </span>
+    </button>
+  </div>
+  <div
+    *ngIf="
+      signupForm.get('confirmPassword')?.touched &&
+      (signupForm.get('confirmPassword')?.errors ||
+        signupForm.hasError('passwordMismatch'))
+    "
+    class="text-red-500 text-sm"
+  >
+    <div *ngIf="signupForm.get('confirmPassword')?.hasError('required')">
+      Confirm Password is required
     </div>
+    <div *ngIf="signupForm.hasError('passwordMismatch')">
+      Passwords do not match
+    </div>
+  </div>
+</div>
 
     <!-- Birth Date -->
     <div class="flex flex-col space-y-2">

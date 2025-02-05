@@ -1,6 +1,10 @@
-<div
-  class="flex justify-center h-full bg-gray-100 !overflow-y-hidden items-center"
->
+<div class="flex justify-center h-full bg-gray-100 !overflow-y-hidden items-center">
+  <!-- Infobox at the top level -->
+  <app-infobox
+    *ngIf="showInfobox"
+    [message]="infoMessage"
+    (close)="showInfobox = false"
+  ></app-infobox>
   <form
     [formGroup]="loginForm"
     (ngSubmit)="onSubmit()"
@@ -9,16 +13,18 @@
     <img
       src="assets/flink_logo_colored.png"
       class="max-h-52 max-w-52 self-center"
-      alt=""
+      alt="Flink Logo"
     />
     <h1 class="self-center !text-3xl !font-medium text-secondary">
       Welcome back!
     </h1>
     <p class="text-center">Please enter your credentials below.</p>
+
+    <!-- Identifier Field -->
     <div class="flex flex-col">
-      <label for="identifier" class="text-lg"
-        >Identifier<span class="text-red-500">*</span></label
-      >
+      <label for="identifier" class="text-lg">
+        Identifier<span class="text-red-500">*</span>
+      </label>
       <input
         type="text"
         id="identifier"
@@ -26,36 +32,43 @@
         class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
         placeholder="Enter identifier (username, email or phone)"
       />
-    </div>
-
-    <div
-      *ngIf="
-        loginForm.get('identifier')?.touched &&
-        loginForm.get('identifier')?.invalid
-      "
-      class="text-red-500 text-sm"
-    >
-      <div *ngIf="loginForm.get('identifier')?.hasError('required')">
-        Identifier is required.
+      <div
+        *ngIf="loginForm.get('identifier')?.touched && loginForm.get('identifier')?.invalid"
+        class="text-red-500 text-sm mt-1"
+      >
+        <div *ngIf="loginForm.get('identifier')?.hasError('required')">
+          Identifier is required.
+        </div>
       </div>
     </div>
 
-    <div class="flex flex-col">
+    <!-- Password Field -->
+    <div class="flex flex-col space-y-2">
       <label for="password" class="text-lg">
         Password <span class="text-red-500">*</span>
       </label>
-      <input
-        type="password"
-        id="password"
-        formControlName="password"
-        class="w-full p-2 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
-        placeholder="Enter your password"
-      />
+      <div class="relative">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="password"
+          formControlName="password"
+          autocomplete="current-password"
+          class="w-full p-2 pr-10 border border-gray-300 rounded-lg focus:border-gray-500 focus:outline-none transition-colors"
+          placeholder="Enter your password"
+        />
+        <button
+          type="button"
+          (click)="togglePasswordVisibility()"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+          aria-label="Toggle password visibility"
+        >
+          <span class="material-icons-outlined text-xl">
+            {{ showPassword ? 'visibility_off' : 'visibility' }}
+          </span>
+        </button>
+      </div>
       <div
-        *ngIf="
-          loginForm.get('password')?.touched &&
-          loginForm.get('password')?.invalid
-        "
+        *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
         class="text-red-500 text-sm"
       >
         <div *ngIf="loginForm.get('password')?.hasError('required')">
@@ -63,25 +76,34 @@
         </div>
       </div>
     </div>
+
     <div class="flex justify-between items-center">
       <span
-        class="font-medium text-primary cursor-pointer"
+        class="font-medium text-primary cursor-pointer hover:text-primary-dark transition-colors"
         (click)="navigateToForgotPassword()"
       >
         Forgot Password?
       </span>
     </div>
 
-    <div class="text-white text-lg px-4 py-3 rounded-lg bg-primary">
-      <button type="submit" class="w-full">Login</button>
+    <div class="text-white text-lg px-4 py-3 rounded-lg bg-primary hover:bg-primary-dark transition-colors">
+      <button
+        type="submit"
+        class="w-full"
+        [disabled]="loginForm.invalid"
+      >
+        Login
+      </button>
     </div>
-    <p>
+
+    <p class="text-center">
       Don't have an account yet?
       <span
-        class="font-medium text-center self-center text-primary"
+        class="font-medium text-primary cursor-pointer hover:text-primary-dark transition-colors"
         (click)="navigateToSignup()"
-        >Sign up!</span
       >
+        Sign up!
+      </span>
     </p>
   </form>
 </div>

@@ -18,6 +18,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSliderModule } from '@angular/material/slider';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { SharedModule } from "../../shared/shared.module";
 @NgModule({
   declarations: [
     LoginComponent,
@@ -38,7 +39,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     MatIconModule,
     MatSnackBarModule,
     MatSliderModule,
-    AuthRoutingModule
+    AuthRoutingModule,
+    SharedModule
   ]
 })
 export class AuthModule { }

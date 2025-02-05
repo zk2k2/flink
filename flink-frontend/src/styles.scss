@@ -61,3 +61,14 @@ body {
 .css-debug {
   @apply border-debug border-solid;
 }
+
+
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+  display: none !important;
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}

@@ -20,7 +20,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
     private readonly mailService: MailService,
-  ) {}
+  ) { }
 
   async signup(signupDto: SignupDto, res: Response): Promise<Response> {
     const user = await this.userService.create(signupDto);
@@ -33,17 +33,54 @@ export class AuthService {
 
   async login(loginDto: LoginDto, res: Response): Promise<Response> {
     const { identifier, password } = loginDto;
-    const user = await this.userService.findByField(identifier);
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedException('Invalid credentials');
+
+    try {
+      const user = await this.userService.findByField(identifier);
+
+      // User not found
+      if (!user) {
+        return res.status(401).json({
+          statusCode: 401,
+          message: 'Invalid credentials',
+        });
+      }
+
+      // Account deactivated
+      if (user.deletedAt) {
+        return res.status(403).json({
+          statusCode: 403,
+          message: 'Account deactivated. Please contact support.',
+        });
+      }
+
+      // Check password
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({
+          statusCode: 401,
+          message: 'Invalid credentials',
+        });
+      }
+
+      // Generate tokens and return success
+      await this.generateTokens(user, res);
+      return res.status(200).json({
+        statusCode: 200,
+        message: 'Login successful',
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        },
+      });
+
+    } catch (error) {
+      console.error('Login error:', error);
+      return res.status(500).json({
+        statusCode: 500,
+        message: 'Internal server error',
+      });
     }
-    if (user.deletedAt) {
-      throw new UnauthorizedException('User account has been deactivated');
-    }
-    await this.generateTokens(user, res);
-    return res.status(200).json({
-      message: 'User logged in successfully',
-    });
   }
 
   private async generateTokens(user: User, res: Response): Promise<Boolean> {

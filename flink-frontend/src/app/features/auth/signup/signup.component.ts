@@ -34,7 +34,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private uploadService: UploadService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -68,6 +68,18 @@ export class SignupComponent implements OnInit, AfterViewInit {
     const confirmPassword = group.get('confirmPassword')?.value;
     return password === confirmPassword ? null : { passwordMismatch: true };
   };
+
+  // Add these variables
+  showPassword = false;
+  showConfirmPassword = false;
+  // Add these methods
+  togglePasswordVisibility(field: 'password' | 'confirmPassword'): void {
+    if (field === 'password') {
+      this.showPassword = !this.showPassword;
+    } else {
+      this.showConfirmPassword = !this.showConfirmPassword;
+    }
+  }
 
   private loadCategories(): void {
     this.http.get<any[]>(this.categoriesApiUrl).subscribe({
@@ -119,7 +131,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     const hobbiesGroup = this.signupForm.get('hobbies') as FormGroup;
     return hobbiesGroup.get(selectedCategory) as FormArray<FormGroup>;
   }
-  
+
 
   trackByHobbyId(index: number, hobby: FormGroup): string {
     return hobby.get('id')?.value;
@@ -205,7 +217,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
           this.snackBar.open('File upload failed', 'Close', { duration: 3000 });
         }
       });
-      
+
     }
   }
 
