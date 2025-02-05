@@ -6,6 +6,7 @@ import { ProfileComponent } from './profile.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { UpdateUserInformationComponent } from './update-user-information/update-user-information.component';
 import { UserProfileFormComponent } from './user-profile-form/user-profile-form.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { UserProfileFormComponent } from './user-profile-form/user-profile-form.
     ProfileRoutingModule,
     ReactiveFormsModule,
     SharedModule,
+    MatSnackBarModule, 
   ],
 })
 export class ProfileModule {}
