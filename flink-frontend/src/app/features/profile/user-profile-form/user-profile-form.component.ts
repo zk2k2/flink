@@ -1,65 +1,74 @@
-/*import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserProfile } from '../interfaces/user-profile';
-
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { ProfilesServiceService } from '../profiles-service.service';
+import { AuthService } from 'src/app/core/services/auth.service';
 @Component({
   selector: 'app-user-profile-form',
   templateUrl: './user-profile-form.component.html',
   styleUrls: ['./user-profile-form.component.scss']
 })
 export class UserProfileFormComponent implements OnInit {
-  @Input() initialData?: UserProfile;
   profileForm!: FormGroup;
   isEditing = false;
   isLoading = false;
-  errorMessage = '';
+  errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private authService: AuthService, private profileService: ProfilesServiceService) {}
 
   ngOnInit() {
     this.initializeForm();
-    if (this.initialData) {
-      this.setFormValues(this.initialData);
-    }
-    alert('All Cookies:'+ document.cookie);
-    const accessToken = getCookie('accessToken');
-    alert('Access Token:'+ accessToken);
+    this.fetchUserData();
   }
 
   private initializeForm() {
     this.profileForm = this.fb.group({
-      firstName: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
-      lastName: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
-      username: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
-      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
-      phone: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^\+216\d{8}$/)]],
-      birthDate: [{ value: '', disabled: true }, Validators.required],
-      profilePic: [{ value: '', disabled: true }],
+      firstName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
+      lastName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
+      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required, Validators.pattern(/^\+216\d{8}$/)]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*\d)(?=.*[A-Z])(?=.*\W).+$/)
+      ]],
+      birthDate: ['', Validators.required],
+      profilePic: [''],
       hobbies: this.fb.array([]),
       location: this.fb.group({
-        lat: [{ value: 0, disabled: true }, Validators.required],
-        lng: [{ value: 0, disabled: true }, Validators.required]
+        name: ['', Validators.required],
+        lat: [0, [Validators.required, Validators.min(-90), Validators.max(90)]],
+        lng: [0, [Validators.required, Validators.min(-180), Validators.max(180)]]
       })
     });
   }
-/*
-  private setFormValues(data: UserProfile) {
+
+  private fetchUserData() {
+    this.isLoading = true;
+    this.profileService.getUserData(this.authService.getCurrentUserId()).subscribe({
+      next: (data) => {
+        this.setFormValues(data);
+        console.log('User data:', data);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.errorMessage = 'Failed to load profile data.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private setFormValues(data: any) {
+    const locationData = data.location || { name: '', lat: 0, lng: 0 };
     this.profileForm.patchValue({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      username: data.username,
-      email: data.email,
-      phone: data.phone,
-      birthDate: data.birthDate.toISOString().substring(0, 10),
-      profilePic: data.profilePic,
-      location: this.fb.group({
-        lat: [data.location ? data.location.lat : ''],
-        lng: [data.location ? data.location.lng : '']
-      })
+      ...data,
+      birthDate: data.birthDate ? data.birthDate.substring(0, 10) : '',
+      location: locationData
     });
 
     const hobbiesArray = this.profileForm.get('hobbies') as FormArray;
-    data.hobbies.forEach(hobby => {
+    hobbiesArray.clear();
+    data.hobbies?.forEach((hobby: { name: string }) => {
       hobbiesArray.push(this.fb.control(hobby.name, Validators.required));
     });
   }
@@ -78,43 +87,37 @@ export class UserProfileFormComponent implements OnInit {
 
   toggleEdit() {
     this.isEditing = !this.isEditing;
-    if (this.isEditing) {
-      this.profileForm.enable();
-    } else {
-      this.profileForm.disable();
-    }
+    Object.keys(this.profileForm.controls).forEach(controlName => {
+      const control = this.profileForm.get(controlName);
+      control?.[this.isEditing ? 'enable' : 'disable']();
+    });
   }
 
   onSubmit() {
-    console.log(this.profileForm.valid);
     if (this.profileForm.valid) {
       this.isLoading = true;
       const formValue = this.profileForm.value;
-      const updatedProfile: UserProfile = {
-        ...this.initialData,
+      const updatedData = {
         ...formValue,
+        birthDate: new Date(formValue.birthDate),
         hobbies: formValue.hobbies.map((name: string) => ({ name })),
-        birthDate: new Date(formValue.birthDate)
+        location: {
+          name: formValue.location.name,
+          lat: parseFloat(formValue.location.lat),
+          lng: parseFloat(formValue.location.lng)
+        }
       };
-      
-      console.log('Submitting:', updatedProfile);
-      this.isLoading = false;
-      this.toggleEdit();
+
+      this.profileService.updateProfile(updatedData).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.toggleEdit();
+        },
+        error: (error) => {
+          this.errorMessage = 'Failed to update profile.';
+          this.isLoading = false;
+        }
+      });
     }
   }
-
-
-  
 }
-function getCookie(name: string): string | null {
-  const nameEQ = name + "=";
-  const cookies = document.cookie.split(';');
-  for (let cookie of cookies) {
-    cookie = cookie.trim();
-    if (cookie.indexOf(nameEQ) === 0) {
-      return cookie.substring(nameEQ.length);
-    }
-  }
-  return null;
-}
-*/

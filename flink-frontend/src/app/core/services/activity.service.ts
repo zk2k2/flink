@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
@@ -13,5 +13,14 @@ export class ActivityService {
 
   getActivities(): Observable<ActivityCard[]> {
     return this.http.get<ActivityCard[]>(this.apiUrl);
+  }
+
+  getProfileActivities(creatorId: string): Observable<ActivityCard[]> {
+    let params = new HttpParams()
+      .set('sortBy', 'newest')
+      .set('type', 'profile')
+      .set('creatorId', creatorId);
+
+    return this.http.get<ActivityCard[]>(this.apiUrl, { params });
   }
 }

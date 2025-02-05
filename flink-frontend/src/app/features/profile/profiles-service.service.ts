@@ -1,21 +1,22 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { UserProfile } from './interfaces/user-profile';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ProfilesServiceService {
+  private apiUrl = 'http://localhost:3000/profile';
+  private userUrl = 'http://localhost:3000/users';
 
-  private apiUrl = `localhost:3000/users`;
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  getUserProfile(userId: string | null): any {
-
-  //needing authentication
-    return this.http.get<UserProfile>(`${this.apiUrl}/${userId}`);
-
+  getUserProfile(identifier: string): Observable<any> {
+    console.log('getUserProfile', identifier);
+    return this.http.get<any>(`${this.apiUrl}/${identifier}`);
   }
-
+  updateProfile(updateData: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/update`, updateData);
+  }
+  getUserData(id: string): Observable<any> {
+    return this.http.get<any>(`${this.userUrl}/${id}`);
+  }
 }
