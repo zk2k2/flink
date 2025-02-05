@@ -6,6 +6,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivityDetailsComponent } from './components/activity-details/activity-details.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ActivityRoutingModule } from './activity-routing.module';
+import { CustomDatePipe } from 'src/app/core/pipes/CustomDataPipe';
+import { ImageNotFoundPipe } from 'src/app/core/pipes/ImageNotFoundPipe';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,8 @@ import { ActivityRoutingModule } from './activity-routing.module';
     ReactiveFormsModule,
     SharedModule,
     ActivityRoutingModule,
+    CustomDatePipe,
+    ImageNotFoundPipe,
   ],
   exports: [CreateActivityComponent, ActivityDetailsComponent],
 })

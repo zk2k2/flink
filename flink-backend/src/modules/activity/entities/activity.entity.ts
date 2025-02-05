@@ -32,7 +32,7 @@ export class Activity extends CommonEntity {
   @Column()
   nbOfParticipants: number;
 
-  @ManyToMany(() => User, (user) => user.activities)
+  @ManyToMany(() => User, (user) => user.activities, { eager: true })
   @JoinTable()
   users: User[];
 
