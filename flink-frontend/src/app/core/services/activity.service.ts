@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { ActivityCard } from '../../shared/types/ActivityCard';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ActivityCard } from 'src/app/shared/types/ActivityCard';
 @Injectable({
   providedIn: 'root',
 })
@@ -56,5 +59,14 @@ export class ActivityService {
     const params = { activityId: id };
 
     return this.http.patch<void>(url, null, { params });
+  }
+
+  getProfileActivities(creatorId: string): Observable<ActivityCard[]> {
+    let params = new HttpParams()
+      .set('sortBy', 'newest')
+      .set('type', 'profile')
+      .set('creatorId', creatorId);
+
+    return this.http.get<ActivityCard[]>(this.apiUrl, { params });
   }
 }
