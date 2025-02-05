@@ -10,7 +10,6 @@
         <h2 class="text-2xl font-bold text-gray-800">
           {{ user?.firstName }} {{ user?.lastName }}
         </h2>
-
         <div class="flex space-x-4 mt-2">
           <p class="text-gray-600">@{{ user?.username }}</p>
           <p class="mt-1 text-gray-700">
@@ -30,13 +29,12 @@
       </div>
     </div>
 
-    <div class="mt-4 md:mt-0">
+    <div class="mt-4 md:mt-0" *ngIf="isCurrentUser">
       <button
-        *ngIf="isCurrentUser"
-        (click)="updateInformation()"
+        (click)="toggleEdit()"
         class="bg-primary hover:bg-green-600 text-white px-4 py-2 rounded"
       >
-        Edit Profile
+        {{ editing ? 'Cancel Edit' : 'Edit Profile' }}
       </button>
     </div>
   </div>
@@ -88,11 +86,224 @@
       <app-activity-card
         *ngFor="let activity of activities"
         [activity]="activity"
-      >
-      </app-activity-card>
+      ></app-activity-card>
     </div>
     <ng-template #noActivities>
       <p class="text-gray-600">No activities found.</p>
     </ng-template>
+  </div>
+
+  <div *ngIf="editing" class="mt-8 border-t pt-8">
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmitProfile()" class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="firstName" class="text-lg">
+            First Name <span class="text-red-500">*</span>
+          </label>
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            class="w-full p-2 border rounded focus:outline-none"
+          />
+          <div *ngIf="profileForm.get('firstName')?.touched && profileForm.get('firstName')?.errors" class="text-red-500 text-sm">
+            <div *ngIf="profileForm.get('firstName')?.hasError('required')">
+              First name is required
+            </div>
+          </div>
+        </div>
+        <div>
+          <label for="lastName" class="text-lg">
+            Last Name <span class="text-red-500">*</span>
+          </label>
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            class="w-full p-2 border rounded focus:outline-none"
+          />
+          <div *ngIf="profileForm.get('lastName')?.touched && profileForm.get('lastName')?.errors" class="text-red-500 text-sm">
+            <div *ngIf="profileForm.get('lastName')?.hasError('required')">
+              Last name is required
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label for="username" class="text-lg">
+          Username <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          class="w-full p-2 border rounded focus:outline-none"
+        />
+        <div *ngIf="profileForm.get('username')?.touched && profileForm.get('username')?.errors" class="text-red-500 text-sm">
+          <div *ngIf="profileForm.get('username')?.hasError('required')">
+            Username is required
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="email" class="text-lg">
+            Email <span class="text-red-500">*</span>
+          </label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="w-full p-2 border rounded focus:outline-none"
+          />
+          <div *ngIf="profileForm.get('email')?.touched && profileForm.get('email')?.errors" class="text-red-500 text-sm">
+            <div *ngIf="profileForm.get('email')?.hasError('required')">
+              Email is required
+            </div>
+            <div *ngIf="profileForm.get('email')?.hasError('email')">
+              Email must be valid
+            </div>
+          </div>
+        </div>
+        <div>
+          <label for="phone" class="text-lg">
+            Phone Number <span class="text-red-500">*</span>
+          </label>
+          <input
+            id="phone"
+            type="text"
+            formControlName="phone"
+            class="w-full p-2 border rounded focus:outline-none"
+          />
+          <div *ngIf="profileForm.get('phone')?.touched && profileForm.get('phone')?.errors" class="text-red-500 text-sm">
+            <div *ngIf="profileForm.get('phone')?.hasError('required')">
+              Phone number is required
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="password" class="text-lg">
+            Password <span class="text-red-500">*</span>
+          </label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            class="w-full p-2 border rounded focus:outline-none"
+          />
+          <div *ngIf="profileForm.get('password')?.touched && profileForm.get('password')?.errors" class="text-red-500 text-sm">
+            <div *ngIf="profileForm.get('password')?.hasError('required')">
+              Password is required
+            </div>
+            <div *ngIf="profileForm.get('password')?.hasError('minlength')">
+              Password must be at least 8 characters long
+            </div>
+            <div *ngIf="profileForm.get('password')?.hasError('pattern')">
+              Password must contain at least one digit, one uppercase letter, and one special character.
+            </div>
+          </div>
+        </div>
+        <div>
+          <label for="birthDate" class="text-lg">
+            birthDate <span class="text-red-500">*</span>
+          </label>
+          <input
+            id="birthDate"
+            type="date"
+            formControlName="birthDate"
+            class="w-full p-2 border rounded focus:outline-none"
+          />
+          <div *ngIf="profileForm.get('birthDate')?.touched && profileForm.get('birthDate')?.errors" class="text-red-500 text-sm">
+            <div *ngIf="profileForm.get('birthDate')?.hasError('required')">
+              birthDate is required
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col space-y-2">
+        <label for="profilePic" class="text-lg">
+          Profile Picture <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="file"
+          id="profilePic"
+          (change)="onFileSelected($event)"
+          accept="image/*"
+          class="w-full p-2 border rounded focus:outline-none"
+        />
+        <div *ngIf="profileForm.get('profilePic')?.value" class="mt-2">
+          <img [src]="profileForm.get('profilePic')?.value" alt="Profile Preview" class="max-h-48" />
+        </div>
+        <div *ngIf="profileForm.get('profilePic')?.touched && profileForm.get('profilePic')?.errors" class="text-red-500 text-sm">
+          <div *ngIf="profileForm.get('profilePic')?.hasError('required')">
+            Profile Picture is required
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col space-y-2">
+        <label class="text-lg">Hobbies</label>
+        <div formArrayName="hobbies">
+          <div *ngFor="let hobbyCtrl of hobbiesArray.controls; let i = index" [formGroupName]="i" class="flex items-center gap-4">
+            <input type="checkbox" formControlName="checked" class="mr-2" />
+            <span>{{ hobbyCtrl.get('title')?.value }}</span>
+            <div class="flex flex-col flex-1">
+              <label class="text-sm">
+                Interest Level: {{ hobbyCtrl.get('interestLevel')?.value }}
+              </label>
+              <input
+                type="range"
+                formControlName="interestLevel"
+                min="1"
+                max="5"
+                step="1"
+                class="w-full"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div formGroupName="location" class="flex flex-col space-y-2">
+        <label for="locationName" class="text-lg">
+          Address <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="locationName"
+          formControlName="name"
+          readonly
+          class="w-full p-2 border rounded bg-gray-100 focus:outline-none"
+        />
+        <div *ngIf="profileForm.get('location.name')?.touched && profileForm.get('location.name')?.errors" class="text-red-500 text-sm">
+          <div *ngIf="profileForm.get('location.name')?.hasError('required')">
+            Address is required
+          </div>
+          <div *ngIf="profileForm.get('location.name')?.hasError('minlength')">
+            Minimum 5 characters
+          </div>
+          <div *ngIf="profileForm.get('location.name')?.hasError('maxlength')">
+            Maximum 100 characters
+          </div>
+        </div>
+      </div>
+
+      <div id="editMap" class="w-full h-64 rounded border"></div>
+      <div class="text-sm text-gray-600">
+        Please click on the map to select your location.
+      </div>
+
+      <div class="mt-4">
+        <button type="submit" [disabled]="profileForm.invalid" class="w-full px-4 py-2 bg-primary text-white rounded">
+          Save Changes
+        </button>
+      </div>
+    </form>
   </div>
 </div>
