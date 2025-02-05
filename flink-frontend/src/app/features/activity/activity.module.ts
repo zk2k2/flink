@@ -8,12 +8,16 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { ActivityRoutingModule } from './activity-routing.module';
 import { CustomDatePipe } from 'src/app/core/pipes/CustomDataPipe';
 import { ImageNotFoundPipe } from 'src/app/core/pipes/ImageNotFoundPipe';
+import { EditActivityComponent } from './components/edit-activity/edit-activity.component';
+import { EditActivityFormComponent } from './components/edit-activity-form/edit-activity-form.component';
 
 @NgModule({
   declarations: [
     CreateActivityComponent,
     CreateActivityFormComponent,
     ActivityDetailsComponent,
+    EditActivityComponent,
+    EditActivityFormComponent,
   ],
   imports: [
     CommonModule,

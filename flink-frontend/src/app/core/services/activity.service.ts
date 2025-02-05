@@ -38,8 +38,8 @@ export class ActivityService {
   }
 
   joinActivity(id: string): Observable<void> {
-    const url = `${this.apiUrl}/join`; // Base URL without the ID
-    const params = { activityId: id }; // Query parameter
+    const url = `${this.apiUrl}/join`;
+    const params = { activityId: id };
 
     return this.http.patch<void>(url, null, { params });
   }
@@ -67,5 +67,12 @@ export class ActivityService {
       .set('creatorId', creatorId);
 
     return this.http.get<ActivityCard[]>(this.apiUrl, { params });
+  }
+  updateActivity(id: string, formData: FormData): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, formData);
+  }
+
+  deleteActivity(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 }

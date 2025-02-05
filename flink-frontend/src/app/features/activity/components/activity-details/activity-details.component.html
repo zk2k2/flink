@@ -79,14 +79,43 @@
     </div>
     <div class="my-4">
       <h1>Actions</h1>
-      <div class="flex space-x-4 justify-end">
+      <div *ngIf="isCreator" class="flex space-x-4 justify-end">
         <button
+          *ngIf="isCreator"
+          class="bg-red-500 text-white px-4 py-2 rounded"
+          (click)="openDeleteActivityModal()"
+        >
+          Delete Activity
+        </button>
+
+        <button
+          *ngIf="!isCreator"
           class="bg-red-500 text-white px-4 py-2 rounded"
           (click)="openLeaveActivityModal()"
         >
           Leave Activity
         </button>
+
+        <button
+          class="bg-blue-500 text-white px-4 py-2 rounded"
+          [routerLink]="['/activity/edit', activity.id]"
+        >
+          Edit Activity
+        </button>
       </div>
+
+      <app-modal
+        *ngIf="showDeleteActivityModal"
+        [title]="'Delete Activity'"
+        [bodyText]="'Are you sure you want to delete this activity?'"
+        [showCancelButton]="true"
+        [showSubmitButton]="true"
+        [cancelButtonText]="'Cancel'"
+        [submitButtonText]="'Delete'"
+        (submit)="deleteActivity()"
+        (cancel)="showDeleteActivityModal = false"
+        (closeModal)="showDeleteActivityModal = false"
+      ></app-modal>
     </div>
   </div>
 </div>

@@ -284,14 +284,20 @@ export class ActivityService extends CommonService<Activity> {
   }
 
   async deleteActivity(userId: string, activityId: string): Promise<void> {
+    console.log('Deleting activity:', activityId);
     const activity = await this.findOne({
       where: { id: activityId },
       relations: ['creator'],
     });
 
+    console.log('Activity:', activity);
+
     if (!activity) {
       throw new HttpException('Activity not found', HttpStatus.NOT_FOUND);
     }
+
+    console.log('Activity creator:', activity.creator.id);
+    console.log('User ID:', userId);
 
     if (activity.creator.id !== userId) {
       throw new HttpException(
