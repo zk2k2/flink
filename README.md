@@ -10,21 +10,21 @@ https://github.com/user-attachments/assets/35e337f2-b1f5-41ff-b47d-176a22d2ac82
 
 ## 📌 Features
 
-- ✅ **User Profiles** - Customize your profile with hobbies & interests 📝  
-- ✅ **Create & Manage Activities** - Add, edit, and delete activities in specific categories 🎯  
-- ✅ **Follow Other Users** - Stay updated with your friends & meet new people 🤝  
-- ✅ **Discover New Interests** - Explore categories and engage with trending hobbies 🔍  
-- ✅ **Social Interaction** - Share activities, connect with fellow hobbyists ❤️  
+- **User Profiles** - Customize your profile with hobbies & interests 📝  
+- **Create & Manage Activities** - Add, edit, and delete activities in specific categories 🎯  
+- **Follow Other Users** - Stay updated with your friends & meet new people 🤝  
+- **Discover New Interests** - Explore categories and engage with trending hobbies 🔍  
+- **Social Interaction** - Share activities, connect with fellow hobbyists ❤️  
 
 ---
 
 ## 🛠 Tech Stack
 
-- 🔹 **Frontend** - Angular 🅰️  
-- 🔹 **Backend** - NestJS 🛠️  
-- 🔹 **Database** - PostgreSQL with PostGIS / MongoDB 🗄️  
-- 🔹 **Authentication** - JWT / OAuth with HTTPOnly cookies 🔐  
-- 🔹 **File Storage** - AWS S3 ☁️  
+- **Frontend** - Angular 🅰️  
+- **Backend** - NestJS 🛠️  
+- **Database** - PostgreSQL with PostGIS / MongoDB 🗄️  
+- **Authentication** - JWT / OAuth with HTTPOnly cookies 🔐  
+- **File Storage** - AWS S3 ☁️  
 
 
 ## 🚀 Getting Started
